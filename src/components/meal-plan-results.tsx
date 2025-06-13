@@ -14,11 +14,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, FileDown, Bookmark } from "lucide-react";
-import {
-  MealPlan,
-  MacroNutrients,
-  MealPlanResultsProps,
-} from "@/types/interfaces";
+import { MealPlanResultsProps } from "@/types/interfaces";
 
 export function MealPlanResults({ plan }: MealPlanResultsProps) {
   if (!plan) {

@@ -48,7 +48,7 @@ export function MealPlannerForm({
   const [skillLevel, setSkillLevel] = useState("");
   const [excludedIngredients, setExcludedIngredients] = useState("");
 
-  // You would handle form submission here to call your AI API
+  // handle form submission here to call your AI API
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -155,11 +155,23 @@ export function MealPlannerForm({
               </div>
               <div>
                 <Label htmlFor="carbs">Carbs (g)</Label>
-                <Input id="carbs" type="number" placeholder="e.g., 200" />
+                <Input
+                  id="carbs"
+                  type="number"
+                  placeholder="e.g., 200"
+                  value={carbs}
+                  onChange={(e) => setCarbs(e.target.value)}
+                />
               </div>
               <div>
                 <Label htmlFor="fats">Fats (g)</Label>
-                <Input id="fats" type="number" placeholder="e.g., 80" />
+                <Input
+                  id="fats"
+                  type="number"
+                  placeholder="e.g., 80"
+                  value={fats}
+                  onChange={(e) => setFats(e.target.value)}
+                />
               </div>
             </div>
           </div>

@@ -37,6 +37,6 @@ export interface MealPlannerFormData {
 }
 
 export interface MealPlannerFormProps {
-  onGenerate: (formData: any) => Promise<void>;
+  onGenerate: (formData: MealPlannerFormData) => Promise<void>;
   isLoading: boolean;
 }

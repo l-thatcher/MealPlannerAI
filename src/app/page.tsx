@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { MealPlan } from "@/types/interfaces";
+import { MealPlan, MealPlannerFormData } from "@/types/interfaces";
 import { MealPlannerForm } from "@/components/meal-planner-form";
 import { MealPlanResults } from "@/components/meal-plan-results";
 
@@ -10,8 +10,24 @@ export default function HomePage() {
   const [plan, setPlan] = useState<MealPlan | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleGeneratePlan = async (formData: any) => {
+  const handleGeneratePlan = async (formData: MealPlannerFormData) => {
     setIsLoading(true);
+
+    console.log("Form data received:", {
+      days: formData.days,
+      mealsPerDay: formData.mealsPerDay,
+      calories: formData.calories,
+      macros: {
+        protein: formData.protein,
+        carbs: formData.carbs,
+        fats: formData.fats,
+      },
+      dietaryRestrictions: formData.dietaryRestrictions,
+      preferredCuisines: formData.preferredCuisines,
+      skillLevel: formData.skillLevel,
+      excludedIngredients: formData.excludedIngredients,
+    });
+    // generate the meal plan based on formData
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
     // Create mock data that matches the MealPlan interface
