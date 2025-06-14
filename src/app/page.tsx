@@ -6,12 +6,9 @@ import { MealPlannerForm } from "@/components/meal-planner-form";
 import { MealPlanResults } from "@/components/meal-plan-results";
 
 export default function HomePage() {
-  // console.log(JSON.stringify(result.response.headers, null, 2));
-  // console.log(JSON.stringify(result.response.body, null, 2));
-
   const [plan, setPlan] = useState<MealPlan | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [generation, setGeneration] = useState("");
+  // const [generation, setGeneration] = useState("");
 
   const handleGeneratePlan = async (formData: MealPlannerFormData) => {
     setIsLoading(true);
@@ -49,7 +46,7 @@ export default function HomePage() {
       }
 
       const data = await response.json();
-      setGeneration(data);
+      // setGeneration(data);
 
       // Extract the meal plan object from the response and set it directly
       setPlan(data.object);
