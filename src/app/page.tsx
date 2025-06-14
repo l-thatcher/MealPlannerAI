@@ -6,9 +6,12 @@ import { MealPlannerForm } from "@/components/meal-planner-form";
 import { MealPlanResults } from "@/components/meal-plan-results";
 
 export default function HomePage() {
-  // Tell useState that 'plan' will be of type MealPlan or null
+  // console.log(JSON.stringify(result.response.headers, null, 2));
+  // console.log(JSON.stringify(result.response.body, null, 2));
+
   const [plan, setPlan] = useState<MealPlan | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [generation, setGeneration] = useState("");
 
   const handleGeneratePlan = async (formData: MealPlannerFormData) => {
     setIsLoading(true);
@@ -27,57 +30,34 @@ export default function HomePage() {
       skillLevel: formData.skillLevel,
       excludedIngredients: formData.excludedIngredients,
     });
-    // generate the meal plan based on formData
-    await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    // Create mock data that matches the MealPlan interface
-    const mockGeneratedPlan: MealPlan = {
-      days: [
-        {
-          day: 1,
-          meals: [
-            {
-              name: "Breakfast",
-              title: "Greek Yogurt with Berries",
-              macros: { p: 25, c: 30, f: 15 },
-            },
-            {
-              name: "Lunch",
-              title: "Grilled Chicken Salad",
-              macros: { p: 40, c: 15, f: 20 },
-            },
-            {
-              name: "Dinner",
-              title: "Salmon with Asparagus",
-              macros: { p: 35, c: 10, f: 25 },
-            },
-          ],
+    try {
+      const response = await fetch("/api/completion", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        {
-          day: 2,
-          meals: [
-            {
-              name: "Breakfast",
-              title: "Scrambled Eggs with Spinach",
-              macros: { p: 20, c: 5, f: 18 },
-            },
-            {
-              name: "Lunch",
-              title: "Quinoa Bowl with Veggies",
-              macros: { p: 15, c: 50, f: 12 },
-            },
-            {
-              name: "Dinner",
-              title: "Lean Beef Stir-fry",
-              macros: { p: 30, c: 25, f: 18 },
-            },
-          ],
-        },
-      ],
-    };
+        body: JSON.stringify({
+          prompt:
+            "You are an expert nutritionist and chef AI. Your primary function is to generate personalized weekly meal plans based on user-provided data. Your task is to create a comprehensive meal plan that strictly adheres to all user inputs. The final output must be a single, raw JSON object, without any additional text, explanations, or markdown formatting. Generate a random plan",
+          maxDays: formData.days,
+        }),
+      });
 
-    setPlan(mockGeneratedPlan);
-    setIsLoading(false);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setGeneration(data);
+
+      // Extract the meal plan object from the response and set it directly
+      setPlan(data.object);
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
