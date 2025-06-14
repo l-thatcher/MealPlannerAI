@@ -13,21 +13,6 @@ export default function HomePage() {
   const handleGeneratePlan = async (formData: MealPlannerFormData) => {
     setIsLoading(true);
 
-    console.log("Form data received:", {
-      days: formData.days,
-      mealsPerDay: formData.mealsPerDay,
-      calories: formData.calories,
-      macros: {
-        protein: formData.protein,
-        carbs: formData.carbs,
-        fats: formData.fats,
-      },
-      dietaryRestrictions: formData.dietaryRestrictions,
-      preferredCuisines: formData.preferredCuisines,
-      skillLevel: formData.skillLevel,
-      excludedIngredients: formData.excludedIngredients,
-    });
-
     try {
       const response = await fetch("/api/completion", {
         method: "POST",
@@ -35,9 +20,7 @@ export default function HomePage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          prompt:
-            "You are an expert nutritionist and chef AI. Your primary function is to generate personalized weekly meal plans based on user-provided data. Your task is to create a comprehensive meal plan that strictly adheres to all user inputs. The final output must be a single, raw JSON object, without any additional text, explanations, or markdown formatting. Generate a random plan",
-          maxDays: formData.days,
+          formData: formData,
         }),
       });
 
@@ -46,10 +29,14 @@ export default function HomePage() {
       }
 
       const data = await response.json();
-      // setGeneration(data);
+      console.log("API response:", data.data.object);
 
-      // Extract the meal plan object from the response and set it directly
-      setPlan(data.object);
+      if (data.success && data.data?.object) {
+        // The meal plan is now nested inside data.data.object
+        setPlan(data.data.object);
+      } else {
+        throw new Error("Failed to generate meal plan");
+      }
     } catch (error) {
       console.error("Error:", error);
     } finally {

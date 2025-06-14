@@ -64,6 +64,7 @@ export function MealPlanResults({ plan }: MealPlanResultsProps) {
                       <p className="text-sm text-slate-500">
                         Ingredients and recipe details will go here...
                       </p>
+                      <p>{meal.cals}</p>
                     </CardContent>
                     <CardFooter className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-b-lg">
                       <div className="flex justify-around w-full text-xs font-medium text-slate-700 dark:text-slate-300">

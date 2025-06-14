@@ -2,37 +2,82 @@ import { generateObject } from 'ai';
 import { createOpenAI } from '@ai-sdk/openai';
 import { z } from 'zod';
 import { NextResponse } from 'next/server';
+import { MealPlannerFormData } from "@/types/interfaces";
+
+const apiKey = process.env.OPENAI_API_KEY;
+
+if (!apiKey) {
+  throw new Error('OPENAI_API_KEY is not defined in environment variables');
+}
 
 const openai = createOpenAI({
-  apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
+  apiKey,
 });
 
 export async function POST(req: Request) {
-  const { prompt, maxDays = 7 }: { prompt: string; maxDays?: number } = await req.json();
+  try {
+    const { formData }: { formData: MealPlannerFormData } = await req.json();
 
-  const result = await generateObject({
-    model: openai('gpt-4.1-nano'),
-    system: 'You generate detailed meal plans with macronutrient information.',
-    prompt,
-    schema: z.object({
-      days: z.array(
-        z.object({
-          day: z.number().min(1).max(maxDays),
-          meals: z.array(
-            z.object({
-              name: z.string().describe('meal time (Breakfast/Lunch/Dinner)'),
-              title: z.string().describe('name of the meal'),
-              macros: z.object({
-                p: z.number().describe('protein in grams'),
-                c: z.number().describe('carbohydrates in grams'),
-                f: z.number().describe('fat in grams')
+    // Construct the prompt string
+    const promptText = `Generate a detailed ${formData.days}-day meal plan with ${formData.mealsPerDay} meals per day.
+Daily nutritional targets:
+- Total Calories: ${formData.calories ? formData.calories : 2000} kcal
+- Protein: ${formData.protein}g
+- Carbs: ${formData.carbs}g
+- Fats: ${formData.fats}g
+
+Requirements:
+${formData.dietaryRestrictions.length ? `- Must follow: ${formData.dietaryRestrictions.join(', ')}\n` : ''}
+${formData.preferredCuisines ? `- Include these cuisines: ${formData.preferredCuisines}\n` : ''}
+${formData.excludedIngredients ? `- Exclude these ingredients: ${formData.excludedIngredients}\n` : ''}
+- Cooking skill level: ${formData.skillLevel}
+
+Each meal should:
+1. Include a descriptive title
+2. Have realistic macro distributions
+3. Be appropriate for ${formData.skillLevel} skill level
+4. Fit within daily calorie goal when combined
+5. Meet all dietary restrictions`;
+
+    const result = await generateObject({
+      model: openai('gpt-4.1-nano'),
+      messages: [
+        {
+          role: 'system',
+          content: 'You are an expert nutritionist AI specializing in creating personalized meal plans. Generate practical, portion-controlled meals that precisely match the given requirements and nutritional targets.'
+        },
+        {
+          role: 'user',
+          content: promptText
+        }
+      ],
+      schema: z.object({
+        days: z.array(
+          z.object({
+            day: z.number().min(1).max(formData.days),
+            meals: z.array(
+              z.object({
+                name: z.string().describe('Meal time (e.g., Breakfast, Lunch, Dinner)'),
+                title: z.string().describe('Descriptive name of the meal'),
+                cals: z.string().describe('Total calories for this meal'),
+                macros: z.object({
+                  p: z.number().min(0).describe('Protein in grams'),
+                  c: z.number().min(0).describe('Carbohydrates in grams'),
+                  f: z.number().min(0).describe('Fats in grams')
+                }).describe('Macronutrients for this meal')
               })
-            })
-          )
-        })
-      )
-    }),
-  });
+            ).length(formData.mealsPerDay)
+          })
+        ).length(formData.days)
+      })
+    });
 
-    return NextResponse.json(result);
+    return NextResponse.json({ success: true, data: result });
+  } catch (error) {
+    console.error('Error generating meal plan:', error);
+    return NextResponse.json(
+      { success: false, error: 'Failed to generate meal plan' },
+      { status: 500 }
+    );
+  }
 }

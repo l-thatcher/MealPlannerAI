@@ -7,6 +7,7 @@ export interface MacroNutrients {
 export interface Meal {
   name: string;
   title: string;
+  cals: number;
   macros: MacroNutrients;
 }
 
