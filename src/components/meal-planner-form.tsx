@@ -101,6 +101,7 @@ export function MealPlannerForm({
                 </Label>
                 <Slider
                   id="days"
+                  value={[days]}
                   defaultValue={[7]}
                   max={14}
                   min={1}
@@ -117,6 +118,7 @@ export function MealPlannerForm({
                 </Label>
                 <Slider
                   id="mealsPerDay"
+                  value={[mealsPerDay]}
                   defaultValue={[3]}
                   max={5}
                   min={2}

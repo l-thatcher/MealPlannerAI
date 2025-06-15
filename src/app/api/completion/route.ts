@@ -2,7 +2,7 @@ import { generateObject } from 'ai';
 import { createOpenAI } from '@ai-sdk/openai';
 import { z } from 'zod';
 import { NextResponse } from 'next/server';
-import { MealPlannerFormData } from "@/types/interfaces";
+import { MealPlannerFormData } from '@/types/interfaces';
 
 const apiKey = process.env.OPENAI_API_KEY;
 
