@@ -16,15 +16,17 @@ const openai = createOpenAI({
 
 export async function POST(req: Request) {
   try {
+    console.log('Received request to generate meal plan');
+
     const { formData }: { formData: MealPlannerFormData } = await req.json();
 
     // Construct the prompt string
     const promptText = `Generate a detailed ${formData.days}-day meal plan with ${formData.mealsPerDay} meals per day.
 Daily nutritional targets:
-- Total Calories: ${formData.calories ? formData.calories : 2000} kcal
-- Protein: ${formData.protein}g
-- Carbs: ${formData.carbs}g
-- Fats: ${formData.fats}g
+- Total Calories: ${formData.calories ? formData.calories : 2200} kcal
+- Protein: ${formData.protein ? formData.protein : 150}g
+- Carbs: ${formData.carbs ? formData.carbs : 200}g
+- Fats: ${formData.fats ? formData.fats : 80}g
 
 Requirements:
 ${formData.dietaryRestrictions.length ? `- Must follow: ${formData.dietaryRestrictions.join(', ')}\n` : ''}
@@ -39,12 +41,20 @@ Each meal should:
 4. Fit within daily calorie goal when combined
 5. Meet all dietary restrictions`;
 
+
+    const systemPrompt = `You are an expert nutritionist AI specializing in creating personalized meal plans. 
+Your task is to generate EXACTLY ${formData.days} days of meals, with EXACTLY ${formData.mealsPerDay} meals per day.
+The response MUST contain the exact number of days and meals specified.
+Generate practical, portion-controlled meals that precisely match the given requirements and nutritional targets.`;
+
+    console.log(promptText);
+
     const result = await generateObject({
       model: openai('gpt-4.1-nano'),
       messages: [
         {
           role: 'system',
-          content: 'You are an expert nutritionist AI specializing in creating personalized meal plans. Generate practical, portion-controlled meals that precisely match the given requirements and nutritional targets.'
+          content: systemPrompt
         },
         {
           role: 'user',
@@ -72,7 +82,12 @@ Each meal should:
       })
     });
 
+    console.log('Generated days:', result.object.days.length);
+    console.log('Generated meals per day:', result.object.days[0].meals.length);
+
+
     return NextResponse.json({ success: true, data: result });
+
   } catch (error) {
     console.error('Error generating meal plan:', error);
     return NextResponse.json(

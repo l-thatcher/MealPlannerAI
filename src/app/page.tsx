@@ -8,10 +8,25 @@ import { MealPlanResults } from "@/components/meal-plan-results";
 export default function HomePage() {
   const [plan, setPlan] = useState<MealPlan | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  // const [generation, setGeneration] = useState("");
 
   const handleGeneratePlan = async (formData: MealPlannerFormData) => {
+    setPlan(null);
     setIsLoading(true);
+
+    console.log("Form data received:", {
+      days: formData.days,
+      mealsPerDay: formData.mealsPerDay,
+      calories: formData.calories,
+      macros: {
+        protein: formData.protein,
+        carbs: formData.carbs,
+        fats: formData.fats,
+      },
+      dietaryRestrictions: formData.dietaryRestrictions,
+      preferredCuisines: formData.preferredCuisines,
+      skillLevel: formData.skillLevel,
+      excludedIngredients: formData.excludedIngredients,
+    });
 
     try {
       const response = await fetch("/api/completion", {
