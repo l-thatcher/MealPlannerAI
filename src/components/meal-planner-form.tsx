@@ -21,7 +21,7 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-import { Wand2 } from "lucide-react";
+import { Wand2, StopCircle } from "lucide-react";
 import { MealPlannerFormData, MealPlannerFormProps } from "@/types/interfaces";
 
 const dietaryOptions = [
@@ -36,23 +36,32 @@ const dietaryOptions = [
 export function MealPlannerForm({
   onGenerate,
   isLoading,
+  onFormDataUpdate,
+  initialFormData,
+  stopGeneration,
 }: MealPlannerFormProps) {
-  const [days, setDays] = useState(7);
-  const [mealsPerDay, setMealsPerDay] = useState(3);
-  const [calories, setCalories] = useState("");
-  const [protein, setProtein] = useState("");
-  const [carbs, setCarbs] = useState("");
-  const [fats, setFats] = useState("");
-  const [dietaryRestrictions, setDietaryRestrictions] = useState<string[]>([]);
-  const [preferredCuisines, setPreferredCuisines] = useState("");
-  const [skillLevel, setSkillLevel] = useState("");
-  const [excludedIngredients, setExcludedIngredients] = useState("");
+  const [days, setDays] = useState(initialFormData.days);
+  const [mealsPerDay, setMealsPerDay] = useState(initialFormData.mealsPerDay);
+  const [calories, setCalories] = useState(initialFormData.calories.toString());
+  const [protein, setProtein] = useState(initialFormData.protein.toString());
+  const [carbs, setCarbs] = useState(initialFormData.carbs.toString());
+  const [fats, setFats] = useState(initialFormData.fats.toString());
+  const [dietaryRestrictions, setDietaryRestrictions] = useState<string[]>(
+    initialFormData.dietaryRestrictions
+  );
+  const [preferredCuisines, setPreferredCuisines] = useState(
+    initialFormData.preferredCuisines
+  );
+  const [skillLevel, setSkillLevel] = useState(initialFormData.skillLevel);
+  const [excludedIngredients, setExcludedIngredients] = useState(
+    initialFormData.excludedIngredients
+  );
 
   // handle form submission here to call your AI API
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const formData: MealPlannerFormData = {
+    const newFormData = {
       days,
       mealsPerDay,
       calories: Number(calories),
@@ -65,7 +74,7 @@ export function MealPlannerForm({
       excludedIngredients,
     };
 
-    await onGenerate(formData);
+    await onGenerate(newFormData);
   };
 
   const handleDietaryOptionChange = (checked: boolean, optionId: string) => {
@@ -120,7 +129,7 @@ export function MealPlannerForm({
                   id="mealsPerDay"
                   value={[mealsPerDay]}
                   defaultValue={[3]}
-                  max={5}
+                  max={6}
                   min={2}
                   step={1}
                   onValueChange={(value) => setMealsPerDay(value[0])}
@@ -128,7 +137,6 @@ export function MealPlannerForm({
               </div>
             </div>
           </div>
-
           {/* Section 2: Macro Goals */}
           <div className="space-y-4">
             <h3 className="text-lg font-medium text-slate-800 dark:text-slate-200">
@@ -177,7 +185,6 @@ export function MealPlannerForm({
               </div>
             </div>
           </div>
-
           {/* Section 3: Dietary Restrictions */}
           <div className="space-y-4">
             <h3 className="text-lg font-medium text-slate-800 dark:text-slate-200">
@@ -200,7 +207,6 @@ export function MealPlannerForm({
               ))}
             </div>
           </div>
-
           {/* Section 4: Fine-Tuning */}
           <div className="space-y-4">
             <h3 className="text-lg font-medium text-slate-800 dark:text-slate-200">
@@ -247,7 +253,7 @@ export function MealPlannerForm({
             </div>
           </div>
 
-          <div className="flex justify-end">
+          <div className="flex justify-end gap-2">
             <Button
               type="submit"
               size="lg"
@@ -257,6 +263,18 @@ export function MealPlannerForm({
               <Wand2 className="mr-2 h-5 w-5" />
               {isLoading ? "Generating..." : "Generate My Plan"}
             </Button>
+            {isLoading && (
+              <Button
+                type="button"
+                size="lg"
+                variant="destructive"
+                className="w-full md:w-auto"
+                onClick={stopGeneration}
+              >
+                <StopCircle className="mr-2 h-5 w-5" />
+                Stop
+              </Button>
+            )}
           </div>
         </form>
       </CardContent>
