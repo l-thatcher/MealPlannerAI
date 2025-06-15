@@ -29,10 +29,12 @@ export default function HomePage() {
     });
 
     try {
-      const response = await fetch("/api/completion", {
+      const response = await fetch(`/api/completion?t=${Date.now()}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          Pragma: "no-cache",
         },
         body: JSON.stringify({
           formData: formData,
@@ -79,7 +81,7 @@ export default function HomePage() {
         {/* We now pass the typed 'plan' state to the results component */}
         {plan && !isLoading && <MealPlanResults plan={plan} />}
 
-        {/* You can add a more explicit loading indicator here if you want */}
+        {/* this is were generation stream will go */}
         {isLoading && (
           <div className="mt-12 text-center text-slate-600">
             <p>Generating your perfect plan...</p>
