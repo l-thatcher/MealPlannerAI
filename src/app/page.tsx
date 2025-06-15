@@ -73,57 +73,57 @@ export default function HomePage() {
     setFormData(newFormData);
   };
 
-  const handleGeneratePlan = async (formData: MealPlannerFormData) => {
-    setPlan(null);
-    setIsLoading(true);
+  // const handleGeneratePlan = async (formData: MealPlannerFormData) => {
+  //   setPlan(null);
+  //   setIsLoading(true);
 
-    console.log("Form data received:", {
-      days: formData.days,
-      mealsPerDay: formData.mealsPerDay,
-      calories: formData.calories,
-      macros: {
-        protein: formData.protein,
-        carbs: formData.carbs,
-        fats: formData.fats,
-      },
-      dietaryRestrictions: formData.dietaryRestrictions,
-      preferredCuisines: formData.preferredCuisines,
-      skillLevel: formData.skillLevel,
-      excludedIngredients: formData.excludedIngredients,
-    });
+  //   console.log("Form data received:", {
+  //     days: formData.days,
+  //     mealsPerDay: formData.mealsPerDay,
+  //     calories: formData.calories,
+  //     macros: {
+  //       protein: formData.protein,
+  //       carbs: formData.carbs,
+  //       fats: formData.fats,
+  //     },
+  //     dietaryRestrictions: formData.dietaryRestrictions,
+  //     preferredCuisines: formData.preferredCuisines,
+  //     skillLevel: formData.skillLevel,
+  //     excludedIngredients: formData.excludedIngredients,
+  //   });
 
-    try {
-      const response = await fetch(`/api/generateMealPlan?t=${Date.now()}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Cache-Control": "no-cache, no-store, must-revalidate",
-          Pragma: "no-cache",
-        },
-        body: JSON.stringify({
-          formData: formData,
-        }),
-      });
+  //   try {
+  //     const response = await fetch(`/api/generateMealPlan?t=${Date.now()}`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         "Cache-Control": "no-cache, no-store, must-revalidate",
+  //         Pragma: "no-cache",
+  //       },
+  //       body: JSON.stringify({
+  //         formData: formData,
+  //       }),
+  //     });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! status: ${response.status}`);
+  //     }
 
-      const data = await response.json();
-      console.log("API response:", data.data.object);
+  //     const data = await response.json();
+  //     console.log("API response:", data.data.object);
 
-      if (data.success && data.data?.object) {
-        // The meal plan is now nested inside data.data.object
-        setPlan(data.data.object);
-      } else {
-        throw new Error("Failed to generate meal plan");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //     if (data.success && data.data?.object) {
+  //       // The meal plan is now nested inside data.data.object
+  //       setPlan(data.data.object);
+  //     } else {
+  //       throw new Error("Failed to generate meal plan");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error:", error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   return (
     <main className="flex min-h-screen flex-col items-center p-4 sm:p-8 md:p-24 bg-slate-50 dark:bg-slate-950">

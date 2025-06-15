@@ -22,7 +22,7 @@ import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Wand2, StopCircle } from "lucide-react";
-import { MealPlannerFormData, MealPlannerFormProps } from "@/types/interfaces";
+import { MealPlannerFormProps } from "@/types/interfaces";
 
 const dietaryOptions = [
   { id: "vegetarian", label: "Vegetarian" },
@@ -36,7 +36,7 @@ const dietaryOptions = [
 export function MealPlannerForm({
   onGenerate,
   isLoading,
-  onFormDataUpdate,
+  // onFormDataUpdate,
   initialFormData,
   stopGeneration,
 }: MealPlannerFormProps) {

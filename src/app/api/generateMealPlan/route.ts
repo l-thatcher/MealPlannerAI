@@ -1,7 +1,6 @@
-import { generateObject, NoObjectGeneratedError } from 'ai';
+import { NoObjectGeneratedError } from 'ai';
 import { createOpenAI } from '@ai-sdk/openai';
 import { NextResponse } from 'next/server';
-import { MealPlannerFormData } from '@/types/interfaces';
 import { mealPlanSchema } from './use-object/mealPlanSchema';
 import { streamObject } from 'ai';
 
