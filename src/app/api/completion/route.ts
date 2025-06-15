@@ -21,62 +21,68 @@ export async function POST(req: Request) {
     const { formData }: { formData: MealPlannerFormData } = await req.json();
 
     // Construct the prompt string
-    const promptText = `Generate a detailed exactly ${formData.days}-day meal plan with exactly ${formData.mealsPerDay} meals per day.
-Do not provide extra or fewer meals or days.
+    const promptText = [
+  `Generate a detailed exactly ${formData.days}-day meal plan with exactly ${formData.mealsPerDay} meals per day.`,
+  'Do not provide extra or fewer meals or days.',
+  '',
+  'Daily nutritional targets:',
+  `- Total Calories: ${formData.calories ? formData.calories : 2200} kcal`,
+  `- Protein: ${formData.protein ? formData.protein : 150}g`,
+  `- Carbs: ${formData.carbs ? formData.carbs : 200}g`,
+  `- Fats: ${formData.fats ? formData.fats : 80}g`,
+  '',
+  'Requirements:',
+  formData.dietaryRestrictions.length ? `- Must follow: ${formData.dietaryRestrictions.join(', ')}` : '',
+  formData.preferredCuisines ? `- Include these cuisines: ${formData.preferredCuisines}` : '',
+  formData.excludedIngredients ? `- Exclude these ingredients: ${formData.excludedIngredients}` : '',
+  `- Cooking skill level: ${formData.skillLevel}`,
+  '',
+  'Each meal should:',
+  '1. Include a descriptive title',
+  '2. Have realistic macro distributions',
+  `3. Be appropriate for ${formData.skillLevel} skill level`,
+  '4. Fit within daily calorie goal when combined',
+  '5. Meet all dietary restrictions',
+  '',
+  `End response with exactly ${formData.days} items inside "days", and exactly ${formData.mealsPerDay} meals per day, no additional objects outside the array.`,
+  'Do not include any commentary, filler text, or strings in place of expected objects.',
+  'The final output must match the exact JSON structure described. Do not return null or strings inside arrays.'
+].filter(Boolean).join('\n');
 
-Daily nutritional targets:
-- Total Calories: ${formData.calories ? formData.calories : 2200} kcal
-- Protein: ${formData.protein ? formData.protein : 150}g
-- Carbs: ${formData.carbs ? formData.carbs : 200}g
-- Fats: ${formData.fats ? formData.fats : 80}g
 
-Requirements:
-${formData.dietaryRestrictions.length ? `- Must follow: ${formData.dietaryRestrictions.join(', ')}\n` : ''}
-${formData.preferredCuisines ? `- Include these cuisines: ${formData.preferredCuisines}\n` : ''}
-${formData.excludedIngredients ? `- Exclude these ingredients: ${formData.excludedIngredients}\n` : ''}
-- Cooking skill level: ${formData.skillLevel}
+const systemPrompt = [
+  'You are an expert nutritionist AI specializing in creating personalized meal plans.',
+  'Generate a properly formatted JSON object with no trailing commas, proper nesting, and valid syntax.',
+  '',
+  'STRICT FORMAT RULES:',
+  '1. Each day object must look exactly like this:',
+  '{',
+  '  "day": 1,',
+  '  "meals": [',
+  '    {',
+  '      "name": "string",',
+  '      "title": "string",',
+  '      "cals": "string",',
+  '      "macros": {',
+  '        "p": number,',
+  '        "c": number,',
+  '        "f": number',
+  '      }',
+  '    }',
+  '  ]',
+  '}',
+  '',
+  'CRITICAL REQUIREMENTS:',
+  `- Must have exactly ${formData.days} days in sequential order`,
+  `- Each day must have exactly ${formData.mealsPerDay} meals`,
+  '- All numbers must be actual numbers, not strings (except cals)',
+  '- No comments, trailing commas, or extra whitespace',
+  '- Must be valid parseable JSON',
+  '- All properties must use double quotes',
+  '- Meals array must be properly nested inside each day object'
+].filter(Boolean).join('\n');
 
-Each meal should:
-1. Include a descriptive title
-2. Have realistic macro distributions
-3. Be appropriate for ${formData.skillLevel} skill level
-4. Fit within daily calorie goal when combined
-5. Meet all dietary restrictions
-
-End response with exactly ${formData.days} items inside "days", and exactly ${formData.mealsPerDay} meals per day, no additional objects outside the array.
-`;
-
-
-    const systemPrompt = `
-    STRICT RULES:
-- You MUST return exactly ${formData.days} objects in the "days" array.
-- Each day must include exactly ${formData.mealsPerDay} meals.
-- No explanations. Respond with JSON only.
-- Do not skip days or meals. Do not add commentary.
-
-The response must be in this exact format:
-{
-  "days": [
-    {
-      "day": (day number),
-      "meals": [
-        {
-          "name": (meal name),
-          "title": (Meal Title),
-          "cals": (meal calories),
-          "macros": { "p": (meal protien), "c": (meal carbs), "f":  (meal fat)}
-        },
-        ...
-      ]
-    },
-    ...
-  ]
-}
-
-You are an expert nutritionist AI specializing in creating personalized meal plans. 
-Your task is to generate EXACTLY ${formData.days} days of meals, with EXACTLY ${formData.mealsPerDay} meals per day.
-The response MUST contain the exact number of days and meals specified.
-Generate practical, portion-controlled meals that precisely match the given requirements and nutritional targets.`;
+  
 
     console.log(promptText);
 
@@ -123,7 +129,7 @@ Generate practical, portion-controlled meals that precisely match the given requ
     if (NoObjectGeneratedError.isInstance(error)) {
         console.log('"""""""""""""""" NoObjectGeneratedError """"""""""""""""');
         console.log('Cause:', error.cause);
-        console.log('Text:', error.text);
+        console.log('Text:', JSON.stringify(error.text, null, 2));
         console.log('Response:', error.response);
         console.log('Usage:', error.usage);
     } else {
