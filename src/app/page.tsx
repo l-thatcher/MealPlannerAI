@@ -29,7 +29,7 @@ export default function HomePage() {
     });
 
     try {
-      const response = await fetch(`/api/completion?t=${Date.now()}`, {
+      const response = await fetch(`/api/generateMealPlan?t=${Date.now()}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

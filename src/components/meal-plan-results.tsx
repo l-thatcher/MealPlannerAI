@@ -52,9 +52,12 @@ export function MealPlanResults({ plan }: MealPlanResultsProps) {
               Day {dayData.day}
             </AccordionTrigger>
             <AccordionContent>
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 p-1">
+              <div className="flex overflow-x-auto gap-4 p-1 pb-4 snap-x snap-mandatory">
                 {dayData.meals.map((meal) => (
-                  <Card key={meal.name} className="flex flex-col">
+                  <Card
+                    key={meal.name}
+                    className="flex-shrink-0 w-[300px] snap-center"
+                  >
                     <CardHeader>
                       <CardTitle>{meal.name}</CardTitle>
                       <CardDescription>{meal.title}</CardDescription>
