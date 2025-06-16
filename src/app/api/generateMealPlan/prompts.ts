@@ -50,7 +50,7 @@ export const getUserPrompt = (formData: MealPlannerFormData): string => {
     '- Use placeholder strings like "null" or "N/A"',
     '- Return strings in place of arrays or numbers',
     'IMPORTANT:',
-    '- You must return exactly ${formData.days} full days with ${formData.mealsPerDay} complete meals.',
+    `- You must return exactly ${formData.days} full days with ${formData.mealsPerDay} complete meals.`,
     '- Do not return fewer days or meals under any circumstances.',
     '- Include the full "shoppingList" at the end, or the response will be rejected.',
     '- Do not return any partial or incomplete JSON data. Only respond with a valid, complete structure.'

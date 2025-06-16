@@ -21,6 +21,13 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Info } from "lucide-react";
 import { Wand2, StopCircle } from "lucide-react";
 import { MealPlannerFormData, MealPlannerFormProps } from "@/types/interfaces";
 
@@ -39,6 +46,7 @@ export function MealPlannerForm({
   initialFormData,
   stopGeneration,
   handleFormData,
+  user,
 }: MealPlannerFormProps) {
   const [days, setDays] = useState(initialFormData.days);
   const [mealsPerDay, setMealsPerDay] = useState(initialFormData.mealsPerDay);
@@ -126,15 +134,36 @@ export function MealPlannerForm({
                 <Label htmlFor="days">
                   Number of Days:{" "}
                   <span className="text-blue-600 font-semibold">{days}</span>
+                  {!user && (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="w-4 h-4 text-muted-foreground cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Unlock up to 14 day plans with the paid plan.</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
                 </Label>
                 <Slider
                   id="days"
                   value={[days]}
                   defaultValue={[7]}
-                  max={7}
+                  max={14} // Always show full range
                   min={1}
                   step={1}
-                  onValueChange={(value) => setDays(value[0])}
+                  onValueChange={(value) => {
+                    const newValue = value[0];
+
+                    // Clamp to 7 if user is not logged in
+                    if (!user && newValue > 7) {
+                      setDays(7);
+                    } else {
+                      setDays(newValue);
+                    }
+                  }}
                 />
               </div>
               <div>
@@ -231,20 +260,21 @@ export function MealPlannerForm({
             <h3 className="text-lg font-medium text-slate-800 dark:text-slate-200">
               Preferences & Exclusions
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
+            <div className="flex flex-col md:flex-row gap-6">
+              <div className="flex flex-col flex-1">
                 <Label htmlFor="cuisine">Preferred Cuisines (optional)</Label>
                 <Input
                   id="cuisine"
                   placeholder="e.g., Italian, Mexican, Thai"
                   value={preferredCuisines}
                   onChange={(e) => setPreferredCuisines(e.target.value)}
+                  className="w-full"
                 />
               </div>
-              <div>
+              <div className="w-full md:w-64">
                 <Label htmlFor="skillLevel">Cooking Skill Level</Label>
                 <Select value={skillLevel} onValueChange={setSkillLevel}>
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select your skill level" />
                   </SelectTrigger>
                   <SelectContent>
@@ -261,13 +291,40 @@ export function MealPlannerForm({
                 </Select>
               </div>
             </div>
+
             <div>
-              <Label htmlFor="exclude">Ingredients to Exclude</Label>
+              <div className="flex items-center gap-2">
+                <Label htmlFor="exclude">
+                  Ingredients to Exclude
+                  {!user && (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="w-4 h-4 text-muted-foreground cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>
+                            Excluded ingredients is only available on the paid
+                            plan.
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
+                </Label>
+              </div>
               <Textarea
                 id="exclude"
                 placeholder="List any ingredients you dislike..."
                 value={excludedIngredients}
-                onChange={(e) => setExcludedIngredients(e.target.value)}
+                onChange={(e) => {
+                  if (!user) {
+                    setExcludedIngredients(""); // Or you could do nothing instead
+                  } else {
+                    setExcludedIngredients(e.target.value);
+                  }
+                }}
+                disabled={!user}
               />
             </div>
           </div>

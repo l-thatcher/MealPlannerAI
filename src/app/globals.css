@@ -119,4 +119,7 @@
   body {
     @apply bg-background text-foreground;
   }
+  label {
+    margin-bottom: 5px;
+  }
 }

@@ -1,13 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MealPlan, MealPlannerFormData } from "@/types/interfaces";
 import { MealPlannerForm } from "@/components/meal-planner-form";
 import { MealPlanResults } from "@/components/meal-plan-results";
 import { experimental_useObject as useObject } from "@ai-sdk/react";
 import { mealPlanSchema } from "./api/generateMealPlan/use-object/mealPlanSchema";
+import { Button } from "@/components/ui/button";
+import { logout } from "@/lib/actions";
+import { createClient } from "@/utils/supabase/client"; // Add this import
+import Link from "next/link";
+import { User } from "@supabase/supabase-js";
 
 export default function HomePage() {
+  const [user, setUser] = useState<User | null>(null);
   const [plan, setPlan] = useState<MealPlan | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<MealPlannerFormData>({
@@ -101,6 +107,17 @@ export default function HomePage() {
     });
   };
 
+  useEffect(() => {
+    const checkUser = async () => {
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    checkUser();
+  }, []);
+
   // const handleGeneratePlan = async (formData: MealPlannerFormData) => {
   //   setPlan(null);
   //   setIsLoading(true);
@@ -165,12 +182,29 @@ export default function HomePage() {
           </p>
         </header>
 
+        {user ? (
+          <div className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+            Logged in as: {user.email}
+            <form action={logout}>
+              <Button type="submit">Log out</Button>
+            </form>
+          </div>
+        ) : (
+          <div className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+            Not logged in
+            <Button asChild>
+              <Link href="/login">Sign In/Up</Link>
+            </Button>
+          </div>
+        )}
+
         <MealPlannerForm
           onGenerate={handleSubmitWithLog}
           isLoading={isLoading}
           initialFormData={formData}
           stopGeneration={handleStopGeneration}
           handleFormData={handleFormData}
+          user={user}
         />
 
         {/* this is were generation stream will go */}
