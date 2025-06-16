@@ -26,14 +26,21 @@ export function ShoppingListCard({ shoppingList }: ShoppingListCardProps) {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          {shoppingList.map((category, categoryIndex) => (
-            <div key={categoryIndex} className="mb-6 last:mb-0">
+          {shoppingList.map((category) => (
+            <div
+              key={`category-${category.category
+                .toLowerCase()
+                .replace(/\s+/g, "-")}`}
+              className="mb-6 last:mb-0"
+            >
               <h3 className="font-semibold mb-2 text-lg">
                 {category.category}
               </h3>
               <div className="space-y-2">
-                {category.items.map((item, itemIndex) => {
-                  const itemKey = `${categoryIndex}-${itemIndex}`;
+                {category.items.map((item) => {
+                  const itemKey = `item-${category.category}-${item.name}`
+                    .toLowerCase()
+                    .replace(/\s+/g, "-");
                   return (
                     <div key={itemKey} className="flex items-center space-x-2">
                       <Checkbox
