@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -58,13 +58,6 @@ export function MealPlannerForm({
   );
   const [currentFormData, setCurrentFormData] =
     useState<MealPlannerFormData>(initialFormData);
-
-  const handleFormDataFunction = useCallback(
-    async (formData: MealPlannerFormData) => {
-      handleFormData(formData);
-    },
-    [handleFormData]
-  );
 
   // Update currentFormData whenever any of the form fields change - seems to help fix broken schemas
   useEffect(() => {
