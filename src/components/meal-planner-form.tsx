@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -59,6 +59,14 @@ export function MealPlannerForm({
   const [currentFormData, setCurrentFormData] =
     useState<MealPlannerFormData>(initialFormData);
 
+  const handleFormDataFunction = useCallback(
+    async (formData: MealPlannerFormData) => {
+      handleFormData(formData);
+    },
+    [handleFormData]
+  );
+
+  // Update currentFormData whenever any of the form fields change - seems to help fix broken schemas
   useEffect(() => {
     const newFormData = {
       days,
@@ -74,16 +82,23 @@ export function MealPlannerForm({
     };
     setCurrentFormData(newFormData);
     handleFormDataFunction(newFormData);
-  }, [days, mealsPerDay]);
+  }, [
+    days,
+    mealsPerDay,
+    calories,
+    protein,
+    carbs,
+    fats,
+    dietaryRestrictions,
+    preferredCuisines,
+    skillLevel,
+    excludedIngredients,
+    handleFormDataFunction,
+  ]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     onGenerate(currentFormData);
-  };
-
-  const handleFormDataFunction = async (formData: MealPlannerFormData) => {
-    handleFormData(formData);
-    // console.log("Form data updated:", formData);
   };
 
   const handleDietaryOptionChange = (checked: boolean, optionId: string) => {

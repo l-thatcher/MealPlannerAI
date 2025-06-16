@@ -9,6 +9,7 @@ export interface Meal {
   title: string;
   cals: number;
   macros: MacroNutrients;
+  recipe: string;
 }
 
 export interface DayPlan {
@@ -18,7 +19,7 @@ export interface DayPlan {
 
 export interface MealPlan {
   days: DayPlan[];
-  shoppingList: string;
+  shoppingList: ShoppingCategory[];
 }
 
 export interface MealPlanResultsProps {
@@ -48,6 +49,17 @@ export interface MealPlannerFormProps {
   handleFormData: (formData: MealPlannerFormData) => void;
 }
 
-export interface ShoppingListCardProps {
-  shoppingList: string;
+export interface ShoppingItem {
+  name: string;
+  quantity: string;
 }
+
+export interface ShoppingCategory {
+  category: string;
+  items: ShoppingItem[];
+}
+
+export interface ShoppingListCardProps {
+  shoppingList: ShoppingCategory[];
+}
+
