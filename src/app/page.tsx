@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { MealPlan, MealPlannerFormData } from "@/types/interfaces";
 import { MealPlannerForm } from "@/components/meal-planner-form";
 import { MealPlanResults } from "@/components/meal-plan-results";
@@ -13,47 +13,78 @@ export default function HomePage() {
   const [formData, setFormData] = useState<MealPlannerFormData>({
     days: 7,
     mealsPerDay: 3,
-    calories: 2000,
-    protein: 150,
-    carbs: 250,
-    fats: 70,
+    calories: "2000",
+    protein: "150",
+    carbs: "250",
+    fats: "70",
     dietaryRestrictions: [],
     preferredCuisines: "",
     skillLevel: "",
     excludedIngredients: "",
   });
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  const { object, submit, stop } = useObject({
+  const {
+    object,
+    submit,
+    stop,
+    error: generationError,
+  } = useObject({
     api: "/api/generateMealPlan",
     schema: mealPlanSchema(formData),
     onFinish: (result) => {
+      console.log("onFinish received result:", result);
+
+      if (!result?.object) {
+        console.error("No meal plan generated. Full result:", {
+          result,
+          objectExists: !!result?.object,
+          generationError,
+        });
+        setIsLoading(false);
+        return;
+      }
+
       setPlan(result.object as MealPlan);
-      console.log("Meal plan generated successfully:", result.object);
+
+      console.log(
+        "========== Meal plan generated successfully: ==========",
+        result.object
+      );
       setIsLoading(false);
+    },
+    onError: (error) => {
+      console.error("Error generating meal plan:", error);
+      setIsLoading(false);
+      setPlan(null);
     },
   });
 
-  const handleSubmitWithLog = (formData: MealPlannerFormData) => {
-    setPlan(null);
-    setIsLoading(true);
+  const handleSubmitWithLog = async (newFormData: MealPlannerFormData) => {
+    try {
+      setPlan(null);
+      setIsLoading(true);
 
-    console.log("Form data received:", {
-      days: formData.days,
-      mealsPerDay: formData.mealsPerDay,
-      calories: formData.calories,
-      macros: {
-        protein: formData.protein,
-        carbs: formData.carbs,
-        fats: formData.fats,
-      },
-      dietaryRestrictions: formData.dietaryRestrictions,
-      preferredCuisines: formData.preferredCuisines,
-      skillLevel: formData.skillLevel,
-      excludedIngredients: formData.excludedIngredients,
-    });
+      // setFormData(newFormData);
 
-    submit(formData);
+      console.log("Form data received:", {
+        days: newFormData.days,
+        mealsPerDay: newFormData.mealsPerDay,
+        calories: newFormData.calories,
+        macros: {
+          protein: newFormData.protein,
+          carbs: newFormData.carbs,
+          fats: newFormData.fats,
+        },
+        dietaryRestrictions: newFormData.dietaryRestrictions,
+        preferredCuisines: newFormData.preferredCuisines,
+        skillLevel: newFormData.skillLevel,
+        excludedIngredients: newFormData.excludedIngredients,
+      });
+      submit(newFormData);
+    } catch (err) {
+      console.error("Failed to generate meal plan. Please try again.");
+      setIsLoading(false);
+    }
   };
 
   const handleStopGeneration = () => {
@@ -62,15 +93,11 @@ export default function HomePage() {
     setIsLoading(false);
   };
 
-  useEffect(() => {
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollTop =
-        scrollContainerRef.current.scrollHeight;
-    }
-  }, [object?.days]); // This will trigger whenever new data is streamed in
-
-  const handleFormDataUpdate = (newFormData: MealPlannerFormData) => {
-    setFormData(newFormData);
+  const handleFormData = async (newFormData: MealPlannerFormData) => {
+    return new Promise<void>((resolve) => {
+      setFormData(newFormData);
+      resolve();
+    });
   };
 
   // const handleGeneratePlan = async (formData: MealPlannerFormData) => {
@@ -140,17 +167,14 @@ export default function HomePage() {
         <MealPlannerForm
           onGenerate={handleSubmitWithLog}
           isLoading={isLoading}
-          onFormDataUpdate={handleFormDataUpdate}
           initialFormData={formData}
           stopGeneration={handleStopGeneration}
+          handleFormData={handleFormData}
         />
 
         {/* this is were generation stream will go */}
         {isLoading && object?.days && (
-          <div
-            ref={scrollContainerRef}
-            className="mt-4 text-center text-slate-400 animate-slide-up p-3 rounded-md bg-white dark:bg-slate-800 shadow-lg border border-slate-200 dark:border-slate-700 pb-0"
-          >
+          <div className="mt-4 text-center text-slate-400 animate-slide-up p-3 rounded-md bg-white dark:bg-slate-800 shadow-lg border border-slate-200 dark:border-slate-700 pb-0">
             {/* Only show the latest day */}
             {[object.days[object.days.length - 1]].map((day, dayIndex) => (
               <div key={dayIndex} className="mb-4">
