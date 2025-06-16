@@ -6,7 +6,6 @@ import { MealPlannerForm } from "@/components/meal-planner-form";
 import { MealPlanResults } from "@/components/meal-plan-results";
 import { experimental_useObject as useObject } from "@ai-sdk/react";
 import { mealPlanSchema } from "./api/generateMealPlan/use-object/mealPlanSchema";
-import { ShoppingListCard } from "@/components/shopping-list-card";
 
 export default function HomePage() {
   const [plan, setPlan] = useState<MealPlan | null>(null);
@@ -85,7 +84,8 @@ export default function HomePage() {
       });
       submit(newFormData);
     } catch (err) {
-      console.error("Failed to generate meal plan. Please try again.");
+      console.error("Failed to generate meal plan. Please try again." + err);
+
       setIsLoading(false);
     }
   };
