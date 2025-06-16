@@ -27,10 +27,10 @@ export interface MealPlanResultsProps {
 export interface MealPlannerFormData {
   days: number;
   mealsPerDay: number;
-  calories: number;
-  protein: number;
-  carbs: number;
-  fats: number;
+  calories: string;
+  protein: string;
+  carbs: string;
+  fats: string;
   dietaryRestrictions: string[];
   preferredCuisines: string;
   skillLevel: string;
@@ -40,7 +40,7 @@ export interface MealPlannerFormData {
 export interface MealPlannerFormProps {
   onGenerate: (formData: MealPlannerFormData) => void;
   isLoading: boolean;
-  onFormDataUpdate: (formData: MealPlannerFormData) => void;
   initialFormData: MealPlannerFormData;
   stopGeneration: () => void; 
+  handleFormData: (formData: MealPlannerFormData) => void;
 }

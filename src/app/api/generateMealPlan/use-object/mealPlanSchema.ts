@@ -2,8 +2,13 @@ import { z } from 'zod';
 import { MealPlannerFormData } from "@/types/interfaces";
 
 export const mealPlanSchema = (formData?: MealPlannerFormData) => {
+  if (!formData) {
+    throw new Error('Form data is required for schema validation');
+  }
+  // console.log('Schema received formData:', formData);
+
   const defaults = {
-    days: 7,
+    days: 4,
     mealsPerDay: 3
   };
 

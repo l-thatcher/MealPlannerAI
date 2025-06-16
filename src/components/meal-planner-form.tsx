@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -22,7 +22,7 @@ import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Wand2, StopCircle } from "lucide-react";
-import { MealPlannerFormProps } from "@/types/interfaces";
+import { MealPlannerFormData, MealPlannerFormProps } from "@/types/interfaces";
 
 const dietaryOptions = [
   { id: "vegetarian", label: "Vegetarian" },
@@ -36,9 +36,9 @@ const dietaryOptions = [
 export function MealPlannerForm({
   onGenerate,
   isLoading,
-  // onFormDataUpdate,
   initialFormData,
   stopGeneration,
+  handleFormData,
 }: MealPlannerFormProps) {
   const [days, setDays] = useState(initialFormData.days);
   const [mealsPerDay, setMealsPerDay] = useState(initialFormData.mealsPerDay);
@@ -56,25 +56,34 @@ export function MealPlannerForm({
   const [excludedIngredients, setExcludedIngredients] = useState(
     initialFormData.excludedIngredients
   );
+  const [currentFormData, setCurrentFormData] =
+    useState<MealPlannerFormData>(initialFormData);
 
-  // handle form submission here to call your AI API
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  useEffect(() => {
     const newFormData = {
       days,
       mealsPerDay,
-      calories: Number(calories),
-      protein: Number(protein),
-      carbs: Number(carbs),
-      fats: Number(fats),
+      calories: String(calories),
+      protein: String(protein),
+      carbs: String(carbs),
+      fats: String(fats),
       dietaryRestrictions,
       preferredCuisines,
       skillLevel,
       excludedIngredients,
     };
+    setCurrentFormData(newFormData);
+    handleFormDataFunction(newFormData);
+  }, [days, mealsPerDay]);
 
-    await onGenerate(newFormData);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    onGenerate(currentFormData);
+  };
+
+  const handleFormDataFunction = async (formData: MealPlannerFormData) => {
+    handleFormData(formData);
+    // console.log("Form data updated:", formData);
   };
 
   const handleDietaryOptionChange = (checked: boolean, optionId: string) => {
@@ -263,6 +272,7 @@ export function MealPlannerForm({
               <Wand2 className="mr-2 h-5 w-5" />
               {isLoading ? "Generating..." : "Generate My Plan"}
             </Button>
+
             {isLoading && (
               <Button
                 type="button"
