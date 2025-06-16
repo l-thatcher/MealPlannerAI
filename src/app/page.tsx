@@ -6,6 +6,7 @@ import { MealPlannerForm } from "@/components/meal-planner-form";
 import { MealPlanResults } from "@/components/meal-plan-results";
 import { experimental_useObject as useObject } from "@ai-sdk/react";
 import { mealPlanSchema } from "./api/generateMealPlan/use-object/mealPlanSchema";
+import { ShoppingListCard } from "@/components/shopping-list-card";
 
 export default function HomePage() {
   const [plan, setPlan] = useState<MealPlan | null>(null);
@@ -22,6 +23,8 @@ export default function HomePage() {
     skillLevel: "",
     excludedIngredients: "",
   });
+
+  const [showShoppingList, setShowShoppingList] = useState(false);
 
   const {
     object,
@@ -152,6 +155,10 @@ export default function HomePage() {
   //   }
   // };
 
+  const toggleShoppingList = () => {
+    setShowShoppingList((prev) => !prev);
+  };
+
   return (
     <main className="flex min-h-screen flex-col items-center p-4 sm:p-8 md:p-24 bg-slate-50 dark:bg-slate-950">
       <div className="w-full max-w-4xl">
@@ -198,7 +205,13 @@ export default function HomePage() {
         )}
 
         {/* We now pass the typed 'plan' state to the results component */}
-        {plan && !isLoading && <MealPlanResults plan={plan} />}
+        {plan && !isLoading && (
+          <MealPlanResults
+            plan={plan}
+            onToggleShoppingList={toggleShoppingList}
+            showShoppingList={showShoppingList}
+          />
+        )}
       </div>
     </main>
   );

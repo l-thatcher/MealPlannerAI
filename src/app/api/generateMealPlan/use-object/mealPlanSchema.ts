@@ -34,6 +34,7 @@ export const mealPlanSchema = (formData?: MealPlannerFormData) => {
           })
         ).length(config.mealsPerDay)
       })
-    ).length(config.days)
+    ).length(config.days),
+    shoppingList: z.string().optional().describe('Descibe a shopping list for the meal plan with all required ingredients'),
   });
 };

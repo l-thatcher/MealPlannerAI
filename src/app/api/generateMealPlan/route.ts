@@ -31,6 +31,8 @@ export async function POST(req: Request) {
     const promptText = [
       `Generate a detailed exactly ${formData.days}-day meal plan with exactly ${formData.mealsPerDay} meals per day.`,
       'Do not provide extra or fewer meals or days.',
+      'Be creative with the recipes and try to think of original outside-the-box meals each time.',
+      'Focus on keeping the type of food in each meal appealing and accurate for the time of day.',
       '',
       'Daily nutritional targets:',
       `- Total Calories: ${formData.calories ? formData.calories : 2200} kcal`,
@@ -53,7 +55,15 @@ export async function POST(req: Request) {
       '',
       `End response with exactly ${formData.days} items inside "days", and exactly ${formData.mealsPerDay} meals per day, no additional objects outside the array.`,
       'Do not include any commentary, filler text, or strings in place of expected objects.',
-      'The final output must match the exact JSON structure described. Do not return null or strings inside arrays.'
+      'The final output must match the exact JSON structure described. Do not return null or strings inside arrays.',
+      '',
+      'SHOPPING LIST REQUIREMENTS:',
+      '- Create a comprehensive shopping list for all meals',
+      '- Include specific quantities for each ingredient',
+      '- Group items by category (Produce, Meat, Dairy, Pantry, etc.)',
+      '- Consider ingredients that are used in multiple meals',
+      '',
+      'Format the shopping list neatly with categories and line breaks.',
     ].filter(Boolean).join('\n');
 
 
@@ -69,11 +79,11 @@ export async function POST(req: Request) {
       '    {',
       '      "name": "string",',
       '      "title": "string",',
-      '      "cals": "string",',
+      '      "cals": number,',
       '      "macros": {',
-      '        "p": "string",',
-      '        "c": "string",',
-      '        "f": "string"',
+      '        "p": number,',
+      '        "c": number,',
+      '        "f": number',
       '      }',
       '    }',
       '  ]',
@@ -86,14 +96,20 @@ export async function POST(req: Request) {
       '- No comments, trailing commas, or extra whitespace',
       '- Must be valid parseable JSON',
       '- All properties must use double quotes',
-      '- Meals array must be properly nested inside each day object'
-    ].filter(Boolean).join('\n');  
+      '- Meals array must be properly nested inside each day object',
+      '',
+      'ADDITIONAL REQUIREMENTS:',
+      '- Include a detailed shopping list with all ingredients needed for the meal plan',
+      '- Group shopping list items by category (e.g., Produce, Meat, Pantry)',
+      '- List quantities for each ingredient',
+      '- The shopping list should be stored in the "shoppingList" property as a formatted string'
+    ].filter(Boolean).join('\n');
 
     console.log(promptText);
 
     const result = streamObject({
       model: openai('gpt-4.1-nano'),
-      temperature: 0.1,
+      temperature: 1.2,
       messages: [
         {
           role: 'system',

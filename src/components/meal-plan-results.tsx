@@ -15,8 +15,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, FileDown, Bookmark } from "lucide-react";
 import { MealPlanResultsProps } from "@/types/interfaces";
+import { ShoppingListCard } from "./shopping-list-card";
 
-export function MealPlanResults({ plan }: MealPlanResultsProps) {
+export function MealPlanResults({
+  plan,
+  onToggleShoppingList,
+  showShoppingList,
+}: MealPlanResultsProps) {
   if (!plan) {
     return null;
   }
@@ -28,8 +33,9 @@ export function MealPlanResults({ plan }: MealPlanResultsProps) {
           Your Custom Meal Plan
         </h2>
         <div className="flex items-center gap-2">
-          <Button variant="outline">
-            <ShoppingCart className="mr-2 h-4 w-4" /> Shopping List
+          <Button variant="outline" onClick={onToggleShoppingList}>
+            <ShoppingCart className="mr-2 h-4 w-4" />
+            {showShoppingList ? "Hide Shopping List" : "Show Shopping List"}
           </Button>
           <Button variant="outline">
             <Bookmark className="mr-2 h-4 w-4" /> Save Plan
@@ -39,6 +45,10 @@ export function MealPlanResults({ plan }: MealPlanResultsProps) {
           </Button>
         </div>
       </div>
+
+      {showShoppingList && (
+        <ShoppingListCard shoppingList={plan.shoppingList} />
+      )}
 
       <Accordion
         type="single"

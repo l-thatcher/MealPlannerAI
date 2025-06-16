@@ -18,10 +18,13 @@ export interface DayPlan {
 
 export interface MealPlan {
   days: DayPlan[];
+  shoppingList: string;
 }
 
 export interface MealPlanResultsProps {
-  plan: MealPlan | null; // Allow plan to be null initially
+  plan: MealPlan | null; 
+  onToggleShoppingList: () => void;
+  showShoppingList: boolean;
 }
 
 export interface MealPlannerFormData {
@@ -43,4 +46,8 @@ export interface MealPlannerFormProps {
   initialFormData: MealPlannerFormData;
   stopGeneration: () => void; 
   handleFormData: (formData: MealPlannerFormData) => void;
+}
+
+export interface ShoppingListCardProps {
+  shoppingList: string;
 }
