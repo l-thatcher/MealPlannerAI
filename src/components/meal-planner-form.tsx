@@ -276,7 +276,9 @@ export function MealPlannerForm({
             <Button
               type="submit"
               size="lg"
-              className="w-full md:w-auto bg-blue-600 hover:bg-blue-700"
+              className={`w-full md:w-auto bg-blue-600 hover:bg-blue-700 ${
+                isLoading ? "hidden md:flex" : ""
+              }`}
               disabled={isLoading}
             >
               <Wand2 className="mr-2 h-5 w-5" />
