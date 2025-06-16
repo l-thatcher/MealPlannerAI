@@ -131,7 +131,7 @@ export function MealPlannerForm({
                   id="days"
                   value={[days]}
                   defaultValue={[7]}
-                  max={14}
+                  max={7}
                   min={1}
                   step={1}
                   onValueChange={(value) => setDays(value[0])}
@@ -148,7 +148,7 @@ export function MealPlannerForm({
                   id="mealsPerDay"
                   value={[mealsPerDay]}
                   defaultValue={[3]}
-                  max={6}
+                  max={5}
                   min={2}
                   step={1}
                   onValueChange={(value) => setMealsPerDay(value[0])}

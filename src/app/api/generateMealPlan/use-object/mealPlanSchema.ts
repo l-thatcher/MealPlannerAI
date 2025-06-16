@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { MealPlannerFormData } from "@/types/interfaces";
 
-export const mealPlanSchema = (formData?: MealPlannerFormData) => {
+export const mealPlanSchema = (formData: MealPlannerFormData) => {
   if (!formData) {
     throw new Error('Form data is required for schema validation');
   }

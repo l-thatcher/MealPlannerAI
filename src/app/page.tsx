@@ -156,6 +156,7 @@ export default function HomePage() {
   // };
 
   const toggleShoppingList = () => {
+    console.log(plan?.shoppingList);
     setShowShoppingList((prev) => !prev);
   };
 
@@ -205,13 +206,7 @@ export default function HomePage() {
         )}
 
         {/* We now pass the typed 'plan' state to the results component */}
-        {plan && !isLoading && (
-          <MealPlanResults
-            plan={plan}
-            onToggleShoppingList={toggleShoppingList}
-            showShoppingList={showShoppingList}
-          />
-        )}
+        {plan && !isLoading && <MealPlanResults plan={plan} />}
       </div>
     </main>
   );

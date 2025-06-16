@@ -3,12 +3,13 @@ import { createOpenAI } from '@ai-sdk/openai';
 import { NextResponse } from 'next/server';
 import { mealPlanSchema } from './use-object/mealPlanSchema';
 import { streamObject } from 'ai';
-import { getPromptText, getSystemPrompt } from './prompts';
+import { getUserPrompt, getSystemPrompt } from './prompts';
 
 
 const apiKey = process.env.OPENAI_API_KEY;
 
-export const maxDuration = 30;
+// export const maxDuration = 30;
+export const preferredRegion = 'auto';
 
 
 if (!apiKey) {
@@ -29,11 +30,13 @@ export async function POST(req: Request) {
     const formData = body;
 
 
-    console.log(getPromptText(formData));
+    console.log(getUserPrompt(formData));
 
     const result = streamObject({
       model: openai('gpt-4.1-nano'),
-      temperature: 1.2,
+      temperature: 1.1,
+      // frequencyPenalty: 0.1,
+      // maxTokens: 512,
       messages: [
         {
           role: 'system',
@@ -41,7 +44,7 @@ export async function POST(req: Request) {
         },
         {
           role: 'user',
-          content: getPromptText(formData)
+          content: getUserPrompt(formData)
         }
       ],
       schema: mealPlanSchema(formData),

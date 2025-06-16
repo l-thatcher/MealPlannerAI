@@ -4,17 +4,12 @@ import { Checkbox } from "./ui/checkbox";
 import { useState } from "react";
 import { ShoppingListCardProps } from "@/types/interfaces";
 
-export function ShoppingListCard({ shoppingList }: ShoppingListCardProps) {
-  const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
-
+export function ShoppingListCard({
+  shoppingList,
+  checkedItems,
+  onToggleItem,
+}: ShoppingListCardProps) {
   if (!shoppingList?.length) return null;
-
-  const toggleItem = (itemKey: string) => {
-    setCheckedItems((prev) => ({
-      ...prev,
-      [itemKey]: !prev[itemKey],
-    }));
-  };
 
   return (
     <div className="mt-12">
@@ -45,7 +40,7 @@ export function ShoppingListCard({ shoppingList }: ShoppingListCardProps) {
                     <div key={itemKey} className="flex items-center space-x-2">
                       <Checkbox
                         checked={checkedItems[itemKey]}
-                        onCheckedChange={() => toggleItem(itemKey)}
+                        onCheckedChange={() => onToggleItem(itemKey)}
                         id={itemKey}
                       />
                       <label

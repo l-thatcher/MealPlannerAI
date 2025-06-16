@@ -24,8 +24,6 @@ export interface MealPlan {
 
 export interface MealPlanResultsProps {
   plan: MealPlan | null; 
-  onToggleShoppingList: () => void;
-  showShoppingList: boolean;
 }
 
 export interface MealPlannerFormData {
@@ -61,5 +59,7 @@ export interface ShoppingCategory {
 
 export interface ShoppingListCardProps {
   shoppingList: ShoppingCategory[];
+  checkedItems: Record<string, boolean>;
+  onToggleItem: (itemKey: string) => void;
 }
 

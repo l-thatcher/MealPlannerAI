@@ -16,15 +16,26 @@ import { Button } from "@/components/ui/button";
 import { ShoppingCart, FileDown, Bookmark } from "lucide-react";
 import { MealPlanResultsProps } from "@/types/interfaces";
 import { ShoppingListCard } from "./shopping-list-card";
+import { useState } from "react";
 
-export function MealPlanResults({
-  plan,
-  onToggleShoppingList,
-  showShoppingList,
-}: MealPlanResultsProps) {
+export function MealPlanResults({ plan }: MealPlanResultsProps) {
+  const [showShoppingList, setShowShoppingList] = useState(false);
+  const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
+
   if (!plan) {
     return null;
   }
+
+  const toggleShoppingList = () => {
+    setShowShoppingList((prev) => !prev);
+  };
+
+  const toggleItem = (itemKey: string) => {
+    setCheckedItems((prev) => ({
+      ...prev,
+      [itemKey]: !prev[itemKey],
+    }));
+  };
 
   return (
     <div className="mt-12">
@@ -33,7 +44,7 @@ export function MealPlanResults({
           Your Custom Meal Plan
         </h2>
         <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={onToggleShoppingList}>
+          <Button variant="outline" onClick={toggleShoppingList}>
             <ShoppingCart className="mr-2 h-4 w-4" />
             {showShoppingList ? "Hide Shopping List" : "Show Shopping List"}
           </Button>
@@ -47,7 +58,11 @@ export function MealPlanResults({
       </div>
 
       {showShoppingList && (
-        <ShoppingListCard shoppingList={plan.shoppingList} />
+        <ShoppingListCard
+          shoppingList={plan.shoppingList}
+          checkedItems={checkedItems}
+          onToggleItem={toggleItem}
+        />
       )}
 
       <Accordion
@@ -66,16 +81,15 @@ export function MealPlanResults({
                 {dayData.meals.map((meal) => (
                   <Card
                     key={meal.name}
-                    className="flex-shrink-0 w-[300px] snap-center"
+                    className="flex-shrink-0 w-[300px] snap-center py-0"
                   >
-                    <CardHeader>
-                      <CardTitle>{meal.name}</CardTitle>
-                      <CardDescription>{meal.title}</CardDescription>
+                    <CardHeader className="border-b border-slate-200 dark:border-slate-700 p-4 rounded-t-lg h-24">
+                      <CardDescription>{meal.name}</CardDescription>
+                      <CardTitle>{meal.title}</CardTitle>
                     </CardHeader>
-                    <CardContent className="flex-grow">
+                    <CardContent className="flex-grow flex flex-col justify-between">
                       <p className="text-sm text-slate-500">{meal.recipe}</p>
-
-                      <p>{meal.cals} cals</p>
+                      <p className="pt-4">{meal.cals} cals</p>
                     </CardContent>
                     <CardFooter className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-b-lg">
                       <div className="flex justify-around w-full text-xs font-medium text-slate-700 dark:text-slate-300">
