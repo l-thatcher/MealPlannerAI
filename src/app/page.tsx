@@ -23,8 +23,6 @@ export default function HomePage() {
     excludedIngredients: "",
   });
 
-  const [showShoppingList, setShowShoppingList] = useState(false);
-
   const {
     object,
     submit,
@@ -154,11 +152,6 @@ export default function HomePage() {
   //     setIsLoading(false);
   //   }
   // };
-
-  const toggleShoppingList = () => {
-    console.log(plan?.shoppingList);
-    setShowShoppingList((prev) => !prev);
-  };
 
   return (
     <main className="flex min-h-screen flex-col items-center p-4 sm:p-8 md:p-24 bg-slate-50 dark:bg-slate-950">

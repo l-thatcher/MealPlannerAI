@@ -1,7 +1,6 @@
 import { ShoppingCart } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Checkbox } from "./ui/checkbox";
-import { useState } from "react";
 import { ShoppingListCardProps } from "@/types/interfaces";
 
 export function ShoppingListCard({
