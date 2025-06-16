@@ -43,12 +43,12 @@ export function MealPlanResults({ plan }: MealPlanResultsProps) {
         <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50 mb-4 sm:mb-0">
           Your Custom Meal Plan
         </h2>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Button variant="outline" onClick={toggleShoppingList}>
             <ShoppingCart className="mr-2 h-4 w-4" />
             {showShoppingList ? "Hide Shopping List" : "Show Shopping List"}
           </Button>
-          <Button variant="outline">
+          <Button variant="secondary">
             <Bookmark className="mr-2 h-4 w-4" /> Save Plan
           </Button>
           <Button variant="secondary">
