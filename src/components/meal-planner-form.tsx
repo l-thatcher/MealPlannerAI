@@ -81,7 +81,6 @@ export function MealPlannerForm({
       excludedIngredients,
     };
     setCurrentFormData(newFormData);
-    handleFormDataFunction(newFormData);
   }, [
     days,
     mealsPerDay,
@@ -93,8 +92,11 @@ export function MealPlannerForm({
     preferredCuisines,
     skillLevel,
     excludedIngredients,
-    handleFormDataFunction,
   ]);
+
+  useEffect(() => {
+    handleFormData(currentFormData);
+  }, [currentFormData, handleFormData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
