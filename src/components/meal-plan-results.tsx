@@ -114,7 +114,7 @@ export function MealPlanResults({
   return (
     <div className="mt-12">
       <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
-        <div className="width-[]">
+        <div className="">
           <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50 mb-4 sm:mb-0">
             {plan.planDetails.name || "Your Meal Plan"}
           </h2>
@@ -174,7 +174,7 @@ export function MealPlanResults({
         type="single"
         collapsible
         defaultValue="item-1"
-        className="w-full"
+        className="max-w-5xl mt-6"
       >
         {plan.days.map((dayData) => (
           <AccordionItem key={dayData.day} value={`item-${dayData.day}`}>
@@ -182,29 +182,37 @@ export function MealPlanResults({
               Day {dayData.day}
             </AccordionTrigger>
             <AccordionContent>
-              <div className="flex overflow-x-auto gap-4 p-1 pb-4 snap-x snap-mandatory">
-                {dayData.meals.map((meal) => (
-                  <Card
-                    key={meal.name}
-                    className="flex-shrink-0 w-[300px] snap-center py-0"
-                  >
-                    <CardHeader className="border-b border-slate-200 dark:border-slate-700 p-4 rounded-t-lg h-24">
-                      <CardDescription>{meal.name}</CardDescription>
-                      <CardTitle>{meal.title}</CardTitle>
-                    </CardHeader>
-                    <CardContent className="flex-grow flex flex-col justify-between">
-                      <p className="text-sm text-slate-500">{meal.recipe}</p>
-                      <p className="pt-4">{meal.cals} cals</p>
-                    </CardContent>
-                    <CardFooter className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-b-lg">
-                      <div className="flex justify-around w-full text-xs font-medium text-slate-700 dark:text-slate-300">
-                        <span>Protein: {meal.macros.p}g</span>
-                        <span>Carbs: {meal.macros.c}g</span>
-                        <span>Fats: {meal.macros.f}g</span>
-                      </div>
-                    </CardFooter>
-                  </Card>
-                ))}
+              <div className="w-full overflow-hidden relative">
+                {/* Left fade gradient */}
+                <div className="absolute left-0 top-0 bottom-0 w-12 z-10 pointer-events-none bg-gradient-to-r from-[#F7FAFB] dark:from-slate-900 to-transparent"></div>
+
+                <div className="flex overflow-x-auto gap-4 px-5 snap-x snap-mandatory w-full scrollbar-thin">
+                  {dayData.meals.map((meal) => (
+                    <Card
+                      key={meal.name}
+                      className="flex-shrink-0 w-[300px] snap-center py-0"
+                    >
+                      <CardHeader className="border-b border-slate-200 dark:border-slate-700 p-4 rounded-t-lg h-24">
+                        <CardDescription>{meal.name}</CardDescription>
+                        <CardTitle>{meal.title}</CardTitle>
+                      </CardHeader>
+                      <CardContent className="flex-grow flex flex-col justify-between">
+                        <p className="text-sm text-slate-500">{meal.recipe}</p>
+                        <p className="pt-4">{meal.cals} cals</p>
+                      </CardContent>
+                      <CardFooter className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-b-lg">
+                        <div className="flex justify-around w-full text-xs font-medium text-slate-700 dark:text-slate-300">
+                          <span>Protein: {meal.macros.p}g</span>
+                          <span>Carbs: {meal.macros.c}g</span>
+                          <span>Fats: {meal.macros.f}g</span>
+                        </div>
+                      </CardFooter>
+                    </Card>
+                  ))}
+                </div>
+
+                {/* Right fade gradient */}
+                <div className="absolute right-0 top-0 bottom-0 w-12 z-10 pointer-events-none bg-gradient-to-l from-[#F7FAFB] dark:from-slate-900 to-transparent"></div>
               </div>
             </AccordionContent>
           </AccordionItem>
