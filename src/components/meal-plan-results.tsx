@@ -32,6 +32,7 @@ export function MealPlanResults({
   savedPlanId: initialSavedPlanId = null,
   onPlanSaved,
   onPlanDeleted,
+  deletedPlanId,
 }: MealPlanResultsProps) {
   const [showShoppingList, setShowShoppingList] = useState(false);
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
@@ -48,6 +49,13 @@ export function MealPlanResults({
       setSaveStatus("saved");
     }
   }, [initialSavedPlanId]);
+
+  useEffect(() => {
+    if (deletedPlanId && deletedPlanId === savedPlanId) {
+      setSavedPlanId(null);
+      setSaveStatus("idle");
+    }
+  }, [deletedPlanId, savedPlanId]);
 
   if (!plan) {
     return null;
@@ -119,48 +127,49 @@ export function MealPlanResults({
             {plan.planDetails.name || "Your Meal Plan"}
           </h2>
         </div>
-        <div className="flex flex-wrap items-center gap-2 ">
-          <Button variant="outline" onClick={toggleShoppingList}>
-            <ShoppingCart className="mr-2 h-4 w-4" />
-            {showShoppingList ? "Hide Shopping List" : "Show Shopping List"}
-          </Button>
-          <Button
-            variant={user ? "outline" : "secondary"}
-            onClick={handleSaveOrDeletePlan}
-            disabled={saveStatus === "saving"}
-          >
-            {saveStatus === "saving" || saveStatus === "unsaving" ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {saveStatus === "saving" ? "Saving..." : "Unsaving..."}
-              </>
-            ) : savedPlanId ? (
-              <>
-                <BookmarkCheck className="mr-2 h-4 w-4" />
-                Unsave Plan
-              </>
-            ) : (
-              <>
-                <Bookmark className="mr-2 h-4 w-4" />
-                Save Plan
-              </>
-            )}
-          </Button>
-          <Button variant="secondary">
-            <FileDown className="mr-2 h-4 w-4" /> Export PDF
-          </Button>
-          <Button
-            className="bg-emerald-500 hover:bg-emerald-600 text-white border-emerald-600"
-            variant="outline"
-            onClick={onNewPlan}
-          >
-            <RotateCcw className="mr-2 h-4 w-4" />
-            New Plan
-          </Button>
-        </div>
       </div>
 
       <p>{plan.planDetails.description || "A detailed meal plan for you."}</p>
+
+      <div className="flex flex-wrap items-center gap-2 md:pt-6">
+        <Button variant="outline" onClick={toggleShoppingList}>
+          <ShoppingCart className="mr-2 h-4 w-4" />
+          {showShoppingList ? "Hide Shopping List" : "Show Shopping List"}
+        </Button>
+        <Button
+          variant={user ? "outline" : "secondary"}
+          onClick={handleSaveOrDeletePlan}
+          disabled={saveStatus === "saving"}
+        >
+          {saveStatus === "saving" || saveStatus === "unsaving" ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              {saveStatus === "saving" ? "Saving..." : "Unsaving..."}
+            </>
+          ) : savedPlanId ? (
+            <>
+              <BookmarkCheck className="mr-2 h-4 w-4" />
+              Unsave Plan
+            </>
+          ) : (
+            <>
+              <Bookmark className="mr-2 h-4 w-4" />
+              Save Plan
+            </>
+          )}
+        </Button>
+        <Button variant="secondary">
+          <FileDown className="mr-2 h-4 w-4" /> Export PDF
+        </Button>
+        <Button
+          className="bg-emerald-500 hover:bg-emerald-600 text-white border-emerald-600"
+          variant="outline"
+          onClick={onNewPlan}
+        >
+          <RotateCcw className="mr-2 h-4 w-4" />
+          New Plan
+        </Button>
+      </div>
 
       {showShoppingList && (
         <ShoppingListCard

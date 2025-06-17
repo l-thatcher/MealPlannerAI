@@ -44,6 +44,7 @@ export default function HomePage() {
   const [currentSavedPlanId, setCurrentSavedPlanId] = useState<string | null>(
     null
   );
+  const [deletedPlanId, setDeletedPlanId] = useState<string | null>(null);
 
   const {
     object,
@@ -162,6 +163,7 @@ export default function HomePage() {
       body: JSON.stringify({ user_id: user?.id, plan_id: planId }),
     });
     setSavedPlans((prev) => prev.filter((p) => p.id !== planId));
+    setDeletedPlanId(planId);
   };
 
   const handlePlanSavedFromForm = () => {
@@ -398,6 +400,7 @@ export default function HomePage() {
               savedPlanId={currentSavedPlanId}
               onPlanSaved={handlePlanSavedFromForm}
               onPlanDeleted={handlePlanDeletedFromForm}
+              deletedPlanId={deletedPlanId} // Pass null if no plan is saved
             />
           )}
         </div>

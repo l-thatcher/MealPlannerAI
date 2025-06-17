@@ -27,9 +27,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Info } from "lucide-react";
+import { Info, MoreHorizontal } from "lucide-react";
 import { Wand2, StopCircle } from "lucide-react";
 import { MealPlannerFormData, MealPlannerFormProps } from "@/types/interfaces";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
 
 const dietaryOptions = [
   { id: "vegetarian", label: "Vegetarian" },
@@ -342,21 +343,44 @@ export function MealPlannerForm({
 
           <div className="flex justify-end gap-2">
             <div className="flex items-center space-x-2">
-              {/* <Label htmlFor="model" className="whitespace-nowrap">
-                Model:
-              </Label> */}
-              <Select value={selectedModel} onValueChange={setSelectedModel}>
-                <SelectTrigger id="model" className="w-full">
-                  <SelectValue placeholder={selectedModel} />
-                </SelectTrigger>
-                <SelectContent>
-                  {modelOptions.map((option) => (
-                    <SelectItem key={option.id} value={option.id}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {!user && (
+                <HoverCard>
+                  <HoverCardTrigger asChild>
+                    <span
+                      className="cursor-pointer inline-flex items-center ml-1"
+                      title="Show more"
+                    >
+                      <Select disabled>
+                        <SelectTrigger id="model" className="w-full">
+                          <SelectValue placeholder={"GPT 4.1 micro"} />
+                        </SelectTrigger>
+                      </Select>
+                    </span>
+                  </HoverCardTrigger>
+                  <HoverCardContent>
+                    With the paid plan you can choose which model to use
+                  </HoverCardContent>
+                </HoverCard>
+              )}
+
+              {user && (
+                <Select
+                  value={selectedModel}
+                  onValueChange={setSelectedModel}
+                  disabled={isLoading || !user}
+                >
+                  <SelectTrigger id="model" className="w-full">
+                    <SelectValue placeholder={selectedModel} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {modelOptions.map((option) => (
+                      <SelectItem key={option.id} value={option.id}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
             </div>
             <Button
               type="submit"
