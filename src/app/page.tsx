@@ -37,7 +37,7 @@ export default function HomePage() {
     preferredCuisines: "",
     skillLevel: "",
     excludedIngredients: "",
-    selectedModel: "gpt-4.1-micro",
+    selectedModel: "gpt-4.1-nano",
   });
   const [savedPlans, setSavedPlans] = useState<SavedMealPlan[]>([]);
   const [loadingSaved, setLoadingSaved] = useState(false);
@@ -156,12 +156,16 @@ export default function HomePage() {
     setPlan(saved); // set the MealPlan
   };
 
-  const handleDeletePlanFromSaved = async (planId: string) => {
+  const deleteFromDB = async (planId: string) => {
     await fetch("/api/deleteMealPlan", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ user_id: user?.id, plan_id: planId }),
     });
+  };
+
+  const handleDeletePlanFromSaved = async (planId: string) => {
+    deleteFromDB(planId);
     setSavedPlans((prev) => prev.filter((p) => p.id !== planId));
     setDeletedPlanId(planId);
   };
@@ -170,8 +174,14 @@ export default function HomePage() {
     fetchSavedPlans();
   };
 
-  const handlePlanDeletedFromForm = () => {
-    fetchSavedPlans();
+  const handlePlanDeletedFromForm = async (planId: string) => {
+    await fetch("/api/deleteMealPlan", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ user_id: user?.id, plan_id: planId }),
+    });
+    setSavedPlans((prev) => prev.filter((p) => p.id !== planId));
+    setDeletedPlanId(planId);
   };
 
   const handleStartNewPlan = () => setPlan(null);
@@ -399,7 +409,11 @@ export default function HomePage() {
               onNewPlan={handleStartNewPlan}
               savedPlanId={currentSavedPlanId}
               onPlanSaved={handlePlanSavedFromForm}
-              onPlanDeleted={handlePlanDeletedFromForm}
+              onPlanDeleted={
+                currentSavedPlanId
+                  ? (planId) => handlePlanDeletedFromForm(planId)
+                  : undefined
+              }
               deletedPlanId={deletedPlanId} // Pass null if no plan is saved
             />
           )}

@@ -39,7 +39,7 @@ export interface MealPlanResultsProps {
   savedPlanId?: string | null;
   onPlanSaved?: (planId: string) => void;
   onPlanDeleted?: (planId: string) => void;
-  deletedPlanId: string | null;
+  deletedPlanId?: string | null;
 }
 
 // MEAL PLANNER FORM INTERFACES

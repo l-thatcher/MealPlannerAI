@@ -27,7 +27,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Info, MoreHorizontal } from "lucide-react";
+import { Info } from "lucide-react";
 import { Wand2, StopCircle } from "lucide-react";
 import { MealPlannerFormData, MealPlannerFormProps } from "@/types/interfaces";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
@@ -42,7 +42,7 @@ const dietaryOptions = [
 ];
 
 const modelOptions = [
-  { id: "gpt-4.1-micro", label: "GPT 4.1 micro" },
+  { id: "gpt-4.1-nano", label: "GPT 4.1 nano" },
   { id: "gpt-4.1-mini", label: "GPT 4.1 mini" },
   { id: "gpt-4.1", label: "GPT 4.1" },
 ];
@@ -105,6 +105,7 @@ export function MealPlannerForm({
     preferredCuisines,
     skillLevel,
     excludedIngredients,
+    selectedModel,
   ]);
 
   useEffect(() => {

@@ -32,7 +32,7 @@ export function MealPlanResults({
   savedPlanId: initialSavedPlanId = null,
   onPlanSaved,
   onPlanDeleted,
-  deletedPlanId,
+  deletedPlanId = null,
 }: MealPlanResultsProps) {
   const [showShoppingList, setShowShoppingList] = useState(false);
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
