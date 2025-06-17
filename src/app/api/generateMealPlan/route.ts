@@ -33,7 +33,7 @@ export async function POST(req: Request) {
     console.log(getUserPrompt(formData));
 
     const result = streamObject({
-      model: openai('gpt-4o-mini'),
+      model: openai('gpt-4.1-mini'),
       temperature: 1.1,
       // frequencyPenalty: 0.1,
       // maxTokens: 512,
