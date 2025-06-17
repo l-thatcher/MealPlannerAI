@@ -8,7 +8,7 @@ import { getUserPrompt, getSystemPrompt } from './prompts';
 
 const apiKey = process.env.OPENAI_API_KEY;
 
-export const maxDuration = 120;
+// export const maxDuration = 60;
 export const preferredRegion = 'auto';
 
 
