@@ -15,14 +15,12 @@ import { logout } from "@/lib/actions";
 import { createClient } from "@/utils/supabase/client"; // Add this import
 import Link from "next/link";
 import { User } from "@supabase/supabase-js";
+import { BookmarkCheck, Trash2, MoreHorizontal } from "lucide-react";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardFooter,
-} from "@/components/ui/card";
-import { BookmarkCheck, Trash2 } from "lucide-react";
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 export default function HomePage() {
   const [user, setUser] = useState<User | null>(null);
@@ -224,27 +222,31 @@ export default function HomePage() {
           </p>
         </header>
 
-        {user ? (
-          <div className="text-sm text-slate-600 dark:text-slate-400 mb-4">
-            Logged in as: {user.email}
+        <nav className="flex justify-end mb-6">
+          {user ? (
             <form action={logout}>
-              <Button type="submit">Log out</Button>
+              <Button
+                type="submit"
+                className="text-sm px-4 py-2 rounded-md bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-700 transition"
+              >
+                Log out
+              </Button>
             </form>
-          </div>
-        ) : (
-          <div className="text-sm text-slate-600 dark:text-slate-400 mb-4">
-            Not logged in
-            <Button asChild>
+          ) : (
+            <Button
+              asChild
+              className="text-sm px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition"
+            >
               <Link href="/login">Sign In/Up</Link>
             </Button>
-          </div>
-        )}
+          )}
+        </nav>
 
         {/* Saved Plans Section */}
         {user && (
           <section className="mb-8">
             <h2 className="text-2xl font-bold mb-4 text-slate-900 dark:text-slate-50 flex items-center gap-2">
-              <BookmarkCheck className="w-6 h-6 text-blue-600" />
+              <BookmarkCheck className="w-6 h-6" />
               Saved Meal Plans
             </h2>
             {loadingSaved ? (
@@ -252,51 +254,63 @@ export default function HomePage() {
             ) : savedPlans.length === 0 ? (
               <div className="text-slate-500">No saved plans yet.</div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {savedPlans.map((saved) => (
-                  <Card
+              <div className="h-40 overflow-y-auto bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 shadow-inner">
+                {savedPlans.map((saved, idx) => (
+                  <div
                     key={saved.id}
-                    className="border-slate-200 dark:border-slate-700"
+                    className={`flex items-center px-3 py-2 text-sm text-slate-700 dark:text-slate-200 ${
+                      idx !== savedPlans.length - 1
+                        ? "border-b border-slate-200 dark:border-slate-700"
+                        : ""
+                    }`}
                   >
-                    <CardHeader>
-                      <CardTitle className="text-lg">
-                        {saved.planDetails.name || `Meal Plan`}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-sm text-slate-600 dark:text-slate-300 space-y-1">
-                        <div>
-                          <span className="font-medium">Days:</span>{" "}
-                          {saved.days?.length ?? "?"}
-                        </div>
-                        <div>
-                          <span className="font-medium">Meals Per Day:</span>{" "}
+                    <HoverCard>
+                      <div className="flex-1 min-w-0 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
+                        <span className="font-medium truncate">
+                          {saved.planDetails.name || "Meal Plan"}
+                        </span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400">
+                          Days: {saved.days?.length ?? "?"}, Meals/Day:{" "}
                           {saved.days?.[0]?.meals?.length ?? "?"}
-                        </div>
-                        <div>
-                          <span className="font-medium">Description:</span>{" "}
+                        </span>
+                        <span className="hidden sm:inline text-xs text-slate-400 truncate max-w-xs">
                           {saved.planDetails.description || "-"}
-                        </div>
+                        </span>
                       </div>
-                    </CardContent>
-                    <CardFooter className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        onClick={() => handleLoadPlan(saved)}
-                        className="flex-1"
-                      >
-                        View
-                      </Button>
-                      <Button
-                        variant="destructive"
-                        onClick={() => handleDeletePlan(saved.id)}
-                        size="icon"
-                        aria-label="Delete"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </CardFooter>
-                  </Card>
+                      <HoverCard>
+                        <HoverCardTrigger asChild>
+                          <span
+                            className="cursor-pointer inline-flex items-center ml-1"
+                            title="Show more"
+                          >
+                            <MoreHorizontal className="w-4 h-4 text-blue-400" />
+                          </span>
+                        </HoverCardTrigger>
+                        <HoverCardContent>
+                          {saved.planDetails.description || "-"}
+                        </HoverCardContent>
+                      </HoverCard>
+                      <div className="flex gap-1 ml-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleLoadPlan(saved)}
+                          className="px-2"
+                        >
+                          View
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="icon"
+                          onClick={() => handleDeletePlan(saved.id)}
+                          aria-label="Delete"
+                          className="px-2"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </HoverCard>
+                  </div>
                 ))}
               </div>
             )}
