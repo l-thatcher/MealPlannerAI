@@ -193,13 +193,15 @@ export function MealPlanResults({
             <AccordionContent>
               <div className="overflow-hidden relative">
                 {/* Left fade gradient */}
-                <div className="absolute left-0 top-0 bottom-0 w-12 z-10 pointer-events-none bg-gradient-to-r from-[#F7FAFB] dark:from-slate-900 to-transparent"></div>
+                <div className="absolute left-0 top-0 bottom-0 w-4 z-10 pointer-events-none bg-gradient-to-r from-[#F7FAFB] dark:from-slate-900 to-transparent"></div>
 
-                <div className="flex overflow-y-auto gap-4 px-5 snap-x snap-mandatory w-full scrollbar-thin">
-                  {dayData.meals.map((meal) => (
+                <div className="flex overflow-y-auto gap-4 snap-x snap-mandatory w-full scrollbar-thin pl-[30px]">
+                  {dayData.meals.map((meal, idx) => (
                     <Card
                       key={meal.name}
-                      className="flex-shrink-0 w-[300px] snap-center py-0"
+                      className={`flex-shrink-0 w-[300px] snap-center py-0 -ml-[20px] mr-[10px] ${
+                        idx === dayData.meals.length - 1 ? " mr-[20px]" : ""
+                      }`}
                     >
                       <CardHeader className="border-b border-slate-200 dark:border-slate-700 p-4 rounded-t-lg h-24">
                         <CardDescription>{meal.name}</CardDescription>
