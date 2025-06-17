@@ -26,15 +26,16 @@ export async function POST(req: Request) {
     console.log('Received request to generate meal plan');
 
     const body = await req.json();
-    // When using useObject's submit, the data comes directly in the body
     const formData = body;
 
 
     console.log(getUserPrompt(formData));
 
+    console.log("Using model:", formData.selectedModel);
+
     const result = streamObject({
-      model: openai('gpt-4.1-mini'),
-      temperature: 1.1,
+      model: openai(formData.selectedModel),
+      temperature: 1.3,
       // frequencyPenalty: 0.1,
       // maxTokens: 512,
       messages: [

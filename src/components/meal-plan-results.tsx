@@ -112,10 +112,10 @@ export function MealPlanResults({
   };
 
   return (
-    <div className="mt-12">
+    <div className="md:mt-12 w-full">
       <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
         <div className="">
-          <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50 mb-4 sm:mb-0">
+          <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50 mb-4 sm:mb-0 p">
             {plan.planDetails.name || "Your Meal Plan"}
           </h2>
         </div>
@@ -174,7 +174,7 @@ export function MealPlanResults({
         type="single"
         collapsible
         defaultValue="item-1"
-        className="max-w-5xl mt-6"
+        className="mt-6"
       >
         {plan.days.map((dayData) => (
           <AccordionItem key={dayData.day} value={`item-${dayData.day}`}>
@@ -182,11 +182,11 @@ export function MealPlanResults({
               Day {dayData.day}
             </AccordionTrigger>
             <AccordionContent>
-              <div className="w-full overflow-hidden relative">
+              <div className="overflow-hidden relative">
                 {/* Left fade gradient */}
                 <div className="absolute left-0 top-0 bottom-0 w-12 z-10 pointer-events-none bg-gradient-to-r from-[#F7FAFB] dark:from-slate-900 to-transparent"></div>
 
-                <div className="flex overflow-x-auto gap-4 px-5 snap-x snap-mandatory w-full scrollbar-thin">
+                <div className="flex overflow-y-auto gap-4 px-5 snap-x snap-mandatory w-full scrollbar-thin">
                   {dayData.meals.map((meal) => (
                     <Card
                       key={meal.name}

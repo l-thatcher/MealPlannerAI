@@ -40,6 +40,12 @@ const dietaryOptions = [
   { id: "keto", label: "Keto" },
 ];
 
+const modelOptions = [
+  { id: "gpt-4.1-micro", label: "GPT 4.1 micro" },
+  { id: "gpt-4.1-mini", label: "GPT 4.1 mini" },
+  { id: "gpt-4.1", label: "GPT 4.1" },
+];
+
 export function MealPlannerForm({
   onGenerate,
   isLoading,
@@ -54,6 +60,7 @@ export function MealPlannerForm({
   const [protein, setProtein] = useState(initialFormData.protein.toString());
   const [carbs, setCarbs] = useState(initialFormData.carbs.toString());
   const [fats, setFats] = useState(initialFormData.fats.toString());
+
   const [dietaryRestrictions, setDietaryRestrictions] = useState<string[]>(
     initialFormData.dietaryRestrictions
   );
@@ -63,6 +70,9 @@ export function MealPlannerForm({
   const [skillLevel, setSkillLevel] = useState(initialFormData.skillLevel);
   const [excludedIngredients, setExcludedIngredients] = useState(
     initialFormData.excludedIngredients
+  );
+  const [selectedModel, setSelectedModel] = useState(
+    initialFormData.selectedModel
   );
   const [currentFormData, setCurrentFormData] =
     useState<MealPlannerFormData>(initialFormData);
@@ -80,6 +90,7 @@ export function MealPlannerForm({
       preferredCuisines,
       skillLevel,
       excludedIngredients,
+      selectedModel,
     };
     setCurrentFormData(newFormData);
   }, [
@@ -330,6 +341,23 @@ export function MealPlannerForm({
           </div>
 
           <div className="flex justify-end gap-2">
+            <div className="flex items-center space-x-2">
+              {/* <Label htmlFor="model" className="whitespace-nowrap">
+                Model:
+              </Label> */}
+              <Select value={selectedModel} onValueChange={setSelectedModel}>
+                <SelectTrigger id="model" className="w-full">
+                  <SelectValue placeholder={selectedModel} />
+                </SelectTrigger>
+                <SelectContent>
+                  {modelOptions.map((option) => (
+                    <SelectItem key={option.id} value={option.id}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             <Button
               type="submit"
               size="lg"

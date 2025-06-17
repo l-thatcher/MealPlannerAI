@@ -37,6 +37,7 @@ export default function HomePage() {
     preferredCuisines: "",
     skillLevel: "",
     excludedIngredients: "",
+    selectedModel: "gpt-4.1-micro",
   });
   const [savedPlans, setSavedPlans] = useState<SavedMealPlan[]>([]);
   const [loadingSaved, setLoadingSaved] = useState(false);
@@ -279,7 +280,7 @@ export default function HomePage() {
               <BookmarkCheck className="w-6 h-6" />
               Saved Meal Plans
             </h2>
-            <div className="h-full max-h-160 overflow-y-auto bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 shadow-inner">
+            <div className="h-full max-h-60 md:max-h-160 overflow-y-auto bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 shadow-inner">
               {loadingSaved ? (
                 <div className="flex items-center justify-center p-6 text-slate-500">
                   Loading...
@@ -353,7 +354,7 @@ export default function HomePage() {
         )}
 
         {/* Main Content */}
-        <div className="flex-1 w-full">
+        <div className="flex-1 w-full md:min-w-0">
           {!plan && (
             <MealPlannerForm
               onGenerate={handleSubmitWithLog}
@@ -365,7 +366,6 @@ export default function HomePage() {
             />
           )}
 
-          {/* this is were generation stream will go */}
           {isLoading && object?.days && (
             <div className="mt-4 text-center text-slate-400 animate-slide-up p-3 rounded-md bg-white dark:bg-slate-800 shadow-lg border border-slate-200 dark:border-slate-700 pb-0">
               {/* Only show the latest day */}

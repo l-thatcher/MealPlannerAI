@@ -53,6 +53,7 @@ export interface MealPlannerFormData {
   preferredCuisines: string;
   skillLevel: string;
   excludedIngredients: string;
+  selectedModel: string;
 }
 
 export interface MealPlannerFormProps {
