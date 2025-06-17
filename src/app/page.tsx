@@ -254,7 +254,21 @@ export default function HomePage() {
   // };
 
   return (
-    <main className="flex min-h-screen flex-col items-center p-4 sm:p-8 md:p-24 bg-slate-50 dark:bg-slate-950">
+    <main className="relative flex min-h-screen flex-col items-center p-4 sm:p-8 md:p-24 overflow-hidden">
+      <div className="absolute inset-0 -z-20 bg-slate-950" aria-hidden />
+
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+        {/* Blue blob */}
+        <div className="blob blob-blue" />
+        {/* Purple blob */}
+        <div className="blob blob-purple" />
+        {/* Purple pink */}
+        <div className="blob blob-pink" />
+        {/* Green blob */}
+        <div className="blob blob-green" />
+        {/* Overlay for blending */}
+        {/* <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/30 via-purple-900/20 to-pink-900/10 pointer-events-none" /> */}
+      </div>
       <nav className="flex justify-end mb-6 w-full max-w-7xl">
         {user ? (
           <form action={logout}>
@@ -276,10 +290,10 @@ export default function HomePage() {
       </nav>
 
       <header className="text-center mb-8">
-        <h1 className="text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
+        <h1 className="text-4xl font-bold tracking-tight text-slate-50">
           Your Personal AI Nutritionist
         </h1>
-        <p className="mt-2 text-lg text-slate-600 dark:text-slate-400">
+        <p className="mt-2 text-lg text-slate-100">
           Craft the perfect meal plan tailored to your goals and tastes.
         </p>
       </header>
@@ -288,7 +302,7 @@ export default function HomePage() {
         {/* Sidebar for Saved Plans */}
         {user && (
           <aside className="w-full md:w-80 flex-shrink-0 mb-8 md:mb-0 md:sticky md:top-12">
-            <h2 className="text-2xl font-bold mb-4 text-slate-900 dark:text-slate-50 flex items-center gap-2">
+            <h2 className="text-2xl font-bold mb-4 text-slate-50 flex items-center gap-2">
               <BookmarkCheck className="w-6 h-6" />
               Saved Meal Plans
             </h2>
