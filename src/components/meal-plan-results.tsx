@@ -18,12 +18,12 @@ import { MealPlanResultsProps } from "@/types/interfaces";
 import { ShoppingListCard } from "./shopping-list-card";
 import { useState } from "react";
 
-export function MealPlanResults({ plan, user }: MealPlanResultsProps) {
+export function MealPlanResults({ plan, user, isSaved }: MealPlanResultsProps) {
   const [showShoppingList, setShowShoppingList] = useState(false);
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
   const [saveStatus, setSaveStatus] = useState<
     "idle" | "saving" | "saved" | "error"
-  >("idle");
+  >(isSaved ? "idle" : "saved");
   const [savedPlanId, setSavedPlanId] = useState<string | null>(null);
 
   if (!plan) {

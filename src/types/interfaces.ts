@@ -35,6 +35,7 @@ export interface planDetails {
 export interface MealPlanResultsProps {
   plan: MealPlan | null; 
   user: User | null;
+  isSaved: boolean; // Optional prop to indicate if the plan is saved
 }
 
 // MEAL PLANNER FORM INTERFACES

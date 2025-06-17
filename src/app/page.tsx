@@ -21,6 +21,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import { boolean } from "zod";
 
 export default function HomePage() {
   const [user, setUser] = useState<User | null>(null);
@@ -40,6 +41,7 @@ export default function HomePage() {
   });
   const [savedPlans, setSavedPlans] = useState<SavedMealPlan[]>([]);
   const [loadingSaved, setLoadingSaved] = useState(false);
+  const [savedLoad, setSavedLoad] = useState<boolean>(false);
 
   const {
     object,
@@ -145,6 +147,8 @@ export default function HomePage() {
   }, [user]);
 
   const handleLoadPlan = (plan: MealPlan) => {
+    setSavedLoad(true);
+
     setPlan(plan);
     // window.scrollTo({ bottom: 0, behavior: "smooth" });
   };
@@ -212,39 +216,38 @@ export default function HomePage() {
 
   return (
     <main className="flex min-h-screen flex-col items-center p-4 sm:p-8 md:p-24 bg-slate-50 dark:bg-slate-950">
-      <div className="w-full max-w-4xl">
-        <header className="text-center mb-8">
-          <h1 className="text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
-            Your Personal AI Nutritionist
-          </h1>
-          <p className="mt-2 text-lg text-slate-600 dark:text-slate-400">
-            Craft the perfect meal plan tailored to your goals and tastes.
-          </p>
-        </header>
+      <header className="text-center mb-8">
+        <h1 className="text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
+          Your Personal AI Nutritionist
+        </h1>
+        <p className="mt-2 text-lg text-slate-600 dark:text-slate-400">
+          Craft the perfect meal plan tailored to your goals and tastes.
+        </p>
+      </header>
 
-        <nav className="flex justify-end mb-6">
-          {user ? (
-            <form action={logout}>
-              <Button
-                type="submit"
-                className="text-sm px-4 py-2 rounded-md bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-700 transition"
-              >
-                Log out
-              </Button>
-            </form>
-          ) : (
+      <nav className="flex justify-end mb-6">
+        {user ? (
+          <form action={logout}>
             <Button
-              asChild
-              className="text-sm px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition"
+              type="submit"
+              className="text-sm px-4 py-2 rounded-md bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-700 transition"
             >
-              <Link href="/login">Sign In/Up</Link>
+              Log out
             </Button>
-          )}
-        </nav>
-
-        {/* Saved Plans Section */}
+          </form>
+        ) : (
+          <Button
+            asChild
+            className="text-sm px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition"
+          >
+            <Link href="/login">Sign In/Up</Link>
+          </Button>
+        )}
+      </nav>
+      <div className="w-full max-w-7xl flex flex-col md:flex-row gap-8 items-start">
+        {/* Sidebar for Saved Plans */}
         {user && (
-          <section className="mb-8">
+          <aside className="w-full md:w-80 flex-shrink-0 mb-8 md:mb-0 md:sticky md:top-12">
             <h2 className="text-2xl font-bold mb-4 text-slate-900 dark:text-slate-50 flex items-center gap-2">
               <BookmarkCheck className="w-6 h-6" />
               Saved Meal Plans
@@ -254,7 +257,7 @@ export default function HomePage() {
             ) : savedPlans.length === 0 ? (
               <div className="text-slate-500">No saved plans yet.</div>
             ) : (
-              <div className="h-40 overflow-y-auto bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 shadow-inner">
+              <div className="h-full overflow-y-auto bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 shadow-inner">
                 {savedPlans.map((saved, idx) => (
                   <div
                     key={saved.id}
@@ -264,38 +267,39 @@ export default function HomePage() {
                         : ""
                     }`}
                   >
-                    <HoverCard>
-                      <div className="flex-1 min-w-0 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
-                        <span className="font-medium truncate">
-                          {saved.planDetails.name || "Meal Plan"}
-                        </span>
-                        <span className="text-xs text-slate-500 dark:text-slate-400">
-                          Days: {saved.days?.length ?? "?"}, Meals/Day:{" "}
-                          {saved.days?.[0]?.meals?.length ?? "?"}
-                        </span>
-                        <span className="hidden sm:inline text-xs text-slate-400 truncate max-w-xs">
+                    <div className="flex-1 min-w-0 flex flex-col gap-1">
+                      <span className="font-medium truncate">
+                        {saved.planDetails.name || "Meal Plan"}
+                      </span>
+                      <span className="text-xs text-slate-500 dark:text-slate-400">
+                        Days: {saved.days?.length ?? "?"}, Meals/Day:{" "}
+                        {saved.days?.[0]?.meals?.length ?? "?"}
+                      </span>
+                      <div className="flex-1 min-w-0 flex gap-1">
+                        <span className="text-xs text-slate-400 truncate max-w-xs">
                           {saved.planDetails.description || "-"}
                         </span>
+                        <HoverCard>
+                          <HoverCardTrigger asChild>
+                            <span
+                              className="cursor-pointer inline-flex items-center ml-1"
+                              title="Show more"
+                            >
+                              <MoreHorizontal className="w-4 h-4" />
+                            </span>
+                          </HoverCardTrigger>
+                          <HoverCardContent>
+                            {saved.planDetails.description || "-"}
+                          </HoverCardContent>
+                        </HoverCard>
                       </div>
-                      <HoverCard>
-                        <HoverCardTrigger asChild>
-                          <span
-                            className="cursor-pointer inline-flex items-center ml-1"
-                            title="Show more"
-                          >
-                            <MoreHorizontal className="w-4 h-4 text-blue-400" />
-                          </span>
-                        </HoverCardTrigger>
-                        <HoverCardContent>
-                          {saved.planDetails.description || "-"}
-                        </HoverCardContent>
-                      </HoverCard>
-                      <div className="flex gap-1 ml-2">
+
+                      <div className="flex gap-1 mt-2">
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => handleLoadPlan(saved)}
-                          className="px-2"
+                          className="px-2 flex-1 h-9"
                         >
                           View
                         </Button>
@@ -304,55 +308,61 @@ export default function HomePage() {
                           size="icon"
                           onClick={() => handleDeletePlan(saved.id)}
                           aria-label="Delete"
-                          className="px-2"
+                          className="px-2 h-9"
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
                       </div>
-                    </HoverCard>
+                    </div>
                   </div>
                 ))}
               </div>
             )}
-          </section>
+          </aside>
         )}
 
-        <MealPlannerForm
-          onGenerate={handleSubmitWithLog}
-          isLoading={isLoading}
-          initialFormData={formData}
-          stopGeneration={handleStopGeneration}
-          handleFormData={handleFormData}
-          user={user}
-        />
+        {/* Main Content */}
+        <div className="flex-1 w-full">
+          {!plan && (
+            <MealPlannerForm
+              onGenerate={handleSubmitWithLog}
+              isLoading={isLoading}
+              initialFormData={formData}
+              stopGeneration={handleStopGeneration}
+              handleFormData={handleFormData}
+              user={user}
+            />
+          )}
 
-        {/* this is were generation stream will go */}
-        {isLoading && object?.days && (
-          <div className="mt-4 text-center text-slate-400 animate-slide-up p-3 rounded-md bg-white dark:bg-slate-800 shadow-lg border border-slate-200 dark:border-slate-700 pb-0">
-            {/* Only show the latest day */}
-            {[object.days[object.days.length - 1]].map((day, dayIndex) => (
-              <div key={dayIndex} className="mb-4">
-                {/* Only show the latest meal in the current day */}
-                {[day?.meals?.[day.meals?.length - 1]].map(
-                  (meal, mealIndex) => (
-                    <div key={mealIndex} className="">
-                      <p className="text-lg font-medium text-slate-600 dark:text-slate-100">
-                        Day {object?.days?.length} - {meal?.title}:
-                      </p>
-                      <p>
-                        {meal?.cals} calories, {meal?.macros?.p}g protein,
-                        {meal?.macros?.c}g carbs, {meal?.macros?.f}g fats
-                      </p>
-                    </div>
-                  )
-                )}
-              </div>
-            ))}
-          </div>
-        )}
+          {/* this is were generation stream will go */}
+          {isLoading && object?.days && (
+            <div className="mt-4 text-center text-slate-400 animate-slide-up p-3 rounded-md bg-white dark:bg-slate-800 shadow-lg border border-slate-200 dark:border-slate-700 pb-0">
+              {/* Only show the latest day */}
+              {[object.days[object.days.length - 1]].map((day, dayIndex) => (
+                <div key={dayIndex} className="mb-4">
+                  {/* Only show the latest meal in the current day */}
+                  {[day?.meals?.[day.meals?.length - 1]].map(
+                    (meal, mealIndex) => (
+                      <div key={mealIndex} className="">
+                        <p className="text-lg font-medium text-slate-600 dark:text-slate-100">
+                          Day {object?.days?.length} - {meal?.title}:
+                        </p>
+                        <p>
+                          {meal?.cals} calories, {meal?.macros?.p}g protein,
+                          {meal?.macros?.c}g carbs, {meal?.macros?.f}g fats
+                        </p>
+                      </div>
+                    )
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
 
-        {/* We now pass the typed 'plan' state to the results component */}
-        {plan && !isLoading && <MealPlanResults plan={plan} user={user} />}
+          {plan && !isLoading && (
+            <MealPlanResults plan={plan} user={user} isSaved={savedLoad} />
+          )}
+        </div>
       </div>
     </main>
   );
