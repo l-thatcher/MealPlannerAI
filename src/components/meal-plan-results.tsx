@@ -13,18 +13,57 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, FileDown, Bookmark } from "lucide-react";
+import { ShoppingCart, FileDown, Bookmark, BookmarkCheck } from "lucide-react";
 import { MealPlanResultsProps } from "@/types/interfaces";
 import { ShoppingListCard } from "./shopping-list-card";
 import { useState } from "react";
 
-export function MealPlanResults({ plan }: MealPlanResultsProps) {
+export function MealPlanResults({ plan, user }: MealPlanResultsProps) {
   const [showShoppingList, setShowShoppingList] = useState(false);
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
+  const [saveStatus, setSaveStatus] = useState<
+    "idle" | "saving" | "saved" | "error"
+  >("idle");
+  const [savedPlanId, setSavedPlanId] = useState<string | null>(null);
 
   if (!plan) {
     return null;
   }
+
+  const handleSaveOrDeletePlan = async () => {
+    if (!user) return;
+
+    setSaveStatus("saving");
+
+    if (!savedPlanId) {
+      // Save plan
+      const res = await fetch("/api/saveMealPlan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan, user_id: user.id }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setSavedPlanId(data.id); // Make sure your save API returns the new id
+        setSaveStatus("saved");
+      } else {
+        setSaveStatus("error");
+      }
+    } else {
+      // Delete plan
+      const res = await fetch("/api/deleteMealPlan", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: user.id, plan_id: savedPlanId }),
+      });
+      if (res.ok) {
+        setSavedPlanId(null);
+        setSaveStatus("idle");
+      } else {
+        setSaveStatus("error");
+      }
+    }
+  };
 
   const toggleShoppingList = () => {
     setShowShoppingList((prev) => !prev);
@@ -48,8 +87,23 @@ export function MealPlanResults({ plan }: MealPlanResultsProps) {
             <ShoppingCart className="mr-2 h-4 w-4" />
             {showShoppingList ? "Hide Shopping List" : "Show Shopping List"}
           </Button>
-          <Button variant="secondary">
-            <Bookmark className="mr-2 h-4 w-4" /> Save Plan
+          <Button
+            variant={user ? "outline" : "secondary"}
+            onClick={handleSaveOrDeletePlan}
+            disabled={saveStatus === "saving"}
+          >
+            {saveStatus !== "saved" ? (
+              <Bookmark className="mr-2 h-4 w-4" />
+            ) : savedPlanId ? (
+              <BookmarkCheck className="mr-2 h-4 w-4" />
+            ) : (
+              <Bookmark className="mr-2 h-4 w-4" />
+            )}
+            {saveStatus === "saving"
+              ? "Saving..."
+              : savedPlanId
+              ? "Unsave Plan"
+              : "Save Plan"}
           </Button>
           <Button variant="secondary">
             <FileDown className="mr-2 h-4 w-4" /> Export PDF

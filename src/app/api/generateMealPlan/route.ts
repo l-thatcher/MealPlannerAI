@@ -8,7 +8,7 @@ import { getUserPrompt, getSystemPrompt } from './prompts';
 
 const apiKey = process.env.OPENAI_API_KEY;
 
-// export const maxDuration = 30;
+export const maxDuration = 30;
 export const preferredRegion = 'auto';
 
 
@@ -33,7 +33,7 @@ export async function POST(req: Request) {
     console.log(getUserPrompt(formData));
 
     const result = streamObject({
-      model: openai('gpt-4.1-nano'),
+      model: openai('gpt-4.1-mini'),
       temperature: 1.1,
       // frequencyPenalty: 0.1,
       // maxTokens: 512,

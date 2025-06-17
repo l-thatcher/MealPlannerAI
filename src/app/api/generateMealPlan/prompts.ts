@@ -36,7 +36,8 @@ export const getUserPrompt = (formData: MealPlannerFormData): string => {
     'The JSON must be valid, parseable, and match the expected structure with NO commentary, filler text, extra objects, or deviations.',
     'All entries in the "days" array must be valid objects. Do not use strings or placeholders.',
     'Include a fully-formed shoppingList at the end. Never omit this section.',
-    '',
+    'Once the meal plan is complete generate a 2-3 word title, and brief description of the meal plan, e.g. amount of days, cuisine, diatary restrictions, etc. for use in the description field of the meal plan object.',
+    'the title and description should be stored in the planDetails array as strings.',
     '🛒 SHOPPING LIST REQUIREMENTS:',
     '- Must include all ingredients used in the meal plan — no more, no less.',
     '- Ingredients must be grouped by category (e.g., Produce, Meat, Dairy, Pantry).',
@@ -75,6 +76,7 @@ export const getSystemPrompt = (formData: MealPlannerFormData): string => {
     `- Each "day" object must contain exactly ${formData.mealsPerDay} meals.`,
     '- All meals must include valid numeric values for calories and macros.',
     '- No empty "meals" or "items" arrays allowed.',
+    '- There must ALWAYS be a description generated as a string field',
     '',
     '📦 SHOPPING LIST RULES:',
     '- Every ingredient used in any recipe must appear in the shopping list.',
@@ -120,7 +122,7 @@ export const getSystemPrompt = (formData: MealPlannerFormData): string => {
   ]
 }`,
     '',
-    '💥 CRITICAL: Do not include any fields not shown above. Do not return commentary. Only output valid, strictly typed, schema-compliant JSON.'
+    '💥 CRITICAL: Do not include any fields not shown above. Do not return commentary. Only output valid, strictly typed, schema-compliant JSON.',
   ].join('\n');
 };
 

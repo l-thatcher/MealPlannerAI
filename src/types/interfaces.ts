@@ -23,11 +23,18 @@ export interface DayPlan {
 export interface MealPlan {
   days: DayPlan[];
   shoppingList: ShoppingCategory[];
+  planDetails: planDetails;
+}
+
+export interface planDetails {
+  name: string;
+  description: string;
 }
 
 // MEAL PLANNER RESULTS INTERFACES
 export interface MealPlanResultsProps {
   plan: MealPlan | null; 
+  user: User | null;
 }
 
 // MEAL PLANNER FORM INTERFACES
@@ -73,4 +80,10 @@ export interface ShoppingListCardProps {
 // AUTH INTERFACES
 export interface AuthFormProps extends React.ComponentProps<"div"> {
   action: (formData: FormData) => Promise<void>;
+}
+
+// SAVED MEAL PLANS INTERFACES
+export interface SavedMealPlan extends MealPlan {
+  id: string;
+  plan: MealPlan;
 }

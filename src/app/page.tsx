@@ -1,7 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { MealPlan, MealPlannerFormData } from "@/types/interfaces";
+import {
+  MealPlan,
+  MealPlannerFormData,
+  SavedMealPlan,
+} from "@/types/interfaces";
 import { MealPlannerForm } from "@/components/meal-planner-form";
 import { MealPlanResults } from "@/components/meal-plan-results";
 import { experimental_useObject as useObject } from "@ai-sdk/react";
@@ -11,6 +15,14 @@ import { logout } from "@/lib/actions";
 import { createClient } from "@/utils/supabase/client"; // Add this import
 import Link from "next/link";
 import { User } from "@supabase/supabase-js";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from "@/components/ui/card";
+import { BookmarkCheck, Trash2 } from "lucide-react";
 
 export default function HomePage() {
   const [user, setUser] = useState<User | null>(null);
@@ -28,6 +40,8 @@ export default function HomePage() {
     skillLevel: "",
     excludedIngredients: "",
   });
+  const [savedPlans, setSavedPlans] = useState<SavedMealPlan[]>([]);
+  const [loadingSaved, setLoadingSaved] = useState(false);
 
   const {
     object,
@@ -109,7 +123,7 @@ export default function HomePage() {
 
   useEffect(() => {
     const checkUser = async () => {
-      const supabase = createClient();
+      const supabase = await createClient();
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -117,6 +131,34 @@ export default function HomePage() {
     };
     checkUser();
   }, []);
+
+  useEffect(() => {
+    const fetchSavedPlans = async () => {
+      if (!user) return;
+      setLoadingSaved(true);
+      const res = await fetch(`/api/getSavedMealPlans?user_id=${user.id}`);
+      if (res.ok) {
+        const data = await res.json();
+        setSavedPlans(data.plans || []);
+      }
+      setLoadingSaved(false);
+    };
+    fetchSavedPlans();
+  }, [user]);
+
+  const handleLoadPlan = (plan: MealPlan) => {
+    setPlan(plan);
+    // window.scrollTo({ bottom: 0, behavior: "smooth" });
+  };
+
+  const handleDeletePlan = async (planId: string) => {
+    await fetch("/api/deleteMealPlan", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ user_id: user?.id, plan_id: planId }),
+    });
+    setSavedPlans((prev) => prev.filter((p) => p.id !== planId));
+  };
 
   // const handleGeneratePlan = async (formData: MealPlannerFormData) => {
   //   setPlan(null);
@@ -198,6 +240,69 @@ export default function HomePage() {
           </div>
         )}
 
+        {/* Saved Plans Section */}
+        {user && (
+          <section className="mb-8">
+            <h2 className="text-2xl font-bold mb-4 text-slate-900 dark:text-slate-50 flex items-center gap-2">
+              <BookmarkCheck className="w-6 h-6 text-blue-600" />
+              Saved Meal Plans
+            </h2>
+            {loadingSaved ? (
+              <div className="text-slate-500">Loading...</div>
+            ) : savedPlans.length === 0 ? (
+              <div className="text-slate-500">No saved plans yet.</div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {savedPlans.map((saved) => (
+                  <Card
+                    key={saved.id}
+                    className="border-slate-200 dark:border-slate-700"
+                  >
+                    <CardHeader>
+                      <CardTitle className="text-lg">
+                        {saved.planDetails.name || `Meal Plan`}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-sm text-slate-600 dark:text-slate-300 space-y-1">
+                        <div>
+                          <span className="font-medium">Days:</span>{" "}
+                          {saved.days?.length ?? "?"}
+                        </div>
+                        <div>
+                          <span className="font-medium">Meals Per Day:</span>{" "}
+                          {saved.days?.[0]?.meals?.length ?? "?"}
+                        </div>
+                        <div>
+                          <span className="font-medium">Description:</span>{" "}
+                          {saved.planDetails.description || "-"}
+                        </div>
+                      </div>
+                    </CardContent>
+                    <CardFooter className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        onClick={() => handleLoadPlan(saved)}
+                        className="flex-1"
+                      >
+                        View
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        onClick={() => handleDeletePlan(saved.id)}
+                        size="icon"
+                        aria-label="Delete"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </section>
+        )}
+
         <MealPlannerForm
           onGenerate={handleSubmitWithLog}
           isLoading={isLoading}
@@ -233,7 +338,7 @@ export default function HomePage() {
         )}
 
         {/* We now pass the typed 'plan' state to the results component */}
-        {plan && !isLoading && <MealPlanResults plan={plan} />}
+        {plan && !isLoading && <MealPlanResults plan={plan} user={user} />}
       </div>
     </main>
   );

@@ -36,13 +36,20 @@ export const mealPlanSchema = (formData: MealPlannerFormData) => {
         ).length(config.mealsPerDay)
       })
     ).length(config.days),
+
     shoppingList: z.array(z.object({
       category: z.string().describe('Category of the shopping list, e.g. "Produce", "Meat", "Dairy", etc.'),
       items: z.array(
         z.object({
           name: z.string().describe('Name of the ingredient'),
-          quantity: z.string().describe('Quantity of the ingredient, e.g. "100 grams", "1"'),})
-      ).describe('List of items in the shopping list')
+          quantity: z.string().describe('Quantity of the ingredient, e.g. "100 grams", "1"'),
+        })
+      ).describe('Shopping list containing all ingredients needed for the meal plan, AND NO EXTRAS')
+    })).describe('Array of shopping categories, each containing items needed for the meal plan'),
+
+    planDetails: z.object({
+      description: z.string().describe('A description of the meal plan, e.g. amount of days, cuisine, diatary restrictions, etc.'),
+      name: z.string().describe('Name of the meal plan, try and make it unique'),
     })
-  ).describe('Shopping list containing all ingredients needed for the meal plan, AND NO EXTRAS')});
+  });
 };
