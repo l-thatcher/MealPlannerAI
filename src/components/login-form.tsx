@@ -22,7 +22,7 @@ export function LoginForm({ className, action, ...props }: AuthFormProps) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form method="post">
+          <form action={action}>
             <div className="grid gap-6">
               <div className="flex flex-col gap-4">
                 <Button variant="outline" className="w-full">
@@ -79,7 +79,7 @@ export function LoginForm({ className, action, ...props }: AuthFormProps) {
                     required
                   />
                 </div>
-                <Button type="submit" formAction={action} className="w-full">
+                <Button type="submit" className="w-full">
                   Log In
                 </Button>
               </div>
