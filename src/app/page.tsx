@@ -21,7 +21,6 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
-import { boolean } from "zod";
 
 export default function HomePage() {
   const [user, setUser] = useState<User | null>(null);
