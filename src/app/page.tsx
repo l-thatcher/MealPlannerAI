@@ -40,7 +40,9 @@ export default function HomePage() {
   });
   const [savedPlans, setSavedPlans] = useState<SavedMealPlan[]>([]);
   const [loadingSaved, setLoadingSaved] = useState(false);
-  const [savedLoad, setSavedLoad] = useState<boolean>(false);
+  const [currentSavedPlanId, setCurrentSavedPlanId] = useState<string | null>(
+    null
+  );
 
   const {
     object,
@@ -82,6 +84,7 @@ export default function HomePage() {
     try {
       setPlan(null);
       setIsLoading(true);
+      setCurrentSavedPlanId(null);
 
       // setFormData(newFormData);
 
@@ -145,14 +148,13 @@ export default function HomePage() {
     fetchSavedPlans();
   }, [user]);
 
-  const handleLoadPlan = (plan: MealPlan) => {
-    setSavedLoad(true);
-
-    setPlan(plan);
-    // window.scrollTo({ bottom: 0, behavior: "smooth" });
+  const handleLoadPlan = (saved: SavedMealPlan) => {
+    console.log("Loading saved plan:", saved.plan);
+    setCurrentSavedPlanId(saved.id); // set the DB id
+    setPlan(saved); // set the MealPlan
   };
 
-  const handleDeletePlan = async (planId: string) => {
+  const handleDeletePlanFromSaved = async (planId: string) => {
     await fetch("/api/deleteMealPlan", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
@@ -160,6 +162,31 @@ export default function HomePage() {
     });
     setSavedPlans((prev) => prev.filter((p) => p.id !== planId));
   };
+
+  const handlePlanSavedFromForm = () => {
+    fetchSavedPlans();
+  };
+
+  const handlePlanDeletedFromForm = () => {
+    fetchSavedPlans();
+  };
+
+  const handleStartNewPlan = () => setPlan(null);
+
+  const fetchSavedPlans = async () => {
+    if (!user) return;
+    setLoadingSaved(true);
+    const res = await fetch(`/api/getSavedMealPlans?user_id=${user.id}`);
+    if (res.ok) {
+      const data = await res.json();
+      setSavedPlans(data.plans || []);
+    }
+    setLoadingSaved(false);
+  };
+
+  useEffect(() => {
+    fetchSavedPlans();
+  }, [user]);
 
   // const handleGeneratePlan = async (formData: MealPlannerFormData) => {
   //   setPlan(null);
@@ -215,16 +242,7 @@ export default function HomePage() {
 
   return (
     <main className="flex min-h-screen flex-col items-center p-4 sm:p-8 md:p-24 bg-slate-50 dark:bg-slate-950">
-      <header className="text-center mb-8">
-        <h1 className="text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
-          Your Personal AI Nutritionist
-        </h1>
-        <p className="mt-2 text-lg text-slate-600 dark:text-slate-400">
-          Craft the perfect meal plan tailored to your goals and tastes.
-        </p>
-      </header>
-
-      <nav className="flex justify-end mb-6">
+      <nav className="flex justify-end mb-6 w-full">
         {user ? (
           <form action={logout}>
             <Button
@@ -243,6 +261,16 @@ export default function HomePage() {
           </Button>
         )}
       </nav>
+
+      <header className="text-center mb-8">
+        <h1 className="text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
+          Your Personal AI Nutritionist
+        </h1>
+        <p className="mt-2 text-lg text-slate-600 dark:text-slate-400">
+          Craft the perfect meal plan tailored to your goals and tastes.
+        </p>
+      </header>
+
       <div className="w-full max-w-7xl flex flex-col md:flex-row gap-8 items-start">
         {/* Sidebar for Saved Plans */}
         {user && (
@@ -251,13 +279,17 @@ export default function HomePage() {
               <BookmarkCheck className="w-6 h-6" />
               Saved Meal Plans
             </h2>
-            {loadingSaved ? (
-              <div className="text-slate-500">Loading...</div>
-            ) : savedPlans.length === 0 ? (
-              <div className="text-slate-500">No saved plans yet.</div>
-            ) : (
-              <div className="h-full overflow-y-auto bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 shadow-inner">
-                {savedPlans.map((saved, idx) => (
+            <div className="h-full max-h-160 overflow-y-auto bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 shadow-inner">
+              {loadingSaved ? (
+                <div className="flex items-center justify-center p-6 text-slate-500">
+                  Loading...
+                </div>
+              ) : savedPlans.length === 0 ? (
+                <div className="flex items-center justify-center p-6 text-slate-500">
+                  No saved plans yet.
+                </div>
+              ) : (
+                savedPlans.map((saved, idx) => (
                   <div
                     key={saved.id}
                     className={`flex items-center px-3 py-2 text-sm text-slate-700 dark:text-slate-200 ${
@@ -305,7 +337,7 @@ export default function HomePage() {
                         <Button
                           variant="destructive"
                           size="icon"
-                          onClick={() => handleDeletePlan(saved.id)}
+                          onClick={() => handleDeletePlanFromSaved(saved.id)}
                           aria-label="Delete"
                           className="px-2 h-9"
                         >
@@ -314,9 +346,9 @@ export default function HomePage() {
                       </div>
                     </div>
                   </div>
-                ))}
-              </div>
-            )}
+                ))
+              )}
+            </div>
           </aside>
         )}
 
@@ -359,7 +391,14 @@ export default function HomePage() {
           )}
 
           {plan && !isLoading && (
-            <MealPlanResults plan={plan} user={user} isSaved={savedLoad} />
+            <MealPlanResults
+              plan={plan}
+              user={user}
+              onNewPlan={handleStartNewPlan}
+              savedPlanId={currentSavedPlanId}
+              onPlanSaved={handlePlanSavedFromForm}
+              onPlanDeleted={handlePlanDeletedFromForm}
+            />
           )}
         </div>
       </div>
