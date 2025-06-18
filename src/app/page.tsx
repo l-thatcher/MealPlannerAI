@@ -306,35 +306,49 @@ export default function HomePage() {
               <BookmarkCheck className="w-6 h-6" />
               Saved Meal Plans
             </h2>
-            <div className="h-full max-h-60 md:max-h-160 overflow-y-auto bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 shadow-inner">
+            <div
+              className="
+        h-full max-h-60 md:max-h-160 overflow-y-auto
+        rounded-lg border border-slate-200/20 dark:border-slate-700/40 shadow-inner
+        bg-slate-900/60 backdrop-blur-md
+        transition
+      "
+              style={{
+                // fallback for browsers that don't support Tailwind's backdrop-blur
+                background: "rgba(30, 41, 59, 0.60)", // slate-900/60
+                border: "1px solid rgba(148, 163, 184, 0.2)", // slate-200/20
+                backdropFilter: "blur(12px)",
+                WebkitBackdropFilter: "blur(12px)",
+              }}
+            >
               {loadingSaved ? (
-                <div className="flex items-center justify-center p-6 text-slate-500">
+                <div className="flex items-center justify-center p-6 text-slate-300">
                   Loading...
                 </div>
               ) : savedPlans.length === 0 ? (
-                <div className="flex items-center justify-center p-6 text-slate-500">
+                <div className="flex items-center justify-center p-6 text-slate-400">
                   No saved plans yet.
                 </div>
               ) : (
                 savedPlans.map((saved, idx) => (
                   <div
                     key={saved.id}
-                    className={`flex items-center px-3 py-2 text-sm text-slate-700 dark:text-slate-200 ${
+                    className={`flex items-center px-3 py-2 text-sm text-slate-50 ${
                       idx !== savedPlans.length - 1
-                        ? "border-b border-slate-200 dark:border-slate-700"
+                        ? "border-b border-slate-200/20 dark:border-slate-700/40"
                         : ""
                     }`}
                   >
                     <div className="flex-1 min-w-0 flex flex-col gap-1">
-                      <span className="font-medium truncate">
+                      <span className="font-medium truncate text-slate-50">
                         {saved.planDetails.name || "Meal Plan"}
                       </span>
-                      <span className="text-xs text-slate-500 dark:text-slate-400">
+                      <span className="text-xs text-slate-200">
                         Days: {saved.days?.length ?? "?"}, Meals/Day:{" "}
                         {saved.days?.[0]?.meals?.length ?? "?"}
                       </span>
                       <div className="flex-1 min-w-0 flex gap-1">
-                        <span className="text-xs text-slate-400 truncate max-w-xs">
+                        <span className="text-xs text-slate-300 truncate max-w-xs">
                           {saved.planDetails.description || "-"}
                         </span>
                         <HoverCard>
@@ -343,10 +357,10 @@ export default function HomePage() {
                               className="cursor-pointer inline-flex items-center ml-1"
                               title="Show more"
                             >
-                              <MoreHorizontal className="w-4 h-4" />
+                              <MoreHorizontal className="w-4 h-4 text-slate-200" />
                             </span>
                           </HoverCardTrigger>
-                          <HoverCardContent>
+                          <HoverCardContent className="bg-slate-900/80 text-slate-50 border border-slate-200/20 backdrop-blur-md">
                             {saved.planDetails.description || "-"}
                           </HoverCardContent>
                         </HoverCard>
@@ -357,7 +371,7 @@ export default function HomePage() {
                           variant="outline"
                           size="sm"
                           onClick={() => handleLoadPlan(saved)}
-                          className="px-2 flex-1 h-9"
+                          className="px-2 flex-1 h-9 text-slate-50 border-slate-200/30 bg-slate-900/60 backdrop-blur-md hover:bg-slate-800/60 hover:text-green-400"
                         >
                           View
                         </Button>
@@ -366,9 +380,9 @@ export default function HomePage() {
                           size="icon"
                           onClick={() => handleDeletePlanFromSaved(saved.id)}
                           aria-label="Delete"
-                          className="px-2 h-9"
+                          className="px-2 h-9 text-slate-50 border-slate-200/30 bg-slate-900/60 backdrop-blur-md hover:bg-red-900/60"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-4 h-4 text-slate-200" />
                         </Button>
                       </div>
                     </div>

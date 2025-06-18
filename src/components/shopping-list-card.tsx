@@ -1,5 +1,6 @@
 import { ShoppingCart } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
 import { ShoppingListCardProps } from "@/types/interfaces";
 
@@ -12,9 +13,17 @@ export function ShoppingListCard({
 
   return (
     <div className="mt-12">
-      <Card className="mb-8">
+      <Card
+        className="mb-8 bg-slate-900/60 backdrop-blur-md border border-slate-200/20 shadow-xl text-slate-50"
+        style={{
+          background: "rgba(30, 41, 59, 0.60)",
+          border: "1px solid rgba(148, 163, 184, 0.2)",
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
+        }}
+      >
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-slate-50">
             <ShoppingCart className="h-5 w-5" />
             Shopping List
           </CardTitle>

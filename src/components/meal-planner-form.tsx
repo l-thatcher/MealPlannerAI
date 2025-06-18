@@ -128,10 +128,27 @@ export function MealPlannerForm({
   };
 
   return (
-    <Card className="w-full border-slate-200 dark:border-slate-800">
+    <Card
+      className="
+    w-full
+    border border-slate-200/20 dark:border-slate-700/40
+    bg-slate-900/60
+    backdrop-blur-md
+    shadow-xl
+    text-slate-50
+  "
+      style={{
+        background: "rgba(30, 41, 59, 0.60)", // slate-900/60
+        border: "1px solid rgba(148, 163, 184, 0.2)", // slate-200/20
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+      }}
+    >
       <CardHeader>
-        <CardTitle className="text-2xl">Create Your Plan</CardTitle>
-        <CardDescription>
+        <CardTitle className="text-2xl text-slate-50">
+          Create Your Plan
+        </CardTitle>
+        <CardDescription className="text-slate-200">
           Fill out your details below to get started.
         </CardDescription>
       </CardHeader>
@@ -139,21 +156,19 @@ export function MealPlannerForm({
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Section 1: Plan Structure */}
           <div className="space-y-4">
-            <h3 className="text-lg font-medium text-slate-800 dark:text-slate-200">
-              Plan Basics
-            </h3>
+            <h3 className="text-lg font-medium text-slate-50">Plan Basics</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <Label htmlFor="days">
+                <Label htmlFor="days" className="text-slate-200">
                   Number of Days:{" "}
-                  <span className="text-blue-600 font-semibold">{days}</span>
+                  <span className="text-blue-300 font-semibold">{days}</span>
                   {!user && (
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <Info className="w-4 h-4 text-muted-foreground cursor-help" />
+                          <Info className="w-4 h-4 text-slate-400 cursor-help" />
                         </TooltipTrigger>
-                        <TooltipContent>
+                        <TooltipContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20">
                           <p>Unlock up to 14 day plans with the paid plan.</p>
                         </TooltipContent>
                       </Tooltip>
@@ -164,13 +179,11 @@ export function MealPlannerForm({
                   id="days"
                   value={[days]}
                   defaultValue={[7]}
-                  max={14} // Always show full range
+                  max={14}
                   min={1}
                   step={1}
                   onValueChange={(value) => {
                     const newValue = value[0];
-
-                    // Clamp to 7 if user is not logged in
                     if (!user && newValue > 7) {
                       setDays(7);
                     } else {
@@ -180,9 +193,9 @@ export function MealPlannerForm({
                 />
               </div>
               <div>
-                <Label htmlFor="mealsPerDay">
+                <Label htmlFor="mealsPerDay" className="text-slate-200">
                   Meals Per Day:{" "}
-                  <span className="text-blue-600 font-semibold">
+                  <span className="text-blue-300 font-semibold">
                     {mealsPerDay}
                   </span>
                 </Label>
@@ -200,57 +213,67 @@ export function MealPlannerForm({
           </div>
           {/* Section 2: Macro Goals */}
           <div className="space-y-4">
-            <h3 className="text-lg font-medium text-slate-800 dark:text-slate-200">
+            <h3 className="text-lg font-medium text-slate-50">
               Nutrition Goals
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div>
-                <Label htmlFor="calories">Calories (kcal)</Label>
+                <Label htmlFor="calories" className="text-slate-200">
+                  Calories (kcal)
+                </Label>
                 <Input
                   id="calories"
                   type="number"
                   placeholder="e.g., 2200"
                   value={calories}
                   onChange={(e) => setCalories(e.target.value)}
+                  className="bg-slate-800/60 text-slate-50 border-slate-200/20 placeholder:text-slate-400"
                 />
               </div>
               <div>
-                <Label htmlFor="protein">Protein (g)</Label>
+                <Label htmlFor="protein" className="text-slate-200">
+                  Protein (g)
+                </Label>
                 <Input
                   id="protein"
                   type="number"
                   placeholder="e.g., 150"
                   value={protein}
                   onChange={(e) => setProtein(e.target.value)}
+                  className="bg-slate-800/60 text-slate-50 border-slate-200/20 placeholder:text-slate-400"
                 />
               </div>
               <div>
-                <Label htmlFor="carbs">Carbs (g)</Label>
+                <Label htmlFor="carbs" className="text-slate-200">
+                  Carbs (g)
+                </Label>
                 <Input
                   id="carbs"
                   type="number"
                   placeholder="e.g., 200"
                   value={carbs}
                   onChange={(e) => setCarbs(e.target.value)}
+                  className="bg-slate-800/60 text-slate-50 border-slate-200/20 placeholder:text-slate-400"
                 />
               </div>
               <div>
-                <Label htmlFor="fats">Fats (g)</Label>
+                <Label htmlFor="fats" className="text-slate-200">
+                  Fats (g)
+                </Label>
                 <Input
                   id="fats"
                   type="number"
                   placeholder="e.g., 80"
                   value={fats}
                   onChange={(e) => setFats(e.target.value)}
+                  className="bg-slate-800/60 text-slate-50 border-slate-200/20 placeholder:text-slate-400"
                 />
               </div>
             </div>
           </div>
           {/* Section 3: Dietary Restrictions */}
           <div className="space-y-4">
-            <h3 className="text-lg font-medium text-slate-800 dark:text-slate-200">
-              Dietary Needs
-            </h3>
+            <h3 className="text-lg font-medium text-slate-50">Dietary Needs</h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
               {dietaryOptions.map((option) => (
                 <div key={option.id} className="flex items-center space-x-2">
@@ -261,7 +284,10 @@ export function MealPlannerForm({
                       handleDietaryOptionChange(checked as boolean, option.id)
                     }
                   />
-                  <Label htmlFor={option.id} className="font-normal">
+                  <Label
+                    htmlFor={option.id}
+                    className="font-normal text-slate-200"
+                  >
                     {option.label}
                   </Label>
                 </div>
@@ -270,27 +296,31 @@ export function MealPlannerForm({
           </div>
           {/* Section 4: Fine-Tuning */}
           <div className="space-y-4">
-            <h3 className="text-lg font-medium text-slate-800 dark:text-slate-200">
+            <h3 className="text-lg font-medium text-slate-50">
               Preferences & Exclusions
             </h3>
             <div className="flex flex-col md:flex-row gap-6">
               <div className="flex flex-col flex-1">
-                <Label htmlFor="cuisine">Preferred Cuisines (optional)</Label>
+                <Label htmlFor="cuisine" className="text-slate-200">
+                  Preferred Cuisines (optional)
+                </Label>
                 <Input
                   id="cuisine"
                   placeholder="e.g., Italian, Mexican, Thai"
                   value={preferredCuisines}
                   onChange={(e) => setPreferredCuisines(e.target.value)}
-                  className="w-full"
+                  className="w-full bg-slate-800/60 text-slate-50 border-slate-200/20 placeholder:text-slate-400"
                 />
               </div>
               <div className="w-full md:w-64">
-                <Label htmlFor="skillLevel">Cooking Skill Level</Label>
+                <Label htmlFor="skillLevel" className="text-slate-200">
+                  Cooking Skill Level
+                </Label>
                 <Select value={skillLevel} onValueChange={setSkillLevel}>
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full bg-slate-800/60 text-slate-50 border-slate-200/20">
                     <SelectValue placeholder="Select your skill level" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20">
                     <SelectItem value="beginner">
                       Beginner (Quick & Easy)
                     </SelectItem>
@@ -307,15 +337,15 @@ export function MealPlannerForm({
 
             <div>
               <div className="flex items-center gap-2">
-                <Label htmlFor="exclude">
+                <Label htmlFor="exclude" className="text-slate-200">
                   Ingredients to Exclude
                   {!user && (
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <Info className="w-4 h-4 text-muted-foreground cursor-help" />
+                          <Info className="w-4 h-4 text-slate-400 cursor-help" />
                         </TooltipTrigger>
-                        <TooltipContent>
+                        <TooltipContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20">
                           <p>
                             Excluded ingredients is only available on the paid
                             plan.
@@ -332,17 +362,18 @@ export function MealPlannerForm({
                 value={excludedIngredients}
                 onChange={(e) => {
                   if (!user) {
-                    setExcludedIngredients(""); // Or you could do nothing instead
+                    setExcludedIngredients("");
                   } else {
                     setExcludedIngredients(e.target.value);
                   }
                 }}
                 disabled={!user}
+                className="bg-slate-800/60 text-slate-50 border-slate-200/20 placeholder:text-slate-400"
               />
             </div>
           </div>
 
-          <div className="flex justify-end gap-2">
+          <div className="flex flex-col md:flex-row justify-end gap-2">
             <div className="flex items-center space-x-2">
               {!user && (
                 <HoverCard>
@@ -352,13 +383,16 @@ export function MealPlannerForm({
                       title="Show more"
                     >
                       <Select disabled>
-                        <SelectTrigger id="model" className="w-full">
+                        <SelectTrigger
+                          id="model"
+                          className="w-full bg-slate-800/60 text-slate-50 border-slate-200/20"
+                        >
                           <SelectValue placeholder={"GPT 4.1 micro"} />
                         </SelectTrigger>
                       </Select>
                     </span>
                   </HoverCardTrigger>
-                  <HoverCardContent>
+                  <HoverCardContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20">
                     With the paid plan you can choose which model to use
                   </HoverCardContent>
                 </HoverCard>
@@ -370,10 +404,13 @@ export function MealPlannerForm({
                   onValueChange={setSelectedModel}
                   disabled={isLoading || !user}
                 >
-                  <SelectTrigger id="model" className="w-full">
+                  <SelectTrigger
+                    id="model"
+                    className="w-full bg-slate-800/60 text-slate-50 border-slate-200/20 mr-0 min-h-10"
+                  >
                     <SelectValue placeholder={selectedModel} />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20">
                     {modelOptions.map((option) => (
                       <SelectItem key={option.id} value={option.id}>
                         {option.label}
@@ -386,7 +423,7 @@ export function MealPlannerForm({
             <Button
               type="submit"
               size="lg"
-              className={`w-full md:w-auto bg-blue-600 hover:bg-blue-700 ${
+              className={`w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-slate-50  h-10 ${
                 isLoading ? "hidden md:flex" : ""
               }`}
               disabled={isLoading}
@@ -400,7 +437,7 @@ export function MealPlannerForm({
                 type="button"
                 size="lg"
                 variant="destructive"
-                className="w-full md:w-auto"
+                className="w-full md:w-auto text-slate-50"
                 onClick={stopGeneration}
               >
                 <StopCircle className="mr-2 h-5 w-5" />

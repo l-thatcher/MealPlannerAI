@@ -125,6 +125,17 @@
 
 }
 
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Hide number input spinners for Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
 .blob {
   position: absolute;
   border-radius: 40% 60% 60% 40% / 60% 40% 60% 40%;
