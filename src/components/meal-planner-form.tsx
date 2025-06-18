@@ -45,6 +45,7 @@ const modelOptions = [
   { id: "gpt-4.1-nano", label: "GPT 4.1 nano" },
   { id: "gpt-4.1-mini", label: "GPT 4.1 mini" },
   { id: "gpt-4.1", label: "GPT 4.1" },
+  { id: "gpt-o3-mini", label: "GPT 3o mini" },
 ];
 
 export function MealPlannerForm({

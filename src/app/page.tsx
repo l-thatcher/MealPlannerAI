@@ -271,7 +271,7 @@ export default function HomePage() {
 
   return (
     <main className="relative flex min-h-screen flex-col items-center p-4 sm:p-8 md:p-24 overflow-hidden">
-      <div className="absolute inset-0 -z-20 bg-slate-950" aria-hidden />
+      <div className="absolute inset-0 -z-20 bg-slate-700" aria-hidden />
 
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
         {/* Blue blob */}
