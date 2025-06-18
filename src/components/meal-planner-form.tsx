@@ -127,6 +127,14 @@ export function MealPlannerForm({
     }
   };
 
+  useEffect(() => {
+    if ((!user && days > 4) || selectedModel === "gpt-4.1-nano") {
+      if (days !== 4 && days > 4) {
+        setDays(4);
+      }
+    }
+  }, [days, user, selectedModel]);
+
   return (
     <Card
       className="
@@ -169,7 +177,25 @@ export function MealPlannerForm({
                           <Info className="w-4 h-4 text-slate-400 cursor-help" />
                         </TooltipTrigger>
                         <TooltipContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20">
-                          <p>Unlock up to 14 day plans with the paid plan.</p>
+                          <p>
+                            Unlock up to 14 day plans with the paid plan due to
+                            model limitations.
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
+                  {user && selectedModel === "gpt-4.1-nano" && (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="w-4 h-4 text-slate-400 cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20">
+                          <p>
+                            GPT 4 nano can only generate plans for up to 4 days,
+                            change the model to generate more days
+                          </p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
@@ -178,18 +204,11 @@ export function MealPlannerForm({
                 <Slider
                   id="days"
                   value={[days]}
-                  defaultValue={[7]}
+                  defaultValue={[4]}
                   max={14}
                   min={1}
                   step={1}
-                  onValueChange={(value) => {
-                    const newValue = value[0];
-                    if (!user && newValue > 7) {
-                      setDays(7);
-                    } else {
-                      setDays(newValue);
-                    }
-                  }}
+                  onValueChange={(value) => setDays(value[0])}
                 />
               </div>
               <div>
@@ -225,7 +244,7 @@ export function MealPlannerForm({
                   id="calories"
                   type="number"
                   placeholder="e.g., 2200"
-                  value={calories}
+                  // value={calories}
                   onChange={(e) => setCalories(e.target.value)}
                   className="bg-slate-800/60 text-slate-50 border-slate-200/20 placeholder:text-slate-400"
                 />
@@ -238,7 +257,7 @@ export function MealPlannerForm({
                   id="protein"
                   type="number"
                   placeholder="e.g., 150"
-                  value={protein}
+                  // value={protein}
                   onChange={(e) => setProtein(e.target.value)}
                   className="bg-slate-800/60 text-slate-50 border-slate-200/20 placeholder:text-slate-400"
                 />
@@ -251,7 +270,7 @@ export function MealPlannerForm({
                   id="carbs"
                   type="number"
                   placeholder="e.g., 200"
-                  value={carbs}
+                  // value={carbs}
                   onChange={(e) => setCarbs(e.target.value)}
                   className="bg-slate-800/60 text-slate-50 border-slate-200/20 placeholder:text-slate-400"
                 />
@@ -264,7 +283,7 @@ export function MealPlannerForm({
                   id="fats"
                   type="number"
                   placeholder="e.g., 80"
-                  value={fats}
+                  // value={fats}
                   onChange={(e) => setFats(e.target.value)}
                   className="bg-slate-800/60 text-slate-50 border-slate-200/20 placeholder:text-slate-400"
                 />

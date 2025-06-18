@@ -150,7 +150,7 @@ export function MealPlanResults({
             savedPlanId ? "hover:text-red-500" : "hover:text-green-400"
           }`}
           onClick={handleSaveOrDeletePlan}
-          disabled={saveStatus === "saving"}
+          disabled={!user}
         >
           {saveStatus === "saving" || saveStatus === "unsaving" ? (
             <>
@@ -170,7 +170,8 @@ export function MealPlanResults({
           )}
         </Button>
         <Button
-          variant="secondary"
+          variant="outline"
+          disabled
           className="text-slate-50 border-slate-200/30 bg-slate-900/60 hover:bg-slate-800/60 hover:text-green-400"
         >
           <FileDown className="mr-2 h-4 w-4 text-slate-200" /> Export PDF
