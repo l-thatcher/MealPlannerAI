@@ -34,7 +34,7 @@ export function PlanGenerationError({
             <CardTitle className="text-red-400">Generation Failed</CardTitle>
           </div>
           <CardDescription className="text-slate-300">
-            We couldn't generate your meal plan
+            We couldn`&apos;`t generate your meal plan
           </CardDescription>
         </CardHeader>
         <CardContent className="pt-4">
@@ -49,7 +49,7 @@ export function PlanGenerationError({
                   "An unexpected error occurred. Please try again with different parameters."
                 );
               } catch (e) {
-                // If it's not valid JSON, just return the error string as is
+                console.error("Error parsing error text:", e);
                 return (
                   error ||
                   "An unexpected error occurred. Please try again with different parameters."
@@ -69,6 +69,7 @@ export function PlanGenerationError({
                     errorObj.reason?.includes("Token limit reached") || false
                   );
                 } catch (e) {
+                  console.error("Error parsing error text:", e);
                   return false;
                 }
               })();

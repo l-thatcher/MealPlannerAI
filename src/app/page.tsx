@@ -217,19 +217,19 @@ export default function HomePage() {
     fetchSavedPlans();
   }, [fetchSavedPlans]);
 
-  const handleApiErrorResponse = async (response: Response) => {
-    if (!response.ok) {
-      let errorMessage = "Failed to generate meal plan";
-      try {
-        const errorData = await response.json();
-        errorMessage = errorData.error || errorMessage;
-      } catch (e) {
-        // If we can't parse the JSON, use the default message
-      }
-      throw new Error(errorMessage);
-    }
-    return response;
-  };
+  // const handleApiErrorResponse = async (response: Response) => {
+  //   if (!response.ok) {
+  //     let errorMessage = "Failed to generate meal plan";
+  //     try {
+  //       const errorData = await response.json();
+  //       errorMessage = errorData.error || errorMessage;
+  //     } catch (e) {
+  //       // If we can't parse the JSON, use the default message
+  //     }
+  //     throw new Error(errorMessage);
+  //   }
+  //   return response;
+  // };
 
   // Calculate progress for the loading bar
   let progressPercent = 0;

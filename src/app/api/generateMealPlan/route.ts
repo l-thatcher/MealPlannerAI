@@ -65,8 +65,6 @@ export async function POST(req: Request) {
 
       userRole = userRoles.role;
 
-      let dailyLimit: number;
-
       switch (userRole) {
         // case 'admin':
         //   dailyLimit = 500; // Higher limit for admin users
