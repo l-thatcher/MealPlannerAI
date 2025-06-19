@@ -61,13 +61,6 @@ export function MealPlanResults({
     return null;
   }
 
-  // useEffect(() => {
-  //   if (deletedPlanId && deletedPlanId === savedPlanId) {
-  //     setSavedPlanId(null);
-  //     setSaveStatus("idle");
-  //   }
-  // }, [deletedPlanId, savedPlanId]);
-
   const handleSaveOrDeletePlan = async () => {
     if (!user) return;
 
@@ -78,7 +71,7 @@ export function MealPlanResults({
       const res = await fetch("/api/saveMealPlan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan, user_id: user.id }),
+        body: JSON.stringify({ plan }),
       });
       if (res.ok) {
         const data = await res.json();
@@ -95,7 +88,7 @@ export function MealPlanResults({
       const res = await fetch("/api/deleteMealPlan", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id: user.id, plan_id: savedPlanId }),
+        body: JSON.stringify({ plan_id: savedPlanId }),
       });
       if (res.ok) {
         // Notify parent component that a plan was deleted

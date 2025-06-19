@@ -1,19 +1,22 @@
 // filepath: /src/app/api/getSavedMealPlans/route.ts
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 
-export async function GET(req: NextRequest) {
-  const user_id = req.nextUrl.searchParams.get("user_id");
-  if (!user_id) {
+export async function GET() {
+  const supabase = await createClient();
+
+  const { data: { user } } = await supabase.auth.getUser();
+
+
+  if (!user) {
     return NextResponse.json({ error: "Missing user_id" }, { status: 400 });
   }
 
-  const supabase = await createClient();
 
   const { data, error } = await supabase
     .from("meal_plans")
     .select("id, plan")
-    .eq("user_id", user_id)
+    .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 
   if (error) {

@@ -66,6 +66,12 @@ export interface MealPlannerFormProps {
   user: User| null;
 }
 
+// MEAL PLANNER GENERATION INTERFACES
+export interface PlanGeneratingWindowProps {
+  object: MealPlan;
+  progressPercent: number;
+}
+
 // SHOPPING LIST INTERFACES
 export interface ShoppingItem {
   name: string;

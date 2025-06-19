@@ -3,15 +3,21 @@ import { createClient } from "@/utils/supabase/server";
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
-  const { plan, user_id } = await req.json();
+  const { plan } = await req.json();
 
-  if (!user_id || !plan) {
-    return NextResponse.json({ error: "Missing user_id or plan" }, { status: 400 });
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json({ error: "Authentication required" }, { status: 401 });
+  }
+
+  if (!plan) {
+    return NextResponse.json({ error: "Missing plan" }, { status: 400 });
   }
 
   const { data, error } = await supabase
     .from("meal_plans")
-    .insert([{ user_id, plan }])
+    .insert([{ user_id: user.id, plan }])
     .select("id") 
     .single(); ;
 
