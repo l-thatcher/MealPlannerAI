@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   MealPlan,
   MealPlannerFormData,
@@ -22,6 +22,7 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import PlanGeneratingWindow from "@/components/plan-generating-window";
+import { PlanGenerationError } from "@/components/plan-generation-error";
 
 export default function HomePage() {
   const [user, setUser] = useState<User | null>(null);
@@ -46,6 +47,9 @@ export default function HomePage() {
     null
   );
   const [deletedPlanId, setDeletedPlanId] = useState<string | null>(null);
+  const [generationErrorMessage, setGenerationErrorMessage] = useState<
+    string | null
+  >(null);
 
   const {
     object,
@@ -65,6 +69,9 @@ export default function HomePage() {
           generationError,
         });
         setIsLoading(false);
+        setGenerationErrorMessage(
+          "Failed to generate a complete meal plan. The AI model returned an incomplete response. Please try again."
+        );
         return;
       }
 
@@ -80,6 +87,14 @@ export default function HomePage() {
       console.error("Error generating meal plan:", error);
       setIsLoading(false);
       setPlan(null);
+      let errorMessage =
+        "Failed to generate meal plan. Please try again with different parameters.";
+      if (error?.message) {
+        errorMessage = error.message;
+      } else if (error?.cause) {
+        errorMessage = String(error.cause);
+      }
+      setGenerationErrorMessage(errorMessage);
     },
   });
 
@@ -88,6 +103,7 @@ export default function HomePage() {
       setPlan(null);
       setIsLoading(true);
       setCurrentSavedPlanId(null);
+      setGenerationErrorMessage(null);
 
       console.log("Form data received:", newFormData);
 
@@ -95,7 +111,21 @@ export default function HomePage() {
     } catch (err) {
       console.error("Failed to generate meal plan. Please try again." + err);
       setIsLoading(false);
+      setGenerationErrorMessage(
+        err instanceof Error
+          ? err.message
+          : "Failed to generate meal plan. Please try again."
+      );
     }
+  };
+
+  const handleDismissError = () => {
+    setGenerationErrorMessage(null);
+  };
+
+  const handleRetry = () => {
+    setGenerationErrorMessage(null);
+    handleSubmitWithLog(formData);
   };
 
   const handleStopGeneration = () => {
@@ -172,7 +202,7 @@ export default function HomePage() {
 
   const handleStartNewPlan = () => setPlan(null);
 
-  const fetchSavedPlans = async () => {
+  const fetchSavedPlans = useCallback(async () => {
     if (!user) return;
     setLoadingSaved(true);
     const res = await fetch(`/api/getSavedMealPlans?user_id=${user.id}`);
@@ -181,62 +211,25 @@ export default function HomePage() {
       setSavedPlans(data.plans || []);
     }
     setLoadingSaved(false);
-  };
+  }, [user]);
 
   useEffect(() => {
     fetchSavedPlans();
-  }, [user]);
+  }, [fetchSavedPlans]);
 
-  //   setPlan(null);
-  //   setIsLoading(true);
-
-  //   console.log("Form data received:", {
-  //     days: formData.days,
-  //     mealsPerDay: formData.mealsPerDay,
-  //     calories: formData.calories,
-  //     macros: {
-  //       protein: formData.protein,
-  //       carbs: formData.carbs,
-  //       fats: formData.fats,
-  //     },
-  //     dietaryRestrictions: formData.dietaryRestrictions,
-  //     preferredCuisines: formData.preferredCuisines,
-  //     skillLevel: formData.skillLevel,
-  //     excludedIngredients: formData.excludedIngredients,
-  //   });
-
-  //   try {
-  //     const response = await fetch(`/api/generateMealPlan?t=${Date.now()}`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         "Cache-Control": "no-cache, no-store, must-revalidate",
-  //         Pragma: "no-cache",
-  //       },
-  //       body: JSON.stringify({
-  //         formData: formData,
-  //       }),
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error(`HTTP error! status: ${response.status}`);
-  //     }
-
-  //     const data = await response.json();
-  //     console.log("API response:", data.data.object);
-
-  //     if (data.success && data.data?.object) {
-  //       // The meal plan is now nested inside data.data.object
-  //       setPlan(data.data.object);
-  //     } else {
-  //       throw new Error("Failed to generate meal plan");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
+  const handleApiErrorResponse = async (response: Response) => {
+    if (!response.ok) {
+      let errorMessage = "Failed to generate meal plan";
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.error || errorMessage;
+      } catch (e) {
+        // If we can't parse the JSON, use the default message
+      }
+      throw new Error(errorMessage);
+    }
+    return response;
+  };
 
   // Calculate progress for the loading bar
   let progressPercent = 0;
@@ -411,6 +404,14 @@ export default function HomePage() {
             <PlanGeneratingWindow
               object={object as MealPlan}
               progressPercent={progressPercent}
+            />
+          )}
+
+          {!isLoading && generationErrorMessage && !plan && (
+            <PlanGenerationError
+              error={generationErrorMessage}
+              onRetry={handleRetry}
+              onDismiss={handleDismissError}
             />
           )}
 

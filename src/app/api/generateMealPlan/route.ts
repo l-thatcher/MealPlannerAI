@@ -22,7 +22,6 @@ const openai = createOpenAI({
 });
 
 export async function POST(req: Request) {
-  const dailyLimit = 8000; // Adjust based on your limits
   let user: User | null = null;
   let requiresAuth = false;
   
@@ -36,6 +35,10 @@ export async function POST(req: Request) {
     const supabase = await createClient();
     const { data: { user: authUser }, error: authError } = await supabase.auth.getUser();
     user = authUser; // Store user in the outer scope
+
+
+    let dailyLimit = 8000; // Adjust based on your limits
+    let userRole = 'guest'; // Default role
     
     console.log("Auth response:", { user: !!user, error: authError });
     
@@ -49,6 +52,37 @@ export async function POST(req: Request) {
     
     // Only check tokens for authenticated users
     if (user) {
+      const { data: userRoles, error: userRoleError } = await supabase
+       .from('user_roles')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+      
+      if (userRoleError && userRoleError.code !== 'PGRST116') { // PGRST116 is "no rows returned"
+        console.error("Error checking user roles:", userRoleError);
+        return NextResponse.json({ error: "Error checking user tokens" }, { status: 500 });
+      }
+
+      userRole = userRoles.role;
+
+      let dailyLimit: number;
+
+      switch (userRole) {
+        // case 'admin':
+        //   dailyLimit = 500; // Higher limit for admin users
+        //   break;
+        case 'pro':
+          dailyLimit = 16000; // Higher limit for pro users
+          break;
+        case 'basic':
+        case 'guest':
+        default:
+          dailyLimit = 8000; // Default limit for basic users and guests
+          break;
+      }
+
+      console.log(`User role: ${userRole}, daily token limit: ${dailyLimit}`);
+
       // Use direct database access instead of an API call
       const { data: userTokens, error: tokenError } = await supabase
         .from('token_usage')
@@ -77,7 +111,7 @@ export async function POST(req: Request) {
         const capReachedAt = userTokens.cap_reached_at ? new Date(userTokens.cap_reached_at) : null;
         const resetTime = capReachedAt ? new Date(capReachedAt.getTime() + 24 * 60 * 60 * 1000) : null;
 
-        if (capReachedAt && resetTime && now < resetTime) {
+        if (capReachedAt && resetTime && now < resetTime && userRole !== 'admin') {
           return NextResponse.json({
             allowed: false,
             reason: `Token limit reached. Try again after ${resetTime.toLocaleString()}.`
@@ -141,13 +175,13 @@ export async function POST(req: Request) {
           }
           
           if (userTokens) {
+            console.log("user role:", userRole);
             const newTotal = userTokens.used_tokens + totalTokens;
             const { error: updateError } = await supabase
               .from('token_usage')
               .update({ 
                 used_tokens: newTotal,
-                cap_reached_at: newTotal >= dailyLimit ? new Date().toISOString() : userTokens.cap_reached_at
-              })
+                cap_reached_at: (newTotal >= dailyLimit && userRole !== "admin") ? new Date().toISOString() : null              })
               .eq('user_id', user.id);
               
             if (updateError) {
@@ -176,23 +210,30 @@ export async function POST(req: Request) {
     }
 
     if (NoObjectGeneratedError.isInstance(error)) {
-      console.log('"""""""""""""""" NoObjectGeneratedError """"""""""""""""');
-      console.log('Cause:', (error as NoObjectGeneratedError).cause);
-      console.log('Text:', JSON.stringify((error as NoObjectGeneratedError).text, null, 2));
-      console.log('Response:', (error as NoObjectGeneratedError).response);
-      console.log('Usage:', (error as NoObjectGeneratedError).usage);
+      console.log('NoObjectGeneratedError occurred');
+      const noObjectError = error as NoObjectGeneratedError;
       
-      return NextResponse.json({
-        success: false,
-        error: 'Failed to generate a valid meal plan. Please try again.'
-      }, { status: 422 });
+      // Extract a more user-friendly error message
+      let userMessage = 'Failed to generate a valid meal plan. Please try again.';
+  
+      // Try to get a more specific error if available
+      if (noObjectError.text) {
+        const textContent = String(noObjectError.text);
+        if (textContent.includes("token limit")) {
+          userMessage = "Your plan is too large for the selected model. Try reducing the number of days or meals.";
+        } else if (textContent.includes("dietary restrictions")) {
+          userMessage = "Cannot create a plan with these dietary restrictions. Try simplifying your requirements.";
+        }
+      }
+      return NextResponse.json({success: false, error: userMessage}, { status: 422 });
     } else {
-      console.error('Error generating meal plan:', 
-        error instanceof Error ? error.message : 'Unknown error');
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.error('Error generating meal plan:', errorMessage);
+      
+      return NextResponse.json(
+        { success: false, error: 'Failed to generate meal plan. Please try different settings.' },
+        { status: 500 }
+      );
     }
-    return NextResponse.json(
-      { success: false, error: 'Failed to generate meal plan' },
-      { status: 500 }
-    );
   }
 }
