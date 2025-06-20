@@ -55,6 +55,7 @@ export function MealPlannerForm({
   stopGeneration,
   handleFormData,
   user,
+  userRole = "guest",
 }: MealPlannerFormProps) {
   const [days, setDays] = useState(initialFormData.days);
   const [mealsPerDay, setMealsPerDay] = useState(initialFormData.mealsPerDay);
@@ -398,7 +399,7 @@ export function MealPlannerForm({
 
           <div className="flex flex-col md:flex-row justify-end gap-2">
             <div className="flex items-center space-x-2">
-              {!user && (
+              {(!user || userRole === "basic" || userRole === "guest") && (
                 <HoverCard>
                   <HoverCardTrigger asChild>
                     <span
@@ -416,16 +417,18 @@ export function MealPlannerForm({
                     </span>
                   </HoverCardTrigger>
                   <HoverCardContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20">
-                    With the paid plan you can choose which model to use
+                    {!user
+                      ? "Sign in to generate your meal plan and select different AI models."
+                      : "Selecting models is only available on a paid plan."}
                   </HoverCardContent>
                 </HoverCard>
               )}
 
-              {user && (
+              {user && (userRole === "pro" || userRole === "admin") && (
                 <Select
                   value={selectedModel}
                   onValueChange={setSelectedModel}
-                  disabled={isLoading || !user}
+                  disabled={isLoading}
                 >
                   <SelectTrigger
                     id="model"
@@ -443,6 +446,7 @@ export function MealPlannerForm({
                 </Select>
               )}
             </div>
+
             {!user && (
               <HoverCard>
                 <HoverCardTrigger>

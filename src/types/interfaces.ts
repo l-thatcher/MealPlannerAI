@@ -64,6 +64,7 @@ export interface MealPlannerFormProps {
   stopGeneration: () => void; 
   handleFormData: (formData: MealPlannerFormData) => void;
   user: User| null;
+  userRole?: string | "guest";
 }
 
 // MEAL PLANNER GENERATION INTERFACES
@@ -98,4 +99,11 @@ export interface AuthFormProps extends React.ComponentProps<"div"> {
 export interface SavedMealPlan extends MealPlan {
   id: string;
   plan: MealPlan;
+}
+
+export interface SavedMealPlansProps {
+  loadingSaved?: boolean;
+  savedPlans: SavedMealPlan[];
+  handleLoadPlan: (plan: SavedMealPlan) => void;
+  handleDeletePlanFromSaved: (planId: string) => void;
 }

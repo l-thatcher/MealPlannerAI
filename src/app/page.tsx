@@ -16,16 +16,13 @@ import { createClient } from "@/utils/supabase/client";
 import Link from "next/link";
 import { User } from "@supabase/supabase-js";
 import { BookmarkCheck, Trash2, MoreHorizontal } from "lucide-react";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
 import PlanGeneratingWindow from "@/components/plan-generating-window";
 import { PlanGenerationError } from "@/components/plan-generation-error";
+import { SavedPlans } from "@/components/saved-plans";
 
 export default function HomePage() {
   const [user, setUser] = useState<User | null>(null);
+  const [userRole, setUserRole] = useState<string>("Guest");
   const [plan, setPlan] = useState<MealPlan | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<MealPlannerFormData>({
@@ -151,6 +148,29 @@ export default function HomePage() {
     };
     checkUser();
   }, []);
+
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      if (!user) return;
+      const supabase = await createClient();
+      const { data, error } = await supabase
+        .from("user_roles")
+        .select("*")
+        .eq("user_id", user.id)
+        .single();
+
+      console.log("UserID:", user.id);
+
+      if (error) {
+        console.error("Error fetching user role:", error);
+        setUserRole("Guest");
+      } else {
+        setUserRole(data.role || "Guest");
+      }
+    };
+
+    fetchUserRole();
+  }, [user]);
 
   useEffect(() => {
     const fetchSavedPlans = async () => {
@@ -298,98 +318,50 @@ export default function HomePage() {
 
       <div className="w-full max-w-7xl flex flex-col md:flex-row gap-8 items-start">
         {/* Sidebar for Saved Plans */}
-        {user && (
-          <aside className="w-full md:w-80 flex-shrink-0 mb-8 md:mb-0 md:sticky md:top-12">
-            <h2 className="text-2xl font-bold mb-4 text-slate-50 flex items-center gap-2">
-              <BookmarkCheck className="w-6 h-6" />
-              Saved Meal Plans
-            </h2>
-            <div
-              className="
-        h-full max-h-60 md:max-h-160 overflow-y-auto
-        rounded-lg border border-slate-200/20 dark:border-slate-700/40 shadow-inner
-        bg-slate-900/60 backdrop-blur-md
-        transition
-      "
-              style={{
-                // fallback for browsers that don't support Tailwind's backdrop-blur
-                background: "rgba(30, 41, 59, 0.60)", // slate-900/60
-                border: "1px solid rgba(148, 163, 184, 0.2)", // slate-200/20
-                backdropFilter: "blur(12px)",
-                WebkitBackdropFilter: "blur(12px)",
-              }}
-            >
-              {loadingSaved ? (
-                <div className="flex items-center justify-center p-6 text-slate-300">
-                  Loading...
-                </div>
-              ) : savedPlans.length === 0 ? (
-                <div className="flex items-center justify-center p-6 text-slate-400">
-                  No saved plans yet.
-                </div>
-              ) : (
-                savedPlans.map((saved, idx) => (
-                  <div
-                    key={saved.id}
-                    className={`flex items-center px-3 py-2 text-sm text-slate-50 ${
-                      idx !== savedPlans.length - 1
-                        ? "border-b border-slate-200/20 dark:border-slate-700/40"
-                        : ""
-                    }`}
-                  >
-                    <div className="flex-1 min-w-0 flex flex-col gap-1">
-                      <span className="font-medium truncate text-slate-50">
-                        {saved.planDetails.name || "Meal Plan"}
-                      </span>
-                      <span className="text-xs text-slate-200">
-                        Days: {saved.days?.length ?? "?"}, Meals/Day:{" "}
-                        {saved.days?.[0]?.meals?.length ?? "?"}
-                      </span>
-                      <div className="flex-1 min-w-0 flex gap-1">
-                        <span className="text-xs text-slate-300 truncate max-w-xs">
-                          {saved.planDetails.description || "-"}
-                        </span>
-                        <HoverCard>
-                          <HoverCardTrigger asChild>
-                            <span
-                              className="cursor-pointer inline-flex items-center ml-1"
-                              title="Show more"
-                            >
-                              <MoreHorizontal className="w-4 h-4 text-slate-200" />
-                            </span>
-                          </HoverCardTrigger>
-                          <HoverCardContent className="bg-slate-900/80 text-slate-50 border border-slate-200/20 backdrop-blur-md">
-                            {saved.planDetails.description || "-"}
-                          </HoverCardContent>
-                        </HoverCard>
-                      </div>
+        <aside className="w-full md:w-80 flex-shrink-0 mb-8 md:mb-0 md:sticky md:top-12">
+          <h2 className="text-2xl font-bold mb-4 text-slate-50 flex items-center gap-2">
+            <BookmarkCheck className="w-6 h-6" />
+            Saved Meal Plans
+          </h2>
+          <div
+            className="
+              h-full min-h-30 max-h-60 md:max-h-160 overflow-y-auto
+              rounded-lg border border-slate-200/20 dark:border-slate-700/40 shadow-inner
+              bg-slate-900/60 backdrop-blur-md
+              transition
+            "
+            style={{
+              // fallback for browsers that don't support Tailwind's backdrop-blur
+              background: "rgba(30, 41, 59, 0.60)", // slate-900/60
+              border: "1px solid rgba(148, 163, 184, 0.2)", // slate-200/20
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+            }}
+          >
+            {user && (userRole == "admin" || userRole == "pro") && (
+              <SavedPlans
+                loadingSaved={loadingSaved}
+                savedPlans={savedPlans}
+                handleLoadPlan={handleLoadPlan}
+                handleDeletePlanFromSaved={handleDeletePlanFromSaved}
+              />
+            )}
+            {!user && (
+              <div className="p-6 text-center text-slate-400">
+                Signed in pro users can save meal plans for later.
+              </div>
+            )}
 
-                      <div className="flex gap-1 mt-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleLoadPlan(saved)}
-                          className="px-2 flex-1 h-9 text-slate-50 border-slate-200/30 bg-slate-900/60 backdrop-blur-md hover:bg-slate-800/60 hover:text-green-400"
-                        >
-                          View
-                        </Button>
-                        <Button
-                          variant="destructive"
-                          size="icon"
-                          onClick={() => handleDeletePlanFromSaved(saved.id)}
-                          aria-label="Delete"
-                          className="px-2 h-9 text-slate-50 border-slate-200/30 bg-slate-900/60 backdrop-blur-md hover:bg-red-900/60"
-                        >
-                          <Trash2 className="w-4 h-4 text-slate-200" />
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-          </aside>
-        )}
+            {(user || userRole == "basic") && (
+              <div className="p-6 text-center text-slate-400">
+                <p>Pro users can save meal plans for later.</p>
+                <Link href={"#"} className="text-blue-300">
+                  Sign up here!
+                </Link>
+              </div>
+            )}
+          </div>
+        </aside>
 
         {/* Main Content */}
         <div className="flex-1 w-full md:min-w-0">
@@ -401,6 +373,7 @@ export default function HomePage() {
               stopGeneration={handleStopGeneration}
               handleFormData={handleFormData}
               user={user}
+              userRole={userRole}
             />
           )}
 
