@@ -443,17 +443,40 @@ export function MealPlannerForm({
                 </Select>
               )}
             </div>
-            <Button
-              type="submit"
-              size="lg"
-              className={`w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-slate-50  h-10 ${
-                isLoading ? "hidden md:flex" : ""
-              }`}
-              disabled={isLoading || !user}
-            >
-              <Wand2 className="mr-2 h-5 w-5" />
-              {isLoading ? "Generating..." : "Generate My Plan"}
-            </Button>
+            {!user && (
+              <HoverCard>
+                <HoverCardTrigger>
+                  <Button
+                    type="submit"
+                    size="lg"
+                    className={`w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-slate-50  h-10 ${
+                      isLoading ? "hidden md:flex" : ""
+                    }`}
+                    disabled
+                  >
+                    <Wand2 className="mr-2 h-5 w-5" />
+                    Generate My Plan
+                  </Button>
+                </HoverCardTrigger>
+                <HoverCardContent>
+                  Please sign in to generate your meal plan.
+                </HoverCardContent>
+              </HoverCard>
+            )}
+
+            {user && (
+              <Button
+                type="submit"
+                size="lg"
+                className={`w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-slate-50  h-10 ${
+                  isLoading ? "hidden md:flex" : ""
+                }`}
+                disabled={isLoading}
+              >
+                <Wand2 className="mr-2 h-5 w-5" />
+                {isLoading ? "Generating..." : "Generate My Plan"}
+              </Button>
+            )}
 
             {isLoading && (
               <Button
