@@ -41,8 +41,8 @@ export async function signup(formData: FormData) {
     redirect('/error')
   }
 
-  revalidatePath('/', 'layout')
-  redirect('/')
+  // Redirect to email confirmation waiting page instead of home
+  redirect('/verify-email?email=' + encodeURIComponent(data.email))
 }
 
 export async function logout() {

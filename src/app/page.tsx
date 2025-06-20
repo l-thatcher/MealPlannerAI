@@ -12,7 +12,7 @@ import { experimental_useObject as useObject } from "@ai-sdk/react";
 import { mealPlanSchema } from "./api/generateMealPlan/use-object/mealPlanSchema";
 import { Button } from "@/components/ui/button";
 import { logout } from "@/lib/actions";
-import { createClient } from "@/utils/supabase/client"; // Add this import
+import { createClient } from "@/utils/supabase/client";
 import Link from "next/link";
 import { User } from "@supabase/supabase-js";
 import { BookmarkCheck, Trash2, MoreHorizontal } from "lucide-react";
@@ -31,15 +31,15 @@ export default function HomePage() {
   const [formData, setFormData] = useState<MealPlannerFormData>({
     days: 7,
     mealsPerDay: 3,
-    calories: "2000",
-    protein: "150",
-    carbs: "250",
-    fats: "70",
+    calories: "",
+    protein: "",
+    carbs: "",
+    fats: "",
     dietaryRestrictions: [],
     preferredCuisines: "",
     skillLevel: "",
     excludedIngredients: "",
-    selectedModel: "gpt-4.1-nano",
+    selectedModel: "gpt-4.1-mini",
   });
   const [savedPlans, setSavedPlans] = useState<SavedMealPlan[]>([]);
   const [loadingSaved, setLoadingSaved] = useState(false);
@@ -248,21 +248,25 @@ export default function HomePage() {
   }
 
   return (
-    <main className="relative flex min-h-screen flex-col items-center p-4 sm:p-8 md:p-24 overflow-hidden">
-      <div className="absolute inset-0 -z-20 bg-slate-700" aria-hidden />
-
-      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
-        {/* Blue blob */}
-        <div className="blob blob-blue" />
-        {/* Purple blob */}
-        <div className="blob blob-purple" />
-        {/* Purple pink */}
-        <div className="blob blob-pink" />
-        {/* Green blob */}
-        <div className="blob blob-green" />
-        {/* Overlay for blending */}
-        {/* <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/30 via-purple-900/20 to-pink-900/10 pointer-events-none" /> */}
+    <main className="relative flex min-h-screen flex-col items-center p-4 sm:p-8 md:p-24">
+      <div
+        className="absolute inset-0 -z-20 bg-slate-700 overflow-hidden"
+        aria-hidden
+      >
+        <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+          {/* Blue blob */}
+          <div className="blob blob-blue" />
+          {/* Purple blob */}
+          <div className="blob blob-purple" />
+          {/* Purple pink */}
+          <div className="blob blob-pink" />
+          {/* Green blob */}
+          <div className="blob blob-green" />
+          {/* Overlay for blending */}
+          {/* <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/30 via-purple-900/20 to-pink-900/10 pointer-events-none" /> */}
+        </div>
       </div>
+
       <nav className="flex justify-end mb-6 w-full max-w-7xl">
         {user ? (
           <form action={logout}>

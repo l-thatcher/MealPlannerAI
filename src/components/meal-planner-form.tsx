@@ -42,7 +42,7 @@ const dietaryOptions = [
 ];
 
 const modelOptions = [
-  { id: "gpt-4.1-nano", label: "GPT 4.1 nano" },
+  // { id: "gpt-4.1-nano", label: "GPT 4.1 nano" },
   { id: "gpt-4.1-mini", label: "GPT 4.1 mini" },
   { id: "gpt-4.1", label: "GPT 4.1" },
   { id: "gpt-o3-mini", label: "GPT 3o mini" },
@@ -129,7 +129,7 @@ export function MealPlannerForm({
   };
 
   useEffect(() => {
-    if ((!user && days > 4) || selectedModel === "gpt-4.1-nano") {
+    if ((!user && days > 2) || selectedModel === "gpt-4.1-mini") {
       if (days !== 4 && days > 4) {
         setDays(4);
       }
@@ -165,42 +165,45 @@ export function MealPlannerForm({
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Section 1: Plan Structure */}
           <div className="space-y-4">
-            <h3 className="text-lg font-medium text-slate-50">Plan Basics</h3>
+            <div className="flex items-center justify-start gap-3">
+              <h3 className="text-lg font-medium text-slate-50">Plan Basics</h3>
+
+              {!user && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="w-4 h-4 text-slate-400 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20">
+                      <p>
+                        Unlock up to 14 day plans with the paid plan due to
+                        model limitations.
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+              {user && selectedModel === "gpt-4.1-mini" && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="w-4 h-4 text-slate-400 cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20">
+                      <p>
+                        GPT 4 nano can only generate plans for up to 4 days,
+                        change the model to generate more days
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <Label htmlFor="days" className="text-slate-200">
                   Number of Days:{" "}
                   <span className="text-blue-300 font-semibold">{days}</span>
-                  {!user && (
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Info className="w-4 h-4 text-slate-400 cursor-help" />
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20">
-                          <p>
-                            Unlock up to 14 day plans with the paid plan due to
-                            model limitations.
-                          </p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  )}
-                  {user && selectedModel === "gpt-4.1-nano" && (
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Info className="w-4 h-4 text-slate-400 cursor-help" />
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20">
-                          <p>
-                            GPT 4 nano can only generate plans for up to 4 days,
-                            change the model to generate more days
-                          </p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  )}
                 </Label>
                 <Slider
                   id="days"
@@ -446,7 +449,7 @@ export function MealPlannerForm({
               className={`w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-slate-50  h-10 ${
                 isLoading ? "hidden md:flex" : ""
               }`}
-              disabled={isLoading}
+              disabled={isLoading || !user}
             >
               <Wand2 className="mr-2 h-5 w-5" />
               {isLoading ? "Generating..." : "Generate My Plan"}

@@ -34,7 +34,7 @@ export function PlanGenerationError({
             <CardTitle className="text-red-400">Generation Failed</CardTitle>
           </div>
           <CardDescription className="text-slate-300">
-            We couldn`&apos;`t generate your meal plan
+            We couldn&apos;t generate your meal plan
           </CardDescription>
         </CardHeader>
         <CardContent className="pt-4">
