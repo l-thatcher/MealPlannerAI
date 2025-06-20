@@ -15,7 +15,7 @@ import { logout } from "@/lib/actions";
 import { createClient } from "@/utils/supabase/client";
 import Link from "next/link";
 import { User } from "@supabase/supabase-js";
-import { BookmarkCheck, Trash2, MoreHorizontal } from "lucide-react";
+import { BookmarkCheck } from "lucide-react";
 import PlanGeneratingWindow from "@/components/plan-generating-window";
 import { PlanGenerationError } from "@/components/plan-generation-error";
 import { SavedPlans } from "@/components/saved-plans";

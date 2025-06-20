@@ -1,4 +1,4 @@
-import { BookmarkCheck, MoreHorizontal, Trash2 } from "lucide-react";
+import { MoreHorizontal, Trash2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
 import { SavedMealPlansProps } from "@/types/interfaces";
