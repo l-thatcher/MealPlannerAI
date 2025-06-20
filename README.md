@@ -20,7 +20,7 @@ plAIte is an AI-powered meal planning application built with [Next.js](https://n
 ### 1. Clone the Repository
 
 ```sh
-git clone https://github.com/your-username/plAIte.git
+git clone https://github.com/l-thatcher/MealPlannerAI.git
 cd plAIte
 ```
 
@@ -105,5 +105,3 @@ See [Next.js deployment documentation](https://nextjs.org/docs/app/building-your
 - **UI Styling**: Modify [`src/app/globals.css`](src/app/globals.css) and component classes for custom themes.
 
 ---
-
-## Contributing
