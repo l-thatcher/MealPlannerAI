@@ -55,7 +55,7 @@ export function MealPlannerForm({
   stopGeneration,
   handleFormData,
   user,
-  userRole = "guest",
+  userRole = "basic",
 }: MealPlannerFormProps) {
   const [days, setDays] = useState(initialFormData.days);
   const [mealsPerDay, setMealsPerDay] = useState(initialFormData.mealsPerDay);
@@ -73,6 +73,9 @@ export function MealPlannerForm({
   const [skillLevel, setSkillLevel] = useState(initialFormData.skillLevel);
   const [excludedIngredients, setExcludedIngredients] = useState(
     initialFormData.excludedIngredients
+  );
+  const [extraInstructions, setextraInstructions] = useState(
+    initialFormData.extraInstructions
   );
   const [selectedModel, setSelectedModel] = useState(
     initialFormData.selectedModel
@@ -93,6 +96,7 @@ export function MealPlannerForm({
       preferredCuisines,
       skillLevel,
       excludedIngredients,
+      extraInstructions,
       selectedModel,
     };
     setCurrentFormData(newFormData);
@@ -130,12 +134,23 @@ export function MealPlannerForm({
   };
 
   useEffect(() => {
-    if ((!user && days > 2) || selectedModel === "gpt-4.1-mini") {
-      if (days !== 4 && days > 4) {
-        setDays(4);
+    if (
+      (user && userRole === "basic" && days > 5) ||
+      (user && selectedModel === "gpt-4.1-mini")
+    ) {
+      if (days !== 5 && days > 5) {
+        setDays(5);
       }
     }
   }, [days, user, selectedModel]);
+
+  // useEffect(() => {
+  //   if (!user && days > 3) {
+  //     if (days !== 3 && days > 3) {
+  //       setDays(3);
+  //     }
+  //   }
+  // }, [days, user, selectedModel]);
 
   return (
     <Card
@@ -169,7 +184,7 @@ export function MealPlannerForm({
             <div className="flex items-center justify-start gap-3">
               <h3 className="text-lg font-medium text-slate-50">Plan Basics</h3>
 
-              {!user && (
+              {user && userRole === "basic" && (
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -177,28 +192,31 @@ export function MealPlannerForm({
                     </TooltipTrigger>
                     <TooltipContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20">
                       <p>
-                        Unlock up to 14 day plans with the paid plan due to
-                        model limitations.
+                        {
+                          "Unlock up to 14 day plans with the paid plan due to model limitations."
+                        }
                       </p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               )}
-              {user && selectedModel === "gpt-4.1-mini" && (
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="w-4 h-4 text-slate-400 cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20">
-                      <p>
-                        GPT 4 nano can only generate plans for up to 4 days,
-                        change the model to generate more days
-                      </p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              )}
+              {user &&
+                selectedModel === "gpt-4.1-mini" &&
+                (userRole === "admin" || userRole === "pro") && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Info className="w-4 h-4 text-slate-400 cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20">
+                        <p>
+                          GPT 4 mini can only generate plans for up to 5 days,
+                          change the model to generate more days
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -385,13 +403,50 @@ export function MealPlannerForm({
                 placeholder="List any ingredients you dislike..."
                 value={excludedIngredients}
                 onChange={(e) => {
-                  if (!user) {
+                  if (userRole === "basic") {
                     setExcludedIngredients("");
                   } else {
                     setExcludedIngredients(e.target.value);
                   }
                 }}
-                disabled={!user}
+                disabled={!!user && userRole === "basic"}
+                className="bg-slate-800/60 text-slate-50 border-slate-200/20 placeholder:text-slate-400"
+              />
+            </div>
+
+            <div>
+              <div className="flex items-center gap-2">
+                <Label htmlFor="exclude" className="text-slate-200">
+                  Other Instructions
+                  {!user && (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="w-4 h-4 text-slate-400 cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20">
+                          <p>
+                            Extra instructions are only available on the paid
+                            plan.
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
+                </Label>
+              </div>
+              <Textarea
+                id="exclude"
+                placeholder="List any other instructions or preferences, such as high protien meals."
+                value={extraInstructions}
+                onChange={(e) => {
+                  if (userRole === "basic") {
+                    setextraInstructions("");
+                  } else {
+                    setextraInstructions(e.target.value);
+                  }
+                }}
+                disabled={!!user && userRole === "basic"}
                 className="bg-slate-800/60 text-slate-50 border-slate-200/20 placeholder:text-slate-400"
               />
             </div>
@@ -399,7 +454,7 @@ export function MealPlannerForm({
 
           <div className="flex flex-col md:flex-row justify-end gap-2">
             <div className="flex items-center space-x-2">
-              {(!user || userRole === "basic" || userRole === "guest") && (
+              {(!user || userRole === "basic") && (
                 <HoverCard>
                   <HoverCardTrigger asChild>
                     <span
@@ -411,7 +466,7 @@ export function MealPlannerForm({
                           id="model"
                           className="w-full bg-slate-800/60 text-slate-50 border-slate-200/20"
                         >
-                          <SelectValue placeholder={"GPT 4.1 micro"} />
+                          <SelectValue placeholder={"GPT 4.1 mini"} />
                         </SelectTrigger>
                       </Select>
                     </span>

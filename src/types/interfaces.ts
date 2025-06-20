@@ -54,6 +54,7 @@ export interface MealPlannerFormData {
   preferredCuisines: string;
   skillLevel: string;
   excludedIngredients: string;
+  extraInstructions: string;
   selectedModel: string;
 }
 
@@ -64,7 +65,7 @@ export interface MealPlannerFormProps {
   stopGeneration: () => void; 
   handleFormData: (formData: MealPlannerFormData) => void;
   user: User| null;
-  userRole?: string | "guest";
+  userRole?: string | "basic";
 }
 
 // MEAL PLANNER GENERATION INTERFACES

@@ -38,7 +38,7 @@ export async function POST(req: Request) {
 
 
     let dailyLimit = 8000; // Adjust based on your limits
-    let userRole = 'guest'; // Default role
+    let userRole = 'basic'; // Default role
     
     console.log("Auth response:", { user: !!user, error: authError });
     
@@ -73,9 +73,8 @@ export async function POST(req: Request) {
           dailyLimit = 16000; // Higher limit for pro users
           break;
         case 'basic':
-        case 'guest':
         default:
-          dailyLimit = 8000; // Default limit for basic users and guests
+          dailyLimit = 8000; // Default limit for basic users
           break;
       }
 

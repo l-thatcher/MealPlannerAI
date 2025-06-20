@@ -11,7 +11,7 @@ plAIte is an AI-powered meal planning application built with [Next.js](https://n
 - **Save & Manage Plans**: Save generated meal plans to your account, view, and delete them at any time.
 - **Shopping List**: Automatically generated, categorized shopping lists for each plan.
 - **Responsive UI**: Modern, mobile-friendly interface with interactive components.
-- **Role-based Limits**: Daily token usage limits based on user role (guest, basic, pro).
+- **Role-based Limits**: Daily token usage limits based on user role (basic, pro, admin).
 
 ---
 

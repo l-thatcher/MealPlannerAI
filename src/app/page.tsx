@@ -22,7 +22,7 @@ import { SavedPlans } from "@/components/saved-plans";
 
 export default function HomePage() {
   const [user, setUser] = useState<User | null>(null);
-  const [userRole, setUserRole] = useState<string>("Guest");
+  const [userRole, setUserRole] = useState<string>("basic");
   const [plan, setPlan] = useState<MealPlan | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<MealPlannerFormData>({
@@ -36,6 +36,7 @@ export default function HomePage() {
     preferredCuisines: "",
     skillLevel: "",
     excludedIngredients: "",
+    extraInstructions: "",
     selectedModel: "gpt-4.1-mini",
   });
   const [savedPlans, setSavedPlans] = useState<SavedMealPlan[]>([]);
@@ -163,9 +164,9 @@ export default function HomePage() {
 
       if (error) {
         console.error("Error fetching user role:", error);
-        setUserRole("Guest");
+        setUserRole("basic");
       } else {
-        setUserRole(data.role || "Guest");
+        setUserRole(data.role || "basic");
       }
     };
 
@@ -352,7 +353,7 @@ export default function HomePage() {
               </div>
             )}
 
-            {(user || userRole == "basic") && (
+            {user && userRole == "basic" && (
               <div className="p-6 text-center text-slate-400">
                 <p>Pro users can save meal plans for later.</p>
                 <Link href={"#"} className="text-blue-300">
