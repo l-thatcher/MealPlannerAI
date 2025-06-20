@@ -15,16 +15,19 @@ import { AuthFormProps } from "@/types/interfaces";
 
 export function SignUpForm({ className, action, ...props }: AuthFormProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     setIsLoading(true);
-    if (action) {
-      if (typeof action === "function") {
-        e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        Promise.resolve(action(formData)).finally(() => setIsLoading(false));
+    setErrorMsg(null);
+    if (action && typeof action === "function") {
+      e.preventDefault();
+      const formData = new FormData(e.currentTarget);
+      const result = await action(formData);
+      if (result?.error) {
+        setErrorMsg(result.error);
       }
-      // else, let the form submit (for server actions)
+      setIsLoading(false);
     }
   };
 
@@ -38,7 +41,7 @@ export function SignUpForm({ className, action, ...props }: AuthFormProps) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={action} onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit}>
             <div className="grid gap-6">
               <div className="flex flex-col gap-4">
                 <Button
@@ -110,6 +113,11 @@ export function SignUpForm({ className, action, ...props }: AuthFormProps) {
                 <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? "Loading..." : "Sign Up"}
                 </Button>
+                {errorMsg && (
+                  <div className="text-red-500 text-sm text-center">
+                    {errorMsg}
+                  </div>
+                )}
               </div>
               <div className="text-center text-sm">
                 Already have an account?{" "}

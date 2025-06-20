@@ -15,14 +15,20 @@ import { AuthFormProps } from "@/types/interfaces";
 
 export function LoginForm({ className, action, ...props }: AuthFormProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     setIsLoading(true);
+    setErrorMsg(null);
     if (action) {
       if (typeof action === "function") {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
-        Promise.resolve(action(formData)).finally(() => setIsLoading(false));
+        const result = await action(formData);
+        if (result?.error) {
+          setErrorMsg(result.error);
+        }
+        setIsLoading(false);
       }
       // else, let the form submit (for server actions)
     }
@@ -38,7 +44,7 @@ export function LoginForm({ className, action, ...props }: AuthFormProps) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={action} onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit}>
             <div className="grid gap-6">
               <div className="flex flex-col gap-4">
                 <Button
@@ -94,7 +100,7 @@ export function LoginForm({ className, action, ...props }: AuthFormProps) {
                   <div className="flex items-center">
                     <Label htmlFor="password">Password</Label>
                     <a
-                      href="#"
+                      href="/forgot-password"
                       className="ml-auto text-sm underline-offset-4 hover:underline"
                     >
                       Forgot your password?
@@ -112,6 +118,11 @@ export function LoginForm({ className, action, ...props }: AuthFormProps) {
                 <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? "Loading..." : "Log In"}
                 </Button>
+                {errorMsg && (
+                  <div className="text-red-500 text-sm text-center">
+                    {errorMsg}
+                  </div>
+                )}
               </div>
               <div className="text-center text-sm">
                 Don&apos;t have an account?{" "}

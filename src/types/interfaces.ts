@@ -93,7 +93,7 @@ export interface ShoppingListCardProps {
 
 // AUTH INTERFACES
 export interface AuthFormProps extends React.ComponentProps<"div"> {
-  action: (formData: FormData) => Promise<void>;
+  action: (formData: FormData) => Promise<{ error?: string }>;
 }
 
 // SAVED MEAL PLANS INTERFACES

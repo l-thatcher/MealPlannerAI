@@ -26,7 +26,7 @@ export default function HomePage() {
   const [plan, setPlan] = useState<MealPlan | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<MealPlannerFormData>({
-    days: 7,
+    days: 5,
     mealsPerDay: 3,
     calories: "",
     protein: "",
@@ -212,11 +212,7 @@ export default function HomePage() {
   };
 
   const handlePlanDeletedFromForm = async (planId: string) => {
-    await fetch("/api/deleteMealPlan", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ user_id: user?.id, plan_id: planId }),
-    });
+    deleteFromDB(planId);
     setSavedPlans((prev) => prev.filter((p) => p.id !== planId));
     setDeletedPlanId(planId);
   };
@@ -400,12 +396,8 @@ export default function HomePage() {
               onNewPlan={handleStartNewPlan}
               savedPlanId={currentSavedPlanId}
               onPlanSaved={handlePlanSavedFromForm}
-              onPlanDeleted={
-                currentSavedPlanId
-                  ? (planId) => handlePlanDeletedFromForm(planId)
-                  : undefined
-              }
-              deletedPlanId={deletedPlanId} // Pass null if no plan is saved
+              onPlanDeleted={handlePlanDeletedFromForm}
+              deletedPlanId={deletedPlanId}
             />
           )}
         </div>
