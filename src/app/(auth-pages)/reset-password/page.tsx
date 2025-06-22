@@ -1,7 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import { useSearchParams } from "next/navigation";
-import { createClient } from "@/utils/supabase/client";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -13,47 +11,32 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
+import { resetPassword } from "@/lib/actions";
 
 export default function ResetPasswordPage() {
-  const searchParams = useSearchParams();
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState(""); // New state
   const [status, setStatus] = useState<
     "idle" | "loading" | "success" | "error"
   >("idle");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  // Supabase sends token_hash in the URL when PKCE is enabled
-  const tokenHash = searchParams.get("token_hash");
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setStatus("loading");
     setErrorMsg(null);
 
-    if (!tokenHash) {
-      setErrorMsg("Invalid or missing token.");
+    if (password !== confirmPassword) {
+      setErrorMsg("Passwords do not match.");
       setStatus("error");
       return;
     }
 
-    const supabase = createClient();
+    setStatus("loading");
 
-    // Correct usage: pass tokenHash as a string
-    const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(
-      tokenHash
-    );
+    const result = await resetPassword(password);
 
-    if (exchangeError) {
-      setErrorMsg(exchangeError.message);
-      setStatus("error");
-      return;
-    }
-
-    // Now update the password
-    const { error } = await supabase.auth.updateUser({ password });
-
-    if (error) {
-      setErrorMsg(error.message);
+    if (result?.error) {
+      setErrorMsg(result.error);
       setStatus("error");
     } else {
       setStatus("success");
@@ -98,6 +81,20 @@ export default function ResetPasswordPage() {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    disabled={status === "loading"}
+                  />
+                </div>
+                <div className="grid gap-3">
+                  <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                  <Input
+                    id="confirmPassword"
+                    type="password"
+                    name="confirmPassword"
+                    autoComplete="new-password"
+                    placeholder="Re-enter new password"
+                    required
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
                     disabled={status === "loading"}
                   />
                 </div>

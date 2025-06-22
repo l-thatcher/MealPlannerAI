@@ -24,7 +24,9 @@ export default function ForgotPasswordPage() {
     e.preventDefault();
     setStatus("loading");
     setErrorMsg(null);
+
     const result = await forgotPassword(email);
+
     if (result?.error) {
       setErrorMsg(result.error);
       setStatus("error");

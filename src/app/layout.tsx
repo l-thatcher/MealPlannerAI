@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "plaAIte",
+  title: "plAIte",
   description: "AI meal planning app",
 };
 

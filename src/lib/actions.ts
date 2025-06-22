@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 import { createClient } from '@/utils/supabase/server'
+import { UserResponse } from '@supabase/supabase-js'
 
 export async function login(formData: FormData): Promise<{ error?: string }> {
   const supabase = await createClient();
@@ -56,16 +57,32 @@ export async function logout() {
   redirect('/')
 }
 
-// export async function forgotPassword(email: string): Promise<{ error?: string, data?: any }> {
-//   const supabase = await createClient();
+export async function forgotPassword(email: string): Promise<{ error?: string, data?: Record<string, never> }> {
+  const supabase = await createClient();
 
-//   const { data, error } = await supabase.auth.resetPasswordForEmail(email);
+  const { data, error } = await supabase.auth.resetPasswordForEmail(email);
 
-//   if (error) {
-//     return { error: error.message };
-//   }
+  if (error) {
+    return { error: error.message };
+  }
 
-//   return { data };
-// }
+  return { data };
+}
+
+export async function resetPassword(newPassword: string): Promise<{ error?: string, data?: UserResponse['data'] }> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.auth.updateUser({
+    password: newPassword
+  });
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  console.log('Password reset successful:', data);
+
+  return { data };
+}
 
 

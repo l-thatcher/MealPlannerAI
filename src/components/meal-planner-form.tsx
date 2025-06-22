@@ -112,6 +112,7 @@ export function MealPlannerForm({
     skillLevel,
     excludedIngredients,
     selectedModel,
+    extraInstructions,
   ]);
 
   useEffect(() => {
@@ -142,7 +143,7 @@ export function MealPlannerForm({
         setDays(5);
       }
     }
-  }, [days, user, selectedModel]);
+  }, [days, user, selectedModel, userRole]);
 
   // useEffect(() => {
   //   if (!user && days > 3) {
