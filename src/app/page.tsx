@@ -352,7 +352,7 @@ export default function HomePage() {
             {user && userRole == "basic" && (
               <div className="p-6 text-center text-slate-400">
                 <p>Pro users can save meal plans for later.</p>
-                <Link href={"#"} className="text-blue-300">
+                <Link href={"/stripe/subscriptions"} className="text-blue-300">
                   Sign up here!
                 </Link>
               </div>

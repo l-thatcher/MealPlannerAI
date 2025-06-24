@@ -108,3 +108,14 @@ export interface SavedMealPlansProps {
   handleLoadPlan: (plan: SavedMealPlan) => void;
   handleDeletePlanFromSaved: (planId: string) => void;
 }
+
+// STRIPE INTERFACES
+export interface StripeSubscription {
+  id: string;
+  customer: string;
+  status: string;
+  metadata: {
+    userId?: string;
+    [key: string]: string | undefined;
+  };
+}
