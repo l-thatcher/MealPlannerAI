@@ -33,7 +33,6 @@ interface UserData {
 export default function AccountPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingUser, setIsLoadingUser] = useState(true);
-  const [user, setUser] = useState<User | null>(null);
   const [userData, setUserData] = useState<UserData | null>(null);
 
   useEffect(() => {
