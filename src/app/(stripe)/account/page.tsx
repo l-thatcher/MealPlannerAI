@@ -17,7 +17,6 @@ import {
   Shield,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { User } from "@supabase/supabase-js";
 import { createClient } from "@/utils/supabase/client";
 import { Separator } from "@radix-ui/react-select";
 import Link from "next/link";
