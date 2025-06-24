@@ -286,14 +286,19 @@ export default function HomePage() {
 
       <nav className="flex justify-end mb-6 w-full max-w-7xl">
         {user ? (
-          <form action={logout}>
-            <Button
-              type="submit"
-              className="text-sm px-4 py-2 rounded-md bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-700 transition"
-            >
-              Log out
+          <div className="flex flex-col items-end gap-4">
+            <Button className="text-sm px-4 py-2 rounded-md bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-700 transition">
+              <Link href="/account">Account</Link>
             </Button>
-          </form>
+            <form action={logout}>
+              <Button
+                type="submit"
+                className="text-sm px-4 py-2 rounded-md bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-700 transition"
+              >
+                Log out
+              </Button>
+            </form>
+          </div>
         ) : (
           <Button
             asChild
@@ -352,7 +357,7 @@ export default function HomePage() {
             {user && userRole == "basic" && (
               <div className="p-6 text-center text-slate-400">
                 <p>Pro users can save meal plans for later.</p>
-                <Link href={"/stripe/subscriptions"} className="text-blue-300">
+                <Link href={"/subscriptions"} className="text-blue-300">
                   Sign up here!
                 </Link>
               </div>

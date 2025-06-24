@@ -33,6 +33,7 @@ export function MealPlanResults({
   onPlanSaved,
   onPlanDeleted,
   deletedPlanId = null,
+  userRole = "basic",
 }: MealPlanResultsProps) {
   const [showShoppingList, setShowShoppingList] = useState(false);
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
@@ -138,7 +139,7 @@ export function MealPlanResults({
           {showShoppingList ? "Hide Shopping List" : "Show Shopping List"}
         </Button>
         <Button
-          variant={user ? "outline" : "secondary"}
+          variant={userRole === "basic" ? "outline" : "secondary"}
           className={`text-slate-50 border-slate-200/30 bg-slate-900/60 hover:bg-slate-800/60 ${
             savedPlanId ? "hover:text-red-500" : "hover:text-green-400"
           }`}

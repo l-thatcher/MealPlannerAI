@@ -40,6 +40,7 @@ export interface MealPlanResultsProps {
   onPlanSaved?: (planId: string) => void;
   onPlanDeleted?: (planId: string) => void;
   deletedPlanId?: string | null;
+  userRole?: string | "basic";
 }
 
 // MEAL PLANNER FORM INTERFACES
@@ -119,3 +120,4 @@ export interface StripeSubscription {
     [key: string]: string | undefined;
   };
 }
+
