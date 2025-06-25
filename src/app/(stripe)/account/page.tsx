@@ -121,12 +121,42 @@ export default function AccountPage() {
     switch (role.toLowerCase()) {
       case "admin":
         return "destructive";
-      case "premium":
-        return "default";
       case "pro":
         return "secondary";
       default:
         return "outline";
+    }
+  };
+
+  const getRoleTextColor = (role: string) => {
+    switch (role.toLowerCase()) {
+      case "pro":
+        return "text-slate-900";
+      case "admin":
+      case "basic":
+      default:
+        return "text-slate-50";
+    }
+  };
+
+  const getSubscriptionBadgeVariant = (role: string) => {
+    switch (role.toLowerCase()) {
+      case "admin":
+      case "pro":
+        return "default";
+      default:
+        return "outline";
+    }
+  };
+
+  const geSubscriptionBackgroundColor = (role: string) => {
+    switch (role.toLowerCase()) {
+      case "pro":
+      case "admin":
+        return "bg-green-500";
+      case "basic":
+      default:
+        return "";
     }
   };
 
@@ -195,7 +225,9 @@ export default function AccountPage() {
                     </div>
                     <Badge
                       variant={getRoleBadgeVariant(userData.role)}
-                      className="capitalize"
+                      className={`capitalize ${getRoleTextColor(
+                        userData.role
+                      )}`}
                     >
                       {userData.role}
                     </Badge>
@@ -210,12 +242,10 @@ export default function AccountPage() {
                         </span>
                       </div>
                       <Badge
-                        variant={
-                          userData.subscriptionStatus === "active"
-                            ? "default"
-                            : "outline"
-                        }
-                        className="capitalize"
+                        variant={getSubscriptionBadgeVariant(userData.role)}
+                        className={`capitalize ${getRoleTextColor(
+                          userData.role
+                        )} ${geSubscriptionBackgroundColor(userData.role)}`}
                       >
                         {userData.subscriptionStatus}
                         {userData.planType && ` - ${userData.planType}`}
@@ -236,28 +266,48 @@ export default function AccountPage() {
               Manage Plan
             </CardTitle>
             <CardDescription className="text-slate-200">
-              Update your payment details, change plans, or cancel your
-              subscription
+              {userData?.subscriptionStatus === "active"
+                ? "Update your payment details, change plans, or cancel your subscription"
+                : "Upgrade to a premium plan to unlock advanced features"}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 gap-4">
-              <div className="p-4 bg-slate-800/40 rounded-lg border border-slate-200/10">
-                <h4 className="text-slate-50 font-medium mb-2">
-                  Billing Portal
-                </h4>
-                <p className="text-slate-300 text-sm mb-3">
-                  Access your complete billing history, update payment methods,
-                  and manage your subscription directly through Stripe.
-                </p>
-                <Button
-                  onClick={handleManageSubscription}
-                  disabled={isLoading}
-                  className="w-full bg-blue-600 hover:bg-blue-700"
-                >
-                  {isLoading ? "Loading..." : "Open Billing Portal"}
-                </Button>
-              </div>
+              {userData?.subscriptionStatus === "active" ? (
+                <div className="p-4 bg-slate-800/40 rounded-lg border border-slate-200/10">
+                  <h4 className="text-slate-50 font-medium mb-2">
+                    Billing Portal
+                  </h4>
+                  <p className="text-slate-300 text-sm mb-3">
+                    Access your complete billing history, update payment
+                    methods, and manage your subscription directly through
+                    Stripe.
+                  </p>
+                  <Button
+                    onClick={handleManageSubscription}
+                    disabled={isLoading}
+                    className="w-full bg-blue-600 hover:bg-blue-700"
+                  >
+                    {isLoading ? "Loading..." : "Open Billing Portal"}
+                  </Button>
+                </div>
+              ) : (
+                <div className="p-4 bg-slate-800/40 rounded-lg border border-slate-200/10">
+                  <h4 className="text-slate-50 font-medium mb-2">
+                    Upgrade Your Plan
+                  </h4>
+                  <p className="text-slate-300 text-sm mb-3">
+                    Get access to premium features including unlimited meal
+                    plans, advanced dietary preferences, and priority support.
+                  </p>
+                  <Button
+                    asChild
+                    className="w-full bg-green-600 hover:bg-green-700"
+                  >
+                    <Link href="/subscriptions">View Subscription Plans</Link>
+                  </Button>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
