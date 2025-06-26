@@ -27,10 +27,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Info } from "lucide-react";
+import { Info, Calendar, Target, Users, Sparkles } from "lucide-react";
 import { Wand2, StopCircle } from "lucide-react";
 import { MealPlannerFormData, MealPlannerFormProps } from "@/types/interfaces";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
+import Link from "next/link";
 
 const dietaryOptions = [
   { id: "vegetarian", label: "Vegetarian" },
@@ -154,197 +155,284 @@ export function MealPlannerForm({
   // }, [days, user, selectedModel]);
 
   return (
-    <Card
-      className="
-    w-full
-    border border-slate-200/20 dark:border-slate-700/40
-    bg-slate-900/60
-    backdrop-blur-md
-    shadow-xl
-    text-slate-50
-  "
-      style={{
-        background: "rgba(30, 41, 59, 0.60)", // slate-900/60
-        border: "1px solid rgba(148, 163, 184, 0.2)", // slate-200/20
-        backdropFilter: "blur(12px)",
-        WebkitBackdropFilter: "blur(12px)",
-      }}
-    >
-      <CardHeader>
-        <CardTitle className="text-2xl text-slate-50">
-          Create Your Plan
-        </CardTitle>
-        <CardDescription className="text-slate-200">
-          Fill out your details below to get started.
-        </CardDescription>
+    <Card className="w-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl hover:shadow-3xl transition-all duration-300">
+      <CardHeader className="space-y-6 pb-8">
+        <div className="flex items-center gap-4">
+          <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+            <Wand2 className="w-7 h-7 text-white" />
+          </div>
+          <div className="flex-1">
+            <CardTitle className="text-3xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
+              Create Your Perfect Meal Plan
+            </CardTitle>
+            <CardDescription className="text-slate-300 text-lg leading-relaxed">
+              Customize every detail to create a personalized nutrition plan
+              that fits your lifestyle
+            </CardDescription>
+          </div>
+        </div>
       </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-8">
+      <CardContent className="space-y-10">
+        <form onSubmit={handleSubmit} className="space-y-10">
           {/* Section 1: Plan Structure */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-start gap-3">
-              <h3 className="text-lg font-medium text-slate-50">Plan Basics</h3>
+          <div className="space-y-6 p-6 bg-white/5 rounded-xl border border-white/10">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                  <Calendar className="w-5 h-5 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold text-white">
+                  Plan Structure
+                </h3>
+              </div>
 
-              {user && userRole === "basic" && (
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="w-4 h-4 text-slate-400 cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20">
-                      <p>
-                        {
-                          "Unlock up to 14 day plans with the paid plan due to model limitations."
-                        }
-                      </p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              )}
-              {user &&
-                selectedModel === "gpt-4.1-mini" &&
-                (userRole === "admin" || userRole === "pro") && (
+              <div className="flex items-center gap-2">
+                {user && userRole === "basic" && (
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Info className="w-4 h-4 text-slate-400 cursor-help" />
+                        <div className="flex items-center gap-1 px-2 py-1 bg-yellow-500/20 rounded-full">
+                          <Info className="w-3 h-3 text-yellow-400" />
+                          <span className="text-xs text-yellow-400">
+                            Limited
+                          </span>
+                        </div>
                       </TooltipTrigger>
                       <TooltipContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20">
                         <p>
-                          GPT 4 mini can only generate plans for up to 5 days,
-                          change the model to generate more days
+                          Unlock up to 14 day plans with the paid plan due to
+                          model limitations.
                         </p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                 )}
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <Label htmlFor="days" className="text-slate-200">
-                  Number of Days:{" "}
-                  <span className="text-blue-300 font-semibold">{days}</span>
-                </Label>
-                <Slider
-                  id="days"
-                  value={[days]}
-                  defaultValue={[4]}
-                  max={14}
-                  min={1}
-                  step={1}
-                  onValueChange={(value) => setDays(value[0])}
-                />
+                {user &&
+                  selectedModel === "gpt-4.1-mini" &&
+                  (userRole === "admin" || userRole === "pro") && (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div className="flex items-center gap-1 px-2 py-1 bg-blue-500/20 rounded-full">
+                            <Info className="w-3 h-3 text-blue-400" />
+                            <span className="text-xs text-blue-400">
+                              Model Limit
+                            </span>
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20">
+                          <p>
+                            GPT 4 mini can only generate plans for up to 5 days,
+                            change the model to generate more days
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
               </div>
-              <div>
-                <Label htmlFor="mealsPerDay" className="text-slate-200">
-                  Meals Per Day:{" "}
-                  <span className="text-blue-300 font-semibold">
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-3">
+                <Label
+                  htmlFor="days"
+                  className="text-slate-200 font-medium flex items-center justify-between"
+                >
+                  Number of Days
+                  <span className="px-3 py-1 bg-blue-500/20 rounded-full text-blue-300 font-bold text-sm">
+                    {days}
+                  </span>
+                </Label>
+                <div className="px-4 py-3 bg-white/5 rounded-lg border border-white/10">
+                  <Slider
+                    id="days"
+                    value={[days]}
+                    defaultValue={[4]}
+                    max={14}
+                    min={1}
+                    step={1}
+                    onValueChange={(value) => setDays(value[0])}
+                    className="slider-enhanced"
+                  />
+                  <div className="flex justify-between text-xs text-slate-400 mt-2">
+                    <span>1</span>
+                    <span>14</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <Label
+                  htmlFor="mealsPerDay"
+                  className="text-slate-200 font-medium flex items-center justify-between"
+                >
+                  Meals Per Day
+                  <span className="px-3 py-1 bg-purple-500/20 rounded-full text-purple-300 font-bold text-sm">
                     {mealsPerDay}
                   </span>
                 </Label>
-                <Slider
-                  id="mealsPerDay"
-                  value={[mealsPerDay]}
-                  defaultValue={[3]}
-                  max={5}
-                  min={2}
-                  step={1}
-                  onValueChange={(value) => setMealsPerDay(value[0])}
-                />
+                <div className="px-4 py-3 bg-white/5 rounded-lg border border-white/10">
+                  <Slider
+                    id="mealsPerDay"
+                    value={[mealsPerDay]}
+                    defaultValue={[3]}
+                    max={5}
+                    min={2}
+                    step={1}
+                    onValueChange={(value) => setMealsPerDay(value[0])}
+                    className="slider-enhanced"
+                  />
+                  <div className="flex justify-between text-xs text-slate-400 mt-2">
+                    <span>2</span>
+                    <span>5</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          {/* Section 2: Macro Goals */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-medium text-slate-50">
-              Nutrition Goals
-            </h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div>
-                <Label htmlFor="calories" className="text-slate-200">
+          {/* Section 2: Nutrition Goals */}
+          <div className="space-y-6 p-6 bg-white/5 rounded-xl border border-white/10">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-blue-500 rounded-lg flex items-center justify-center">
+                <Target className="w-5 h-5 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold text-white">
+                Nutrition Goals
+              </h3>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="space-y-3">
+                <Label
+                  htmlFor="calories"
+                  className="text-slate-200 font-medium flex items-center gap-2"
+                >
+                  <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
                   Calories (kcal)
                 </Label>
                 <Input
                   id="calories"
                   type="number"
                   placeholder="e.g., 2200"
-                  // value={calories}
                   onChange={(e) => setCalories(e.target.value)}
-                  className="bg-slate-800/60 text-slate-50 border-slate-200/20 placeholder:text-slate-400"
+                  className="bg-white/10 text-white border-white/20 placeholder:text-slate-400 focus:border-yellow-400/50 focus:ring-yellow-400/20 transition-all duration-300"
                 />
               </div>
-              <div>
-                <Label htmlFor="protein" className="text-slate-200">
+
+              <div className="space-y-3">
+                <Label
+                  htmlFor="protein"
+                  className="text-slate-200 font-medium flex items-center gap-2"
+                >
+                  <div className="w-3 h-3 rounded-full bg-green-400"></div>
                   Protein (g)
                 </Label>
                 <Input
                   id="protein"
                   type="number"
                   placeholder="e.g., 150"
-                  // value={protein}
                   onChange={(e) => setProtein(e.target.value)}
-                  className="bg-slate-800/60 text-slate-50 border-slate-200/20 placeholder:text-slate-400"
+                  className="bg-white/10 text-white border-white/20 placeholder:text-slate-400 focus:border-green-400/50 focus:ring-green-400/20 transition-all duration-300"
                 />
               </div>
-              <div>
-                <Label htmlFor="carbs" className="text-slate-200">
+
+              <div className="space-y-3">
+                <Label
+                  htmlFor="carbs"
+                  className="text-slate-200 font-medium flex items-center gap-2"
+                >
+                  <div className="w-3 h-3 rounded-full bg-blue-400"></div>
                   Carbs (g)
                 </Label>
                 <Input
                   id="carbs"
                   type="number"
                   placeholder="e.g., 200"
-                  // value={carbs}
                   onChange={(e) => setCarbs(e.target.value)}
-                  className="bg-slate-800/60 text-slate-50 border-slate-200/20 placeholder:text-slate-400"
+                  className="bg-white/10 text-white border-white/20 placeholder:text-slate-400 focus:border-blue-400/50 focus:ring-blue-400/20 transition-all duration-300"
                 />
               </div>
-              <div>
-                <Label htmlFor="fats" className="text-slate-200">
+
+              <div className="space-y-3">
+                <Label
+                  htmlFor="fats"
+                  className="text-slate-200 font-medium flex items-center gap-2"
+                >
+                  <div className="w-3 h-3 rounded-full bg-purple-400"></div>
                   Fats (g)
                 </Label>
                 <Input
                   id="fats"
                   type="number"
                   placeholder="e.g., 80"
-                  // value={fats}
                   onChange={(e) => setFats(e.target.value)}
-                  className="bg-slate-800/60 text-slate-50 border-slate-200/20 placeholder:text-slate-400"
+                  className="bg-white/10 text-white border-white/20 placeholder:text-slate-400 focus:border-purple-400/50 focus:ring-purple-400/20 transition-all duration-300"
                 />
               </div>
             </div>
           </div>
           {/* Section 3: Dietary Restrictions */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-medium text-slate-50">Dietary Needs</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+          <div className="space-y-6 p-6 bg-white/5 rounded-xl border border-white/10">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
+                <Users className="w-5 h-5 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold text-white">
+                Dietary Preferences
+              </h3>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {dietaryOptions.map((option) => (
-                <div key={option.id} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={option.id}
-                    checked={dietaryRestrictions.includes(option.id)}
-                    onCheckedChange={(checked) =>
-                      handleDietaryOptionChange(checked as boolean, option.id)
-                    }
-                  />
-                  <Label
-                    htmlFor={option.id}
-                    className="font-normal text-slate-200"
+                <div key={option.id} className="group">
+                  <div
+                    className={`p-4 rounded-lg border-2 transition-all duration-300 cursor-pointer ${
+                      dietaryRestrictions.includes(option.id)
+                        ? "border-blue-400 bg-blue-500/20 shadow-lg"
+                        : "border-white/20 bg-white/5 hover:border-white/40 hover:bg-white/10"
+                    }`}
                   >
-                    {option.label}
-                  </Label>
+                    <div className="flex items-center space-x-3">
+                      <Checkbox
+                        id={option.id}
+                        checked={dietaryRestrictions.includes(option.id)}
+                        onCheckedChange={(checked) =>
+                          handleDietaryOptionChange(
+                            checked as boolean,
+                            option.id
+                          )
+                        }
+                        className="border-white/30 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+                      />
+                      <Label
+                        htmlFor={option.id}
+                        className={`font-medium cursor-pointer select-none transition-colors ${
+                          dietaryRestrictions.includes(option.id)
+                            ? "text-blue-300"
+                            : "text-slate-200 group-hover:text-white"
+                        }`}
+                      >
+                        {option.label}
+                      </Label>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
-          {/* Section 4: Fine-Tuning */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-medium text-slate-50">
-              Preferences & Exclusions
-            </h3>
-            <div className="flex flex-col md:flex-row gap-6">
-              <div className="flex flex-col flex-1">
-                <Label htmlFor="cuisine" className="text-slate-200">
+          {/* Section 4: Preferences & Exclusions */}
+          <div className="space-y-6 p-6 bg-white/5 rounded-xl border border-white/10">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-500 rounded-lg flex items-center justify-center">
+                <Sparkles className="w-5 h-5 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold text-white">
+                Preferences & Exclusions
+              </h3>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-3">
+                <Label htmlFor="cuisine" className="text-slate-200 font-medium">
                   Preferred Cuisines (optional)
                 </Label>
                 <Input
@@ -352,15 +440,19 @@ export function MealPlannerForm({
                   placeholder="e.g., Italian, Mexican, Thai"
                   value={preferredCuisines}
                   onChange={(e) => setPreferredCuisines(e.target.value)}
-                  className="w-full bg-slate-800/60 text-slate-50 border-slate-200/20 placeholder:text-slate-400"
+                  className="bg-white/10 text-white border-white/20 placeholder:text-slate-400 focus:border-pink-400/50 focus:ring-pink-400/20 transition-all duration-300"
                 />
               </div>
-              <div className="w-full md:w-64">
-                <Label htmlFor="skillLevel" className="text-slate-200">
+
+              <div className="space-y-3">
+                <Label
+                  htmlFor="skillLevel"
+                  className="text-slate-200 font-medium"
+                >
                   Cooking Skill Level
                 </Label>
                 <Select value={skillLevel} onValueChange={setSkillLevel}>
-                  <SelectTrigger className="w-full bg-slate-800/60 text-slate-50 border-slate-200/20">
+                  <SelectTrigger className="bg-white/10 text-white border-white/20 focus:border-purple-400/50 focus:ring-purple-400/20 transition-all duration-300">
                     <SelectValue placeholder="Select your skill level" />
                   </SelectTrigger>
                   <SelectContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20">
@@ -378,26 +470,31 @@ export function MealPlannerForm({
               </div>
             </div>
 
-            <div>
+            <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <Label htmlFor="exclude" className="text-slate-200">
+                <Label htmlFor="exclude" className="text-slate-200 font-medium">
                   Ingredients to Exclude
-                  {!user && (
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Info className="w-4 h-4 text-slate-400 cursor-help" />
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20">
-                          <p>
-                            Excluded ingredients is only available on the paid
-                            plan.
-                          </p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  )}
                 </Label>
+                {!user && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="flex items-center gap-1 px-2 py-1 bg-orange-500/20 rounded-full">
+                          <Info className="w-3 h-3 text-orange-400" />
+                          <span className="text-xs text-orange-400">
+                            Pro Only
+                          </span>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20">
+                        <p>
+                          Excluded ingredients is only available on the paid
+                          plan.
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
               </div>
               <Textarea
                 id="exclude"
@@ -411,34 +508,42 @@ export function MealPlannerForm({
                   }
                 }}
                 disabled={!!user && userRole === "basic"}
-                className="bg-slate-800/60 text-slate-50 border-slate-200/20 placeholder:text-slate-400"
+                className="bg-white/10 text-white border-white/20 placeholder:text-slate-400 focus:border-orange-400/50 focus:ring-orange-400/20 transition-all duration-300 disabled:opacity-50"
               />
             </div>
 
-            <div>
+            <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <Label htmlFor="exclude" className="text-slate-200">
+                <Label
+                  htmlFor="instructions"
+                  className="text-slate-200 font-medium"
+                >
                   Other Instructions
-                  {!user && (
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Info className="w-4 h-4 text-slate-400 cursor-help" />
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20">
-                          <p>
-                            Extra instructions are only available on the paid
-                            plan.
-                          </p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  )}
                 </Label>
+                {!user && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="flex items-center gap-1 px-2 py-1 bg-orange-500/20 rounded-full">
+                          <Info className="w-3 h-3 text-orange-400" />
+                          <span className="text-xs text-orange-400">
+                            Pro Only
+                          </span>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20">
+                        <p>
+                          Extra instructions are only available on the paid
+                          plan.
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
               </div>
               <Textarea
-                id="exclude"
-                placeholder="List any other instructions or preferences, such as high protien meals."
+                id="instructions"
+                placeholder="List any other instructions or preferences, such as high protein meals."
                 value={extraInstructions}
                 onChange={(e) => {
                   if (userRole === "basic") {
@@ -448,7 +553,7 @@ export function MealPlannerForm({
                   }
                 }}
                 disabled={!!user && userRole === "basic"}
-                className="bg-slate-800/60 text-slate-50 border-slate-200/20 placeholder:text-slate-400"
+                className="bg-white/10 text-white border-white/20 placeholder:text-slate-400 focus:border-purple-400/50 focus:ring-purple-400/20 transition-all duration-300 disabled:opacity-50"
               />
             </div>
           </div>
@@ -488,7 +593,7 @@ export function MealPlannerForm({
                 >
                   <SelectTrigger
                     id="model"
-                    className="w-full bg-slate-800/60 text-slate-50 border-slate-200/20 mr-0 min-h-10"
+                    className="w-full bg-slate-800/60 text-slate-50 border-slate-200/20 mr-0 min-h-10 py-5"
                   >
                     <SelectValue placeholder={selectedModel} />
                   </SelectTrigger>
@@ -503,53 +608,73 @@ export function MealPlannerForm({
               )}
             </div>
 
-            {!user && (
-              <HoverCard>
-                <HoverCardTrigger>
+            {/* Submit Section */}
+            <div className="">
+              {!user && (
+                <div className="text-center space-y-3">
+                  <HoverCard>
+                    <HoverCardTrigger>
+                      <Button
+                        type="submit"
+                        size="lg"
+                        className="w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 text-white shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.01] h-10 text-base font-semibold"
+                        asChild
+                      >
+                        <Link href="/sign-up">
+                          <Sparkles className="mr-2 h-5 w-5" />
+                          Sign Up to Generate Your Plan
+                        </Link>
+                      </Button>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="bg-white/10 backdrop-blur-xl border border-white/20 text-white">
+                      <p className="text-sm">
+                        Please sign in to generate your personalized meal plan
+                        with AI.
+                      </p>
+                    </HoverCardContent>
+                  </HoverCard>
+
+                  <p className="text-slate-400 text-sm">
+                    Join thousands creating their perfect nutrition plans
+                  </p>
+                </div>
+              )}
+
+              {user && (
+                <div className="space-y-3">
                   <Button
                     type="submit"
                     size="lg"
-                    className={`w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-slate-50  h-10 ${
-                      isLoading ? "hidden md:flex" : ""
+                    className={`w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 text-white shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.01] h-10 text-base font-semibold ${
+                      isLoading ? "opacity-75 cursor-not-allowed" : ""
                     }`}
-                    disabled
+                    disabled={isLoading}
                   >
-                    <Wand2 className="mr-2 h-5 w-5" />
-                    Generate My Plan
+                    <Wand2
+                      className={`mr-2 h-5 w-5 ${
+                        isLoading ? "animate-spin" : ""
+                      }`}
+                    />
+                    {isLoading
+                      ? "Creating Your Plan..."
+                      : "Generate My Meal Plan"}
                   </Button>
-                </HoverCardTrigger>
-                <HoverCardContent>
-                  Please sign in to generate your meal plan.
-                </HoverCardContent>
-              </HoverCard>
-            )}
 
-            {user && (
-              <Button
-                type="submit"
-                size="lg"
-                className={`w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-slate-50  h-10 ${
-                  isLoading ? "hidden md:flex" : ""
-                }`}
-                disabled={isLoading}
-              >
-                <Wand2 className="mr-2 h-5 w-5" />
-                {isLoading ? "Generating..." : "Generate My Plan"}
-              </Button>
-            )}
-
-            {isLoading && (
-              <Button
-                type="button"
-                size="lg"
-                variant="destructive"
-                className="w-full md:w-auto text-slate-50"
-                onClick={stopGeneration}
-              >
-                <StopCircle className="mr-2 h-5 w-5" />
-                Stop
-              </Button>
-            )}
+                  {isLoading && (
+                    <Button
+                      type="button"
+                      size="default"
+                      variant="outline"
+                      className="w-full border-red-400/50 text-red-300 hover:bg-red-500/10 hover:text-red-200 hover:border-red-400 transition-all duration-300 h-10"
+                      onClick={stopGeneration}
+                    >
+                      <StopCircle className="mr-2 h-4 w-4" />
+                      Stop Generation
+                    </Button>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </form>
       </CardContent>

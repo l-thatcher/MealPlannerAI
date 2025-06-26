@@ -8,14 +8,16 @@ import {
 } from "@/types/interfaces";
 import { MealPlannerForm } from "@/components/meal-planner-form";
 import { MealPlanResults } from "@/components/meal-plan-results";
+import { LandingPage } from "@/components/landing-page";
 import { experimental_useObject as useObject } from "@ai-sdk/react";
 import { mealPlanSchema } from "./api/generateMealPlan/use-object/mealPlanSchema";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { logout } from "@/lib/actions";
 import { createClient } from "@/utils/supabase/client";
 import Link from "next/link";
 import { User } from "@supabase/supabase-js";
-import { BookmarkCheck } from "lucide-react";
+import { BookmarkCheck, ChefHat, Sparkles } from "lucide-react";
 import PlanGeneratingWindow from "@/components/plan-generating-window";
 import { PlanGenerationError } from "@/components/plan-generation-error";
 import { SavedPlans } from "@/components/saved-plans";
@@ -25,6 +27,7 @@ export default function HomePage() {
   const [userRole, setUserRole] = useState<string>("basic");
   const [plan, setPlan] = useState<MealPlan | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showLanding, setShowLanding] = useState(true);
   const [formData, setFormData] = useState<MealPlannerFormData>({
     days: 5,
     mealsPerDay: 3,
@@ -219,6 +222,10 @@ export default function HomePage() {
 
   const handleStartNewPlan = () => setPlan(null);
 
+  const handleGetStarted = () => {
+    setShowLanding(false);
+  };
+
   const fetchSavedPlans = useCallback(async () => {
     if (!user) return;
     setLoadingSaved(true);
@@ -248,6 +255,29 @@ export default function HomePage() {
   //   return response;
   // };
 
+  // Check if user is authenticated and has used the app before
+  useEffect(() => {
+    // If user is logged in and has saved plans, skip landing page
+    if (user && savedPlans.length > 0) {
+      setShowLanding(false);
+    }
+    // If user is returning (has used the planner before), skip landing
+    const hasUsedApp = localStorage.getItem("plaite-has-used-app");
+    if (hasUsedApp === "true") {
+      setShowLanding(false);
+    }
+  }, [user, savedPlans]);
+
+  const handleGetStartedWithTracking = () => {
+    localStorage.setItem("plaite-has-used-app", "true");
+    handleGetStarted();
+  };
+
+  const backToLandingPage = () => {
+    localStorage.setItem("plaite-has-used-app", "false");
+    setShowLanding(true);
+  };
+
   // Calculate progress for the loading bar
   let progressPercent = 0;
   if (isLoading && object?.days && formData) {
@@ -265,148 +295,198 @@ export default function HomePage() {
   }
 
   return (
-    <main className="relative flex min-h-screen flex-col items-center p-4 sm:p-8 md:p-24">
-      <div
-        className="absolute inset-0 -z-20 bg-slate-700 overflow-hidden"
-        aria-hidden
-      >
-        <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
-          {/* Blue blob */}
-          <div className="blob blob-blue" />
-          {/* Purple blob */}
-          <div className="blob blob-purple" />
-          {/* Purple pink */}
-          <div className="blob blob-pink" />
-          {/* Green blob */}
-          <div className="blob blob-green" />
-          {/* Overlay for blending */}
-          {/* <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/30 via-purple-900/20 to-pink-900/10 pointer-events-none" /> */}
-        </div>
-      </div>
-
-      <nav className="flex justify-end mb-6 w-full max-w-7xl">
-        {user ? (
-          <div className="flex flex-col items-end gap-4">
-            <Button className="text-sm px-4 py-2 rounded-md bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-700 transition">
-              <Link href="/account">Account</Link>
-            </Button>
-            <form action={logout}>
-              <Button
-                type="submit"
-                className="text-sm px-4 py-2 rounded-md bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-700 transition"
-              >
-                Log out
-              </Button>
-            </form>
+    <>
+      {showLanding ? (
+        <LandingPage user={user} onGetStarted={handleGetStartedWithTracking} />
+      ) : (
+        <main className="relative flex min-h-screen flex-col items-center landing-gradient-bg">
+          {/* Animated background elements */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
+            <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+            <div className="absolute top-1/2 left-1/2 w-60 h-60 bg-green-500/5 rounded-full blur-3xl animate-pulse delay-500"></div>
           </div>
-        ) : (
-          <Button
-            asChild
-            className="text-sm px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition"
-          >
-            <Link href="/login">Sign In/Up</Link>
-          </Button>
-        )}
-      </nav>
 
-      <header className="text-center mb-8">
-        <h1 className="text-4xl font-bold tracking-tight text-slate-50">
-          Your Personal AI Nutritionist
-        </h1>
-        <p className="mt-2 text-lg text-slate-100">
-          Craft the perfect meal plan tailored to your goals and tastes.
-        </p>
-      </header>
-
-      <div className="w-full max-w-7xl flex flex-col md:flex-row gap-8 items-start">
-        {/* Sidebar for Saved Plans */}
-        <aside className="w-full md:w-80 flex-shrink-0 mb-8 md:mb-0 md:sticky md:top-12">
-          <h2 className="text-2xl font-bold mb-4 text-slate-50 flex items-center gap-2">
-            <BookmarkCheck className="w-6 h-6" />
-            Saved Meal Plans
-          </h2>
-          <div
-            className="
-              h-full min-h-30 max-h-60 md:max-h-160 overflow-y-auto
-              rounded-lg border border-slate-200/20 dark:border-slate-700/40 shadow-inner
-              bg-slate-900/60 backdrop-blur-md
-              transition
-            "
-            style={{
-              // fallback for browsers that don't support Tailwind's backdrop-blur
-              background: "rgba(30, 41, 59, 0.60)", // slate-900/60
-              border: "1px solid rgba(148, 163, 184, 0.2)", // slate-200/20
-              backdropFilter: "blur(12px)",
-              WebkitBackdropFilter: "blur(12px)",
-            }}
-          >
-            {user && (userRole == "admin" || userRole == "pro") && (
-              <SavedPlans
-                loadingSaved={loadingSaved}
-                savedPlans={savedPlans}
-                handleLoadPlan={handleLoadPlan}
-                handleDeletePlanFromSaved={handleDeletePlanFromSaved}
-              />
-            )}
-            {!user && (
-              <div className="p-6 text-center text-slate-400">
-                Signed in pro users can save meal plans for later.
+          {/* Modern Navigation */}
+          <nav className="relative z-10 w-full px-4 py-6">
+            <div className="max-w-7xl mx-auto flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="relative">
+                  <ChefHat className="w-8 h-8 text-blue-400" />
+                  <Sparkles className="w-4 h-4 text-yellow-400 absolute -top-0.5 -right-0.5 animate-pulse" />
+                </div>
+                <span className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                  plAIte
+                </span>
               </div>
-            )}
 
-            {user && userRole == "basic" && (
-              <div className="p-6 text-center text-slate-400">
-                <p>Pro users can save meal plans for later.</p>
-                <Link href={"/subscriptions"} className="text-blue-300">
-                  Sign up here!
-                </Link>
+              <div className="flex items-center gap-4">
+                {user ? (
+                  <div className="flex items-center gap-4">
+                    <Button
+                      variant="ghost"
+                      className="text-slate-300 hover:text-white hover:bg-slate-800/50"
+                      onClick={backToLandingPage}
+                    >
+                      Landing Page
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      className="text-slate-300 hover:text-white hover:bg-slate-800/50"
+                      asChild
+                    >
+                      <Link href="/account">Account</Link>
+                    </Button>
+                    <form action={logout}>
+                      <Button
+                        type="submit"
+                        variant="outline"
+                        className="border-slate-600 text-slate-900 hover:bg-slate-800/50 hover:text-white"
+                      >
+                        Log out
+                      </Button>
+                    </form>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-4">
+                    <Button
+                      variant="ghost"
+                      className="text-slate-300 hover:text-white hover:bg-slate-800/50"
+                      onClick={backToLandingPage}
+                    >
+                      Landing Page
+                    </Button>
+                    <Button
+                      asChild
+                      className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white"
+                    >
+                      <Link href="/login">Sign In/Up</Link>
+                    </Button>
+                  </div>
+                )}
               </div>
-            )}
+            </div>
+          </nav>
+
+          <header className="relative z-10 text-center mb-12 px-4">
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <div className="relative">
+                <ChefHat className="w-12 h-12 text-blue-400" />
+                <Sparkles className="w-6 h-6 text-yellow-400 absolute -top-1 -right-1 animate-pulse" />
+              </div>
+              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                Your AI Meal Planner
+              </h1>
+            </div>
+            <p className="text-xl text-slate-300 max-w-2xl mx-auto">
+              Create personalized meal plans tailored to your dietary needs and
+              nutrition goals
+            </p>
+          </header>
+
+          <div className="relative z-10 w-full max-w-7xl flex flex-col lg:flex-row gap-8 items-start px-4 pb-8">
+            {/* Sidebar for Saved Plans */}
+            <aside className="w-full lg:w-80 flex-shrink-0 mb-8 lg:mb-0 lg:sticky lg:top-8">
+              <h2 className="text-2xl font-bold mb-6 text-white flex items-center gap-3">
+                <div className="p-2 bg-blue-500/20 rounded-lg">
+                  <BookmarkCheck className="w-6 h-6 text-blue-400" />
+                </div>
+                Saved Plans
+              </h2>
+              <Card className="landing-card bg-slate-800/50 border-slate-700/50 backdrop-blur-md p-0 max-h-150 overflow-scroll">
+                <CardContent className="px-0">
+                  {user && (userRole == "admin" || userRole == "pro") && (
+                    <SavedPlans
+                      loadingSaved={loadingSaved}
+                      savedPlans={savedPlans}
+                      handleLoadPlan={handleLoadPlan}
+                      handleDeletePlanFromSaved={handleDeletePlanFromSaved}
+                    />
+                  )}
+                  {!user && (
+                    <div className="text-center">
+                      <div className="mb-4">
+                        <div className="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                          <BookmarkCheck className="w-8 h-8 text-blue-400" />
+                        </div>
+                        <p className="text-slate-400 mb-3">
+                          Sign in to save and manage your meal plans
+                        </p>
+                        <Button
+                          asChild
+                          className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+                        >
+                          <Link href="/login">Sign In</Link>
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+
+                  {user && userRole == "basic" && (
+                    <div className="text-center p-8">
+                      <div className="w-16 h-16 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <Sparkles className="w-8 h-8 text-purple-400" />
+                      </div>
+                      <p className="text-slate-400 mb-3">
+                        Upgrade to Pro to save unlimited meal plans
+                      </p>
+                      <Button
+                        asChild
+                        className="bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700"
+                      >
+                        <Link href="/subscriptions">Upgrade to Pro</Link>
+                      </Button>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </aside>
+
+            {/* Main Content */}
+            <div className="flex-1 w-full min-w-0 space-y-8">
+              {!plan && (
+                <MealPlannerForm
+                  onGenerate={handleSubmitWithLog}
+                  isLoading={isLoading}
+                  initialFormData={formData}
+                  stopGeneration={handleStopGeneration}
+                  handleFormData={handleFormData}
+                  user={user}
+                  userRole={userRole}
+                />
+              )}
+
+              {isLoading && object?.days && (
+                <PlanGeneratingWindow
+                  object={object as MealPlan}
+                  progressPercent={progressPercent}
+                />
+              )}
+
+              {!isLoading && generationErrorMessage && !plan && (
+                <PlanGenerationError
+                  error={generationErrorMessage}
+                  onRetry={handleRetry}
+                  onDismiss={handleDismissError}
+                />
+              )}
+
+              {plan && !isLoading && (
+                <MealPlanResults
+                  plan={plan}
+                  user={user}
+                  onNewPlan={handleStartNewPlan}
+                  savedPlanId={currentSavedPlanId}
+                  onPlanSaved={handlePlanSavedFromForm}
+                  onPlanDeleted={handlePlanDeletedFromForm}
+                  deletedPlanId={deletedPlanId}
+                  userRole={userRole}
+                />
+              )}
+            </div>
           </div>
-        </aside>
-
-        {/* Main Content */}
-        <div className="flex-1 w-full md:min-w-0">
-          {!plan && (
-            <MealPlannerForm
-              onGenerate={handleSubmitWithLog}
-              isLoading={isLoading}
-              initialFormData={formData}
-              stopGeneration={handleStopGeneration}
-              handleFormData={handleFormData}
-              user={user}
-              userRole={userRole}
-            />
-          )}
-
-          {isLoading && object?.days && (
-            <PlanGeneratingWindow
-              object={object as MealPlan}
-              progressPercent={progressPercent}
-            />
-          )}
-
-          {!isLoading && generationErrorMessage && !plan && (
-            <PlanGenerationError
-              error={generationErrorMessage}
-              onRetry={handleRetry}
-              onDismiss={handleDismissError}
-            />
-          )}
-
-          {plan && !isLoading && (
-            <MealPlanResults
-              plan={plan}
-              user={user}
-              onNewPlan={handleStartNewPlan}
-              savedPlanId={currentSavedPlanId}
-              onPlanSaved={handlePlanSavedFromForm}
-              onPlanDeleted={handlePlanDeletedFromForm}
-              deletedPlanId={deletedPlanId}
-            />
-          )}
-        </div>
-      </div>
-    </main>
+        </main>
+      )}
+    </>
   );
 }
