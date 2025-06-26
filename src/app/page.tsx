@@ -308,8 +308,8 @@ export default function HomePage() {
           </div>
 
           {/* Modern Navigation */}
-          <nav className="relative z-10 w-full px-4 py-6">
-            <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <nav className="relative z-10 w-full px-4 py-6 max-w-screen">
+            <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-center md:justify-between">
               <div className="flex items-center gap-3">
                 <div className="relative">
                   <ChefHat className="w-8 h-8 text-blue-400" />
