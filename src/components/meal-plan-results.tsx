@@ -136,10 +136,10 @@ export function MealPlanResults({
         </CardHeader>
 
         <CardContent className="pt-0">
-          <div className="flex flex-wrap items-center gap-3 justify-end">
+          <div className="flex flex-col sm:flex-row sm:flex-wrap items-center gap-3 sm:justify-end">
             <Button
               variant="outline"
-              className={`text-white border-white/30 bg-white/10 backdrop-blur-md hover:bg-white/20 hover:border-white/50 transition-all duration-300 group ${
+              className={`w-full sm:w-auto text-white border-white/30 bg-white/10 backdrop-blur-md hover:bg-white/20 hover:border-white/50 transition-all duration-300 group ${
                 showShoppingList ? "hover:text-red-400" : "hover:text-green-400"
               }`}
               onClick={toggleShoppingList}
@@ -154,7 +154,7 @@ export function MealPlanResults({
 
             <Button
               variant={userRole === "basic" ? "outline" : "default"}
-              className={`transition-all duration-300 group ${
+              className={`w-full sm:w-auto transition-all duration-300 group ${
                 savedPlanId
                   ? "bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white border-0"
                   : "bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white border-0"
@@ -182,7 +182,7 @@ export function MealPlanResults({
 
             <Button
               onClick={onNewPlan}
-              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+              className="w-full sm:w-auto bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
             >
               <RotateCcw className="mr-2 h-4 w-4" />
               Generate New Plan
