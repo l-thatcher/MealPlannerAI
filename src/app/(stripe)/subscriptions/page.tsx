@@ -35,6 +35,12 @@ export default function Subscriptions() {
   const [error, setError] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [userLoading, setUserLoading] = useState(true);
+  const [userSubscriptionStatus, setUserSubscriptionStatus] = useState<{
+    role: string;
+    subscriptionStatus: string | null;
+    isPro: boolean;
+  } | null>(null);
+  const [subscriptionLoading, setSubscriptionLoading] = useState(false);
 
   const supabase = createClient();
 
@@ -46,6 +52,24 @@ export default function Subscriptions() {
           data: { user },
         } = await supabase.auth.getUser();
         setUser(user);
+
+        // If user exists, check their subscription status
+        if (user) {
+          setSubscriptionLoading(true);
+          try {
+            const response = await fetch("/api/user-subscription-status");
+            if (response.ok) {
+              const subscriptionData = await response.json();
+              setUserSubscriptionStatus(subscriptionData);
+            } else {
+              console.error("Failed to fetch subscription status");
+            }
+          } catch (error) {
+            console.error("Error fetching subscription status:", error);
+          } finally {
+            setSubscriptionLoading(false);
+          }
+        }
       } catch (error) {
         console.error("Error getting user:", error);
       } finally {
@@ -58,9 +82,27 @@ export default function Subscriptions() {
     // Listen for auth state changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
       setUser(session?.user ?? null);
       setUserLoading(false);
+
+      // Check subscription status when user changes
+      if (session?.user) {
+        setSubscriptionLoading(true);
+        try {
+          const response = await fetch("/api/user-subscription-status");
+          if (response.ok) {
+            const subscriptionData = await response.json();
+            setUserSubscriptionStatus(subscriptionData);
+          }
+        } catch (error) {
+          console.error("Error fetching subscription status:", error);
+        } finally {
+          setSubscriptionLoading(false);
+        }
+      } else {
+        setUserSubscriptionStatus(null);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -86,6 +128,13 @@ export default function Subscriptions() {
       return;
     }
 
+    // Check if user is already subscribed to this plan type
+    const plan = plans.find((p) => p.price_id === priceId);
+    if (plan && isPremiumPlan(plan.name) && userSubscriptionStatus?.isPro) {
+      // User is already subscribed to a pro plan
+      return;
+    }
+
     try {
       setIsLoading(priceId);
       const res = await fetch("/api/stripe/create-checkout-session", {
@@ -101,6 +150,30 @@ export default function Subscriptions() {
       }
     } catch (error) {
       console.error("Error creating checkout session:", error);
+      setIsLoading(null);
+    }
+  };
+
+  const handleManageSubscription = async () => {
+    if (!user) {
+      window.location.href = "/login";
+      return;
+    }
+
+    try {
+      setIsLoading("manage-subscription");
+      const res = await fetch("/api/stripe/create-portal-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error("No portal URL returned");
+      }
+    } catch (error) {
+      console.error("Error creating portal session:", error);
       setIsLoading(null);
     }
   };
@@ -155,10 +228,10 @@ export default function Subscriptions() {
 
   const isPremiumPlan = (planName: string) => {
     const name = planName.toLowerCase();
-    return name.includes("pro");
+    return name.includes("pro") || name.includes("premium");
   };
 
-  if (loadingPlans || userLoading) {
+  if (loadingPlans || userLoading || subscriptionLoading) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center p-4">
         <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
@@ -247,65 +320,144 @@ export default function Subscriptions() {
           {/* Plans Grid - Now includes Free plan */}
           <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-8">
             {/* Free Plan */}
-            <Card className="bg-slate-900/60 border-slate-200/20 hover:border-slate-200/40 backdrop-blur-xl transition-all duration-300 hover:scale-105 hover:-translate-y-2">
+            <Card
+              className={`relative transition-all duration-300 backdrop-blur-xl ${
+                userSubscriptionStatus?.isPro
+                  ? "bg-slate-900/60 border-red-400/40 hover:border-red-400/60 ring-2 ring-red-400/20 hover:scale-105 hover:-translate-y-2"
+                  : "bg-slate-900/60 border-slate-200/20 hover:border-slate-200/40 hover:scale-105 hover:-translate-y-2"
+              }`}
+            >
+              {/* Pro user badge */}
+              {userSubscriptionStatus?.isPro && (
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                  <Badge className="bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-1 text-sm font-semibold shadow-lg">
+                    Subscription Management
+                  </Badge>
+                </div>
+              )}
+
               <CardHeader className="text-center pb-4">
                 <div className="flex justify-center mb-4">
-                  <Star className="w-6 h-6 text-blue-400" />
+                  <Star
+                    className={`w-6 h-6 ${
+                      userSubscriptionStatus?.isPro
+                        ? "text-red-400"
+                        : "text-blue-400"
+                    }`}
+                  />
                 </div>
 
                 <CardTitle className="text-2xl font-bold text-slate-50 mb-2">
-                  Free
+                  {userSubscriptionStatus?.isPro
+                    ? "Manage Subscription"
+                    : "Free"}
                 </CardTitle>
 
                 <div className="flex items-baseline justify-center mb-4">
-                  <span className="text-4xl font-bold text-slate-50">£0</span>
+                  <span className="text-4xl font-bold text-slate-50">
+                    {userSubscriptionStatus?.isPro ? "Pro Plan" : "£0"}
+                  </span>
                 </div>
 
                 <CardDescription className="text-slate-300 text-base leading-relaxed">
-                  Perfect for trying out plAIte
+                  {userSubscriptionStatus?.isPro
+                    ? "You're currently on the Pro plan"
+                    : "Perfect for trying out plAIte"}
                 </CardDescription>
               </CardHeader>
 
               <CardContent className="space-y-6">
                 {/* Features List */}
                 <div className="space-y-3">
-                  <div className="flex items-start space-x-3">
-                    <div className="flex-shrink-0 w-5 h-5 bg-green-500/20 rounded-full flex items-center justify-center mt-0.5">
-                      <Check className="w-3 h-3 text-green-400" />
-                    </div>
-                    <span className="text-slate-300 text-sm leading-relaxed">
-                      Up to 5-day meal plans
-                    </span>
-                  </div>
-                  <div className="flex items-start space-x-3">
-                    <div className="flex-shrink-0 w-5 h-5 bg-green-500/20 rounded-full flex items-center justify-center mt-0.5">
-                      <Check className="w-3 h-3 text-green-400" />
-                    </div>
-                    <span className="text-slate-300 text-sm leading-relaxed">
-                      GPT powered AI model
-                    </span>
-                  </div>
-                  <div className="flex items-start space-x-3">
-                    <div className="flex-shrink-0 w-5 h-5 bg-green-500/20 rounded-full flex items-center justify-center mt-0.5">
-                      <Check className="w-3 h-3 text-green-400" />
-                    </div>
-                    <span className="text-slate-300 text-sm leading-relaxed">
-                      Shopping list generation
-                    </span>
-                  </div>
+                  {userSubscriptionStatus?.isPro ? (
+                    // Show current Pro benefits
+                    <>
+                      <div className="flex items-start space-x-3">
+                        <div className="flex-shrink-0 w-5 h-5 bg-green-500/20 rounded-full flex items-center justify-center mt-0.5">
+                          <Check className="w-3 h-3 text-green-400" />
+                        </div>
+                        <span className="text-slate-300 text-sm leading-relaxed">
+                          ✨ Currently enjoying Pro features
+                        </span>
+                      </div>
+                      <div className="flex items-start space-x-3">
+                        <div className="flex-shrink-0 w-5 h-5 bg-green-500/20 rounded-full flex items-center justify-center mt-0.5">
+                          <Check className="w-3 h-3 text-green-400" />
+                        </div>
+                        <span className="text-slate-300 text-sm leading-relaxed">
+                          Up to 14-day meal plans
+                        </span>
+                      </div>
+                      <div className="flex items-start space-x-3">
+                        <div className="flex-shrink-0 w-5 h-5 bg-green-500/20 rounded-full flex items-center justify-center mt-0.5">
+                          <Check className="w-3 h-3 text-green-400" />
+                        </div>
+                        <span className="text-slate-300 text-sm leading-relaxed">
+                          Higher daily limits & advanced features
+                        </span>
+                      </div>
+                    </>
+                  ) : (
+                    // Show Free plan features
+                    <>
+                      <div className="flex items-start space-x-3">
+                        <div className="flex-shrink-0 w-5 h-5 bg-green-500/20 rounded-full flex items-center justify-center mt-0.5">
+                          <Check className="w-3 h-3 text-green-400" />
+                        </div>
+                        <span className="text-slate-300 text-sm leading-relaxed">
+                          Up to 5-day meal plans
+                        </span>
+                      </div>
+                      <div className="flex items-start space-x-3">
+                        <div className="flex-shrink-0 w-5 h-5 bg-green-500/20 rounded-full flex items-center justify-center mt-0.5">
+                          <Check className="w-3 h-3 text-green-400" />
+                        </div>
+                        <span className="text-slate-300 text-sm leading-relaxed">
+                          GPT powered AI model
+                        </span>
+                      </div>
+                      <div className="flex items-start space-x-3">
+                        <div className="flex-shrink-0 w-5 h-5 bg-green-500/20 rounded-full flex items-center justify-center mt-0.5">
+                          <Check className="w-3 h-3 text-green-400" />
+                        </div>
+                        <span className="text-slate-300 text-sm leading-relaxed">
+                          Shopping list generation
+                        </span>
+                      </div>
+                    </>
+                  )}
                 </div>
 
                 {/* CTA Button */}
-                <Button
-                  asChild
-                  className="w-full py-3 text-lg font-semibold transition-all duration-300 bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500 text-slate-100 hover:shadow-lg"
-                >
-                  <Link href="/">Continue with Free</Link>
-                </Button>
+                {userSubscriptionStatus?.isPro ? (
+                  <Button
+                    onClick={handleManageSubscription}
+                    disabled={isLoading === "manage-subscription"}
+                    className="w-full py-3 text-lg font-semibold transition-all duration-300 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white hover:shadow-lg"
+                  >
+                    {isLoading === "manage-subscription" ? (
+                      <div className="flex items-center justify-center space-x-2">
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                        <span>Loading...</span>
+                      </div>
+                    ) : (
+                      "Cancel Subscription"
+                    )}
+                  </Button>
+                ) : (
+                  <Button
+                    asChild
+                    className="w-full py-3 text-lg font-semibold transition-all duration-300 bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500 text-slate-100 hover:shadow-lg"
+                  >
+                    <Link href="/">Continue with Free</Link>
+                  </Button>
+                )}
 
                 {/* Money-back guarantee */}
                 <p className="text-center text-slate-400 text-xs">
-                  No credit card required
+                  {userSubscriptionStatus?.isPro
+                    ? "Manage your subscription"
+                    : "No credit card required"}
                 </p>
               </CardContent>
             </Card>
@@ -315,21 +467,39 @@ export default function Subscriptions() {
               const features = getPlanFeatures(plan.name);
               const planIcon = getPlanIcon(plan.name);
               const isPopular = isPremiumPlan(plan.name) && index === 0; // First paid plan is popular
+              const isPlanProType = isPremiumPlan(plan.name);
+              const isUserAlreadyPro = userSubscriptionStatus?.isPro || false;
+              const shouldDisableButton = isPlanProType && isUserAlreadyPro;
 
               return (
                 <Card
                   key={plan.price_id}
-                  className={`relative group transition-all duration-300 hover:scale-105 hover:-translate-y-2 ${
-                    isPopular
+                  className={`relative group transition-all duration-300 ${
+                    shouldDisableButton
+                      ? ""
+                      : "hover:scale-105 hover:-translate-y-2"
+                  } ${
+                    shouldDisableButton
+                      ? "bg-gradient-to-br from-green-900/40 via-green-800/40 to-slate-900/60 border-green-400/40 ring-2 ring-green-400/20"
+                      : isPopular
                       ? "bg-gradient-to-br from-purple-900/60 via-blue-900/60 to-slate-900/60 border-purple-400/40 ring-2 ring-purple-400/20"
                       : "bg-slate-900/60 border-slate-200/20 hover:border-slate-200/40"
                   } backdrop-blur-xl`}
                 >
                   {/* Popular Badge */}
-                  {isPopular && (
+                  {isPopular && !shouldDisableButton && (
                     <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                       <Badge className="bg-gradient-to-r from-purple-500 to-blue-500 text-white px-4 py-1 text-sm font-semibold shadow-lg">
                         Most Popular
+                      </Badge>
+                    </div>
+                  )}
+
+                  {/* Already Subscribed Badge */}
+                  {shouldDisableButton && (
+                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                      <Badge className="bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-1 text-sm font-semibold shadow-lg">
+                        Current Plan
                       </Badge>
                     </div>
                   )}
@@ -379,9 +549,11 @@ export default function Subscriptions() {
                     {/* CTA Button */}
                     <Button
                       onClick={() => handleSubscribe(plan.price_id)}
-                      disabled={!!isLoading}
+                      disabled={!!isLoading || shouldDisableButton}
                       className={`w-full py-3 text-lg font-semibold transition-all duration-300 ${
-                        isPopular
+                        shouldDisableButton
+                          ? "bg-gradient-to-r from-green-600 to-green-700 text-white cursor-not-allowed opacity-75"
+                          : isPopular
                           ? "bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl"
                           : "bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500 text-slate-100 hover:shadow-lg"
                       } ${
@@ -390,7 +562,9 @@ export default function Subscriptions() {
                           : ""
                       }`}
                     >
-                      {isLoading === plan.price_id ? (
+                      {shouldDisableButton ? (
+                        "You are already subscribed to Pro"
+                      ) : isLoading === plan.price_id ? (
                         <div className="flex items-center justify-center space-x-2">
                           <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                           <span>Processing...</span>
