@@ -8,7 +8,7 @@ function PlanGeneratingWindow({
   progressPercent,
 }: PlanGeneratingWindowProps) {
   return (
-    <div className="relative mx-auto mt-8 w-full max-w-2xl">
+    <div className="relative mx-auto mt-8 w-full">
       <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl hover:shadow-3xl transition-all duration-300 animate-fade-in">
         <CardHeader className="text-center pb-4">
           <div className="flex items-center justify-center gap-3 mb-4">
@@ -100,7 +100,7 @@ function PlanGeneratingWindow({
           {/* Encouragement message */}
           <div className="text-center">
             <p className="text-slate-300 text-sm italic">
-              AI is crafting your personalized nutrition plan...
+              AI is crafting your personalised nutrition plan...
             </p>
             <div className="flex items-center justify-center gap-1 mt-2">
               <div
