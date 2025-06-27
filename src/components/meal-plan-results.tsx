@@ -121,7 +121,7 @@ export function MealPlanResults({
         <CardHeader className="pb-6">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-blue-500 flex items-center justify-center">
-              <Calendar className="h-5 w-5 text-white" />
+              <Calendar className="h-5 w-10 text-white" />
             </div>
             <div>
               <CardTitle className="text-2xl text-white mb-1">
