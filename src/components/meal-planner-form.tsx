@@ -166,7 +166,7 @@ export function MealPlannerForm({
               Create Your Perfect Meal Plan
             </CardTitle>
             <CardDescription className="text-slate-300 text-lg leading-relaxed">
-              Customize every detail to create a personalized nutrition plan
+              Customize every detail to create a personalised nutrition plan
               that fits your lifestyle
             </CardDescription>
           </div>
