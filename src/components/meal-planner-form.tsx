@@ -21,12 +21,7 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { AdaptiveTooltip } from "@/components/ui/adaptive-tooltip";
 import { Info, Calendar, Target, Users, Sparkles } from "lucide-react";
 import { Wand2, StopCircle } from "lucide-react";
 import { MealPlannerFormData, MealPlannerFormProps } from "@/types/interfaces";
@@ -188,46 +183,40 @@ export function MealPlannerForm({
 
               <div className="flex items-center gap-2">
                 {user && userRole === "basic" && (
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div className="flex items-center gap-1 px-2 py-1 bg-yellow-500/20 rounded-full">
-                          <Info className="w-3 h-3 text-yellow-400" />
-                          <span className="text-xs text-yellow-400">
-                            Limited
-                          </span>
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20">
-                        <p>
-                          Unlock up to 14 day plans with the paid plan due to
-                          model limitations.
-                        </p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <AdaptiveTooltip 
+                    content={
+                      <p>
+                        Unlock up to 14 day plans with the paid plan due to
+                        model limitations.
+                      </p>
+                    }
+                  >
+                    <div className="flex items-center gap-1 px-2 py-1 bg-yellow-500/20 rounded-full">
+                      <Info className="w-3 h-3 text-yellow-400" />
+                      <span className="text-xs text-yellow-400">
+                        Limited
+                      </span>
+                    </div>
+                  </AdaptiveTooltip>
                 )}
                 {user &&
                   selectedModel === "gpt-4.1-mini" &&
                   (userRole === "admin" || userRole === "pro") && (
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <div className="flex items-center gap-1 px-2 py-1 bg-blue-500/20 rounded-full">
-                            <Info className="w-3 h-3 text-blue-400" />
-                            <span className="text-xs text-blue-400">
-                              Model Limit
-                            </span>
-                          </div>
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20">
-                          <p>
-                            GPT 4 mini can only generate plans for up to 5 days,
-                            change the model to generate more days
-                          </p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
+                    <AdaptiveTooltip
+                      content={
+                        <p>
+                          GPT 4 mini can only generate plans for up to 5 days,
+                          change the model to generate more days
+                        </p>
+                      }
+                    >
+                      <div className="flex items-center gap-1 px-2 py-1 bg-blue-500/20 rounded-full">
+                        <Info className="w-3 h-3 text-blue-400" />
+                        <span className="text-xs text-blue-400">
+                          Model Limit
+                        </span>
+                      </div>
+                    </AdaptiveTooltip>
                   )}
               </div>
             </div>
@@ -476,57 +465,53 @@ export function MealPlannerForm({
                   Ingredients to Exclude
                 </Label>
                 {!user && (
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div className="flex items-center gap-1 px-2 py-1 bg-orange-500/20 rounded-full">
-                          <Info className="w-3 h-3 text-orange-400" />
-                          <span className="text-xs text-orange-400">
-                            Pro Only
-                          </span>
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20 max-w-xs">
-                        <div className="space-y-2">
-                          <p className="font-semibold text-orange-400">
-                            Premium Feature
-                          </p>
-                          <p>
-                            Premium users can exclude specific ingredients they
-                            dislike or are allergic to. For example:
-                            &quot;mushrooms, cilantro, seafood&quot; - and
-                            we&apos;ll ensure no recipes include them.
-                          </p>
-                        </div>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <AdaptiveTooltip
+                    content={
+                      <div className="space-y-2">
+                        <p className="font-semibold text-orange-400">
+                          Premium Feature
+                        </p>
+                        <p>
+                          Premium users can exclude specific ingredients they
+                          dislike or are allergic to. For example:
+                          &quot;mushrooms, cilantro, seafood&quot; - and
+                          we&apos;ll ensure no recipes include them.
+                        </p>
+                      </div>
+                    }
+                    className="bg-slate-900/90 text-slate-50 border border-slate-200/20 max-w-xs"
+                  >
+                    <div className="flex items-center gap-1 px-2 py-1 bg-orange-500/20 rounded-full">
+                      <Info className="w-3 h-3 text-orange-400" />
+                      <span className="text-xs text-orange-400">
+                        Pro Only
+                      </span>
+                    </div>
+                  </AdaptiveTooltip>
                 )}
                 {user && userRole === "basic" && (
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div className="flex items-center gap-1 px-2 py-1 bg-orange-500/20 rounded-full">
-                          <Info className="w-3 h-3 text-orange-400" />
-                          <span className="text-xs text-orange-400">
-                            Upgrade Required
-                          </span>
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20 max-w-xs">
-                        <div className="space-y-2">
-                          <p className="font-semibold text-orange-400">
-                            Upgrade to Pro
-                          </p>
-                          <p>
-                            List ingredients you want to avoid (e.g.,
-                            &quot;nuts, dairy, shellfish&quot;) and we&apos;ll
-                            create meal plans that exclude them completely.
-                          </p>
-                        </div>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <AdaptiveTooltip
+                    content={
+                      <div className="space-y-2">
+                        <p className="font-semibold text-orange-400">
+                          Upgrade to Pro
+                        </p>
+                        <p>
+                          List ingredients you want to avoid (e.g.,
+                          &quot;nuts, dairy, shellfish&quot;) and we&apos;ll
+                          create meal plans that exclude them completely.
+                        </p>
+                      </div>
+                    }
+                    className="bg-slate-900/90 text-slate-50 border border-slate-200/20 max-w-xs"
+                  >
+                    <div className="flex items-center gap-1 px-2 py-1 bg-orange-500/20 rounded-full">
+                      <Info className="w-3 h-3 text-orange-400" />
+                      <span className="text-xs text-orange-400">
+                        Upgrade Required
+                      </span>
+                    </div>
+                  </AdaptiveTooltip>
                 )}
               </div>
               <Textarea
@@ -554,59 +539,55 @@ export function MealPlannerForm({
                   Other Instructions
                 </Label>
                 {!user && (
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div className="flex items-center gap-1 px-2 py-1 bg-orange-500/20 rounded-full">
-                          <Info className="w-3 h-3 text-orange-400" />
-                          <span className="text-xs text-orange-400">
-                            Pro Only
-                          </span>
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20 max-w-xs">
-                        <div className="space-y-2">
-                          <p className="font-semibold text-orange-400">
-                            Premium Feature
-                          </p>
-                          <p>
-                            Premium users can add custom instructions like
-                            &quot;high protein meals&quot;, &quot;30-minute
-                            recipes only&quot;, &quot;family-friendly
-                            portions&quot;, or &quot;low sodium options&quot; to
-                            personalise their meal plans even further.
-                          </p>
-                        </div>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <AdaptiveTooltip
+                    content={
+                      <div className="space-y-2">
+                        <p className="font-semibold text-orange-400">
+                          Premium Feature
+                        </p>
+                        <p>
+                          Premium users can add custom instructions like
+                          &quot;high protein meals&quot;, &quot;30-minute
+                          recipes only&quot;, &quot;family-friendly
+                          portions&quot;, or &quot;low sodium options&quot; to
+                          personalise their meal plans even further.
+                        </p>
+                      </div>
+                    }
+                    className="bg-slate-900/90 text-slate-50 border border-slate-200/20 max-w-xs"
+                  >
+                    <div className="flex items-center gap-1 px-2 py-1 bg-orange-500/20 rounded-full">
+                      <Info className="w-3 h-3 text-orange-400" />
+                      <span className="text-xs text-orange-400">
+                        Pro Only
+                      </span>
+                    </div>
+                  </AdaptiveTooltip>
                 )}
                 {user && userRole === "basic" && (
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div className="flex items-center gap-1 px-2 py-1 bg-orange-500/20 rounded-full">
-                          <Info className="w-3 h-3 text-orange-400" />
-                          <span className="text-xs text-orange-400">
-                            Upgrade Required
-                          </span>
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20 max-w-xs">
-                        <div className="space-y-2">
-                          <p className="font-semibold text-orange-400">
-                            Upgrade to Pro
-                          </p>
-                          <p>
-                            Add special requirements like &quot;quick prep
-                            meals&quot;, &quot;budget-friendly&quot;, &quot;meal
-                            prep friendly&quot;, or any other preferences to get
-                            highly customised meal plans.
-                          </p>
-                        </div>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <AdaptiveTooltip
+                    content={
+                      <div className="space-y-2">
+                        <p className="font-semibold text-orange-400">
+                          Upgrade to Pro
+                        </p>
+                        <p>
+                          Add special requirements like &quot;quick prep
+                          meals&quot;, &quot;budget-friendly&quot;, &quot;meal
+                          prep friendly&quot;, or any other preferences to get
+                          highly customised meal plans.
+                        </p>
+                      </div>
+                    }
+                    className="bg-slate-900/90 text-slate-50 border border-slate-200/20 max-w-xs"
+                  >
+                    <div className="flex items-center gap-1 px-2 py-1 bg-orange-500/20 rounded-full">
+                      <Info className="w-3 h-3 text-orange-400" />
+                      <span className="text-xs text-orange-400">
+                        Upgrade Required
+                      </span>
+                    </div>
+                  </AdaptiveTooltip>
                 )}
               </div>
               <Textarea
