@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AuthFormProps } from "@/types/interfaces";
-import { Apple, Chrome, Mail, Lock, User } from "lucide-react";
+import { Mail, Lock, User } from "lucide-react";
 
 export function LoginForm({ className, action, ...props }: AuthFormProps) {
   const [isLoading, setIsLoading] = useState(false);
