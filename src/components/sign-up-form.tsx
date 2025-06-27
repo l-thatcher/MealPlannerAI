@@ -24,11 +24,18 @@ export function SignUpForm({ className, action, ...props }: AuthFormProps) {
     if (action && typeof action === "function") {
       e.preventDefault();
       const formData = new FormData(e.currentTarget);
-      const result = await action(formData);
-      if (result?.error) {
-        setErrorMsg(result.error);
+      try {
+        const result = await action(formData);
+        if (result?.error) {
+          setErrorMsg(result.error);
+          setIsLoading(false);
+        }
+        // If no error and no redirect happened, something unexpected occurred
+      } catch (error) {
+        // Redirect throws an error in Next.js, which is expected behavior
+        // Don't set loading to false as we're redirecting
+        console.log("Redirect occurred (this is expected):", error);
       }
-      setIsLoading(false);
     }
   };
 

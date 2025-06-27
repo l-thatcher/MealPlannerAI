@@ -1,3 +1,6 @@
+"use client";
+
+import { useState, useEffect, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -8,14 +11,42 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 import { Mail, ArrowLeft, RefreshCw } from "lucide-react";
+import { resendVerificationEmail } from "@/lib/actions";
+import { useSearchParams } from "next/navigation";
 
-export default async function VerifyEmailPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
-  const params = await searchParams;
-  const email = typeof params?.email === "string" ? params.email : "your email";
+function VerifyEmailContent() {
+  const searchParams = useSearchParams();
+  const [email, setEmail] = useState<string>("your email");
+  const [isResending, setIsResending] = useState(false);
+  const [resendMessage, setResendMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    const emailParam = searchParams.get("email");
+    if (emailParam) {
+      setEmail(emailParam);
+    }
+  }, [searchParams]);
+
+  const handleResendEmail = async () => {
+    if (email === "your email") return;
+
+    setIsResending(true);
+    setResendMessage(null);
+
+    try {
+      const result = await resendVerificationEmail(email);
+      if (result.error) {
+        setResendMessage(`Error: ${result.error}`);
+      } else {
+        setResendMessage("Verification email sent! Check your inbox.");
+      }
+    } catch (error) {
+      setResendMessage("Failed to resend email. Please try again.");
+      console.error("Error resending verification email:", error);
+    } finally {
+      setIsResending(false);
+    }
+  };
 
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
@@ -55,21 +86,39 @@ export default async function VerifyEmailPage({
               <Button
                 asChild
                 variant="outline"
-                className="h-12 border-white/10 bg-slate-800/50 hover:bg-slate-700/50 text-slate-200"
+                className="h-12 border-white/10 bg-slate-800/50 hover:bg-slate-700/50 text-slate-200 hover:text-slate-100"
               >
-                <Link href="/login">
+                <Link href="/sign-up">
                   <ArrowLeft className="h-4 w-4 mr-2" />
-                  Return to login
+                  Return to sign up
                 </Link>
               </Button>
 
               <Button
+                onClick={handleResendEmail}
+                disabled={isResending || email === "your email"}
                 variant="outline"
-                className="h-12 border-white/10 bg-slate-800/50 hover:bg-slate-700/50 text-slate-200"
+                className="h-12 border-white/10 bg-slate-800/50 hover:bg-slate-700/50 text-slate-200 hover:text-slate-100"
               >
-                <RefreshCw className="h-4 w-4 mr-2" />
-                Resend verification email
+                <RefreshCw
+                  className={`h-4 w-4 mr-2 ${
+                    isResending ? "animate-spin" : ""
+                  }`}
+                />
+                {isResending ? "Sending..." : "Resend verification email"}
               </Button>
+
+              {resendMessage && (
+                <div
+                  className={`p-3 rounded-lg text-sm text-center backdrop-blur-sm ${
+                    resendMessage.startsWith("Error")
+                      ? "bg-red-500/10 border border-red-500/20 text-red-400"
+                      : "bg-green-500/10 border border-green-500/20 text-green-400"
+                  }`}
+                >
+                  {resendMessage}
+                </div>
+              )}
             </div>
 
             <div className="pt-4 border-t border-white/10">
@@ -87,5 +136,22 @@ export default async function VerifyEmailPage({
         </Card>
       </div>
     </div>
+  );
+}
+
+export default function VerifyEmailPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+          <div className="text-center space-y-4">
+            <div className="w-12 h-12 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mx-auto"></div>
+            <p className="text-slate-300">Loading your account...</p>
+          </div>
+        </div>
+      }
+    >
+      <VerifyEmailContent />
+    </Suspense>
   );
 }

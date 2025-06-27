@@ -174,19 +174,15 @@ export default function SuccessPage() {
                   <div className="space-y-3 text-sm text-slate-300">
                     <div className="flex items-center gap-3">
                       <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                      <span>Unlimited AI-generated meal plans</span>
+                      <span>Higher meal plan daily generation rates</span>
                     </div>
                     <div className="flex items-center gap-3">
                       <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                      <span>Advanced dietary customization</span>
+                      <span>Advanced dietary customisation</span>
                     </div>
                     <div className="flex items-center gap-3">
                       <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
-                      <span>Nutrition tracking & analytics</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <div className="w-2 h-2 bg-pink-400 rounded-full"></div>
-                      <span>Priority support</span>
+                      <span>Access to more AI models</span>
                     </div>
                   </div>
                 </div>
