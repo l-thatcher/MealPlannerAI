@@ -23,7 +23,7 @@ export function Footer({ user }: FooterProps) {
               </span>
             </div>
             <p className="text-slate-400 max-w-md mb-4">
-              Transform your meal planning with AI-powered personalization.
+              Transform your meal planning with AI-powered personalisation.
               Create perfect meal plans tailored to your lifestyle and dietary
               needs.
             </p>

@@ -486,11 +486,44 @@ export function MealPlannerForm({
                           </span>
                         </div>
                       </TooltipTrigger>
-                      <TooltipContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20">
-                        <p>
-                          Excluded ingredients is only available on the paid
-                          plan.
-                        </p>
+                      <TooltipContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20 max-w-xs">
+                        <div className="space-y-2">
+                          <p className="font-semibold text-orange-400">
+                            Premium Feature
+                          </p>
+                          <p>
+                            Premium users can exclude specific ingredients they
+                            dislike or are allergic to. For example: "mushrooms,
+                            cilantro, seafood" - and we'll ensure no recipes
+                            include them.
+                          </p>
+                        </div>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
+                {user && userRole === "basic" && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="flex items-center gap-1 px-2 py-1 bg-orange-500/20 rounded-full">
+                          <Info className="w-3 h-3 text-orange-400" />
+                          <span className="text-xs text-orange-400">
+                            Upgrade Required
+                          </span>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20 max-w-xs">
+                        <div className="space-y-2">
+                          <p className="font-semibold text-orange-400">
+                            Upgrade to Pro
+                          </p>
+                          <p>
+                            List ingredients you want to avoid (e.g., "nuts,
+                            dairy, shellfish") and we'll create meal plans that
+                            exclude them completely.
+                          </p>
+                        </div>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
@@ -531,11 +564,45 @@ export function MealPlannerForm({
                           </span>
                         </div>
                       </TooltipTrigger>
-                      <TooltipContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20">
-                        <p>
-                          Extra instructions are only available on the paid
-                          plan.
-                        </p>
+                      <TooltipContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20 max-w-xs">
+                        <div className="space-y-2">
+                          <p className="font-semibold text-orange-400">
+                            Premium Feature
+                          </p>
+                          <p>
+                            Premium users can add custom instructions like "high
+                            protein meals", "30-minute recipes only",
+                            "family-friendly portions", or "low sodium options"
+                            to personalize their meal plans even further.
+                          </p>
+                        </div>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
+                {user && userRole === "basic" && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="flex items-center gap-1 px-2 py-1 bg-orange-500/20 rounded-full">
+                          <Info className="w-3 h-3 text-orange-400" />
+                          <span className="text-xs text-orange-400">
+                            Upgrade Required
+                          </span>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20 max-w-xs">
+                        <div className="space-y-2">
+                          <p className="font-semibold text-orange-400">
+                            Upgrade to Pro
+                          </p>
+                          <p>
+                            Add special requirements like "quick prep meals",
+                            "budget-friendly", "meal prep friendly", or any
+                            other preferences to get highly customized meal
+                            plans.
+                          </p>
+                        </div>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>

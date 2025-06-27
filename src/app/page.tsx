@@ -370,7 +370,7 @@ export default function HomePage() {
               </h1>
             </div>
             <p className="text-xl text-slate-300 max-w-2xl mx-auto">
-              Create personalized meal plans tailored to your dietary needs and
+              Create personalised meal plans tailored to your dietary needs and
               nutrition goals
             </p>
           </header>
