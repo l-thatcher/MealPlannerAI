@@ -288,362 +288,393 @@ export default function Subscriptions() {
 
   return (
     <div>
-      <div className="min-h-screen flex flex-col items-center p-4 sm:p-8 md:p-12 lg:p-24">
-        {/* Animated Background */}
-        <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-          <div className="blob blob-blue" />
-          <div className="blob blob-purple" />
-          <div className="blob blob-pink" />
-          <div className="blob blob-green" />
-        </div>
+      <div className="min-h-screen flex flex-col">
+        {/* Navigation */}
+        <nav className="relative z-10 p-6">
+          <div className="max-w-7xl mx-auto bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl px-6 py-4 shadow-2xl shadow-blue-500/10">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="relative p-2 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-xl backdrop-blur-sm border border-white/10">
+                  <Sparkles className="w-5 h-5 text-purple-400" />
+                </div>
+                <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                  Subscriptions
+                </span>
+              </div>
 
-        <div className="w-full max-w-7xl mx-auto">
-          {/* Header Section */}
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-400/30 mb-6">
-              <Sparkles className="w-5 h-5 text-blue-400 mr-2" />
-              <span className="text-blue-300 text-sm font-medium">
-                Unlock Premium Features
-              </span>
+              <Button
+                asChild
+                className="bg-gradient-to-r from-blue-500/90 to-purple-600/90 hover:from-blue-600 hover:to-purple-700 backdrop-blur-sm border border-white/10 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-white"
+              >
+                <Link href="/" className="flex items-center gap-2">
+                  Back to App
+                </Link>
+              </Button>
             </div>
+          </div>
+        </nav>
 
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-slate-50 via-blue-100 to-purple-100 bg-clip-text text-transparent mb-6">
-              Choose Your Plan
-            </h1>
-
-            <p className="text-slate-300 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-              Transform your meal planning experience with AI-powered
-              suggestions, personalised nutrition tracking, and seamless grocery
-              list generation.
-            </p>
+        {/* Main content */}
+        <div className="flex-1 flex flex-col items-center p-4 sm:p-8 md:p-12 lg:p-24 pt-0">
+          {/* Animated Background */}
+          <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+            <div className="blob blob-blue" />
+            <div className="blob blob-purple" />
+            <div className="blob blob-pink" />
+            <div className="blob blob-green" />
           </div>
 
-          {/* Plans Grid - Now includes Free plan */}
-          <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-8">
-            {/* Free Plan */}
-            <Card
-              className={`relative transition-all duration-300 backdrop-blur-xl flex flex-col ${
-                userSubscriptionStatus?.isPro
-                  ? "bg-slate-900/60 border-orange-400/40 hover:border-orange-400/60 ring-2 ring-orange-400/20 hover:scale-105 hover:-translate-y-2"
-                  : "bg-slate-900/60 border-slate-200/20 hover:border-slate-200/40 hover:scale-105 hover:-translate-y-2"
-              }`}
-            >
-              {/* Pro user badge */}
-              {userSubscriptionStatus?.isPro && (
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                  <Badge className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-1 text-sm font-semibold shadow-lg">
-                    Subscription Management
-                  </Badge>
-                </div>
-              )}
+          <div className="w-full max-w-7xl mx-auto">
+            {/* Header Section */}
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-400/30 mb-6">
+                <Sparkles className="w-5 h-5 text-blue-400 mr-2" />
+                <span className="text-blue-300 text-sm font-medium">
+                  Unlock Premium Features
+                </span>
+              </div>
 
-              <CardHeader className="text-center pb-4">
-                <div className="flex justify-center mb-4">
-                  <Star
-                    className={`w-6 h-6 ${
-                      userSubscriptionStatus?.isPro
-                        ? "text-orange-400"
-                        : "text-blue-400"
-                    }`}
-                  />
-                </div>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-slate-50 via-blue-100 to-purple-100 bg-clip-text text-transparent mb-6">
+                Choose Your Plan
+              </h1>
 
-                <CardTitle className="text-2xl font-bold text-slate-50 mb-2">
-                  {userSubscriptionStatus?.isPro
-                    ? "Manage Subscription"
-                    : "Free"}
-                </CardTitle>
+              <p className="text-slate-300 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+                Transform your meal planning experience with AI-powered
+                suggestions, personalised nutrition tracking, and seamless
+                grocery list generation.
+              </p>
+            </div>
 
-                <div className="flex items-baseline justify-center mb-4">
-                  <span className="text-4xl font-bold text-slate-50">
-                    {userSubscriptionStatus?.isPro ? (
-                      <span className="text-2xl">
-                        {userSubscriptionStatus.subscriptionDuration === "year"
-                          ? "Pro Annual"
-                          : "Pro Monthly"}
-                      </span>
-                    ) : (
-                      "£0"
-                    )}
-                  </span>
-                </div>
+            {/* Plans Grid - Now includes Free plan */}
+            <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-8">
+              {/* Free Plan */}
+              <Card
+                className={`relative transition-all duration-300 backdrop-blur-xl flex flex-col ${
+                  userSubscriptionStatus?.isPro
+                    ? "bg-slate-900/60 border-orange-400/40 hover:border-orange-400/60 ring-2 ring-orange-400/20 hover:scale-105 hover:-translate-y-2"
+                    : "bg-slate-900/60 border-slate-200/20 hover:border-slate-200/40 hover:scale-105 hover:-translate-y-2"
+                }`}
+              >
+                {/* Pro user badge */}
+                {userSubscriptionStatus?.isPro && (
+                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                    <Badge className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-1 text-sm font-semibold shadow-lg">
+                      Subscription Management
+                    </Badge>
+                  </div>
+                )}
 
-                <CardDescription className="text-slate-300 text-base leading-relaxed">
-                  {userSubscriptionStatus?.isPro
-                    ? `You're currently on the ${
-                        userSubscriptionStatus.subscriptionDuration === "year"
-                          ? "Annual"
-                          : "Monthly"
-                      } Pro plan`
-                    : "Perfect for trying out plAIte"}
-                </CardDescription>
-              </CardHeader>
+                <CardHeader className="text-center pb-4">
+                  <div className="flex justify-center mb-4">
+                    <Star
+                      className={`w-6 h-6 ${
+                        userSubscriptionStatus?.isPro
+                          ? "text-orange-400"
+                          : "text-blue-400"
+                      }`}
+                    />
+                  </div>
 
-              <CardContent className="space-y-6 flex-grow flex flex-col">
-                {/* Features List */}
-                <div className="space-y-3 flex-grow">
-                  {userSubscriptionStatus?.isPro ? (
-                    // Show current Pro benefits
-                    <>
-                      <div className="flex items-start space-x-3">
-                        <div className="flex-shrink-0 w-5 h-5 bg-green-500/20 rounded-full flex items-center justify-center mt-0.5">
-                          <Check className="w-3 h-3 text-green-400" />
-                        </div>
-                        <span className="text-slate-300 text-sm leading-relaxed">
-                          ✨ Currently enjoying Pro features
-                        </span>
-                      </div>
-                      <div className="flex items-start space-x-3">
-                        <div className="flex-shrink-0 w-5 h-5 bg-green-500/20 rounded-full flex items-center justify-center mt-0.5">
-                          <Check className="w-3 h-3 text-green-400" />
-                        </div>
-                        <span className="text-slate-300 text-sm leading-relaxed">
-                          Up to 14-day meal plans
-                        </span>
-                      </div>
-                      <div className="flex items-start space-x-3">
-                        <div className="flex-shrink-0 w-5 h-5 bg-green-500/20 rounded-full flex items-center justify-center mt-0.5">
-                          <Check className="w-3 h-3 text-green-400" />
-                        </div>
-                        <span className="text-slate-300 text-sm leading-relaxed">
-                          Higher daily limits & advanced features
-                        </span>
-                      </div>
-                    </>
-                  ) : (
-                    // Show Free plan features
-                    <>
-                      <div className="flex items-start space-x-3">
-                        <div className="flex-shrink-0 w-5 h-5 bg-green-500/20 rounded-full flex items-center justify-center mt-0.5">
-                          <Check className="w-3 h-3 text-green-400" />
-                        </div>
-                        <span className="text-slate-300 text-sm leading-relaxed">
-                          Up to 5-day meal plans
-                        </span>
-                      </div>
-                      <div className="flex items-start space-x-3">
-                        <div className="flex-shrink-0 w-5 h-5 bg-green-500/20 rounded-full flex items-center justify-center mt-0.5">
-                          <Check className="w-3 h-3 text-green-400" />
-                        </div>
-                        <span className="text-slate-300 text-sm leading-relaxed">
-                          GPT powered AI model
-                        </span>
-                      </div>
-                      <div className="flex items-start space-x-3">
-                        <div className="flex-shrink-0 w-5 h-5 bg-green-500/20 rounded-full flex items-center justify-center mt-0.5">
-                          <Check className="w-3 h-3 text-green-400" />
-                        </div>
-                        <span className="text-slate-300 text-sm leading-relaxed">
-                          Shopping list generation
-                        </span>
-                      </div>
-                    </>
-                  )}
-                </div>
-
-                {/* CTA Button and guarantee - keep at bottom */}
-                <div className="space-y-3 mt-auto">
-                  {/* CTA Button */}
-                  {userSubscriptionStatus?.isPro ? (
-                    <Button
-                      onClick={handleManageSubscription}
-                      disabled={isLoading === "manage-subscription"}
-                      className="w-full py-3 text-lg font-semibold transition-all duration-300 bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white hover:shadow-lg"
-                    >
-                      {isLoading === "manage-subscription" ? (
-                        <div className="flex items-center justify-center space-x-2">
-                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                          <span>Loading...</span>
-                        </div>
-                      ) : (
-                        "Manage Subscription"
-                      )}
-                    </Button>
-                  ) : (
-                    <Button
-                      asChild
-                      className="w-full py-3 text-lg font-semibold transition-all duration-300 bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500 text-slate-100 hover:shadow-lg"
-                    >
-                      <Link href="/">Continue with Free</Link>
-                    </Button>
-                  )}
-
-                  {/* Money-back guarantee */}
-                  <p className="text-center text-slate-400 text-xs">
+                  <CardTitle className="text-2xl font-bold text-slate-50 mb-2">
                     {userSubscriptionStatus?.isPro
-                      ? "Manage your subscription or cancel anytime"
-                      : "No credit card required"}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+                      ? "Manage Subscription"
+                      : "Free"}
+                  </CardTitle>
 
-            {/* Existing Paid Plans */}
-            {plans.map((plan, index) => {
-              const features = getPlanFeatures(plan.name);
-              const planIcon = getPlanIcon(plan.name);
-              const isPopular = isPremiumPlan(plan.name) && index === 0; // First paid plan is popular
-              const isPlanProType = isPremiumPlan(plan.name);
-              const isUserAlreadyPro = userSubscriptionStatus?.isPro || false;
-              const isCurrentUserPlan = isUserSubscribedToThisPlan(plan);
-              const isOtherProPlan =
-                isPlanProType && isUserAlreadyPro && !isCurrentUserPlan;
-              const shouldDisableButton = isCurrentUserPlan || isOtherProPlan;
+                  <div className="flex items-baseline justify-center mb-4">
+                    <span className="text-4xl font-bold text-slate-50">
+                      {userSubscriptionStatus?.isPro ? (
+                        <span className="text-2xl">
+                          {userSubscriptionStatus.subscriptionDuration ===
+                          "year"
+                            ? "Pro Annual"
+                            : "Pro Monthly"}
+                        </span>
+                      ) : (
+                        "£0"
+                      )}
+                    </span>
+                  </div>
 
-              return (
-                <Card
-                  key={plan.price_id}
-                  className={`relative group transition-all duration-300 flex flex-col ${
-                    shouldDisableButton
-                      ? ""
-                      : "hover:scale-105 hover:-translate-y-2"
-                  } ${
-                    isCurrentUserPlan
-                      ? "bg-gradient-to-br from-green-900/40 via-green-800/40 to-slate-900/60 border-green-400/40 ring-2 ring-green-400/20"
-                      : isOtherProPlan
-                      ? "bg-slate-900/40 border-slate-400/30 opacity-75"
-                      : isPopular
-                      ? "bg-gradient-to-br from-purple-900/60 via-blue-900/60 to-slate-900/60 border-purple-400/40 ring-2 ring-purple-400/20"
-                      : "bg-slate-900/60 border-slate-200/20 hover:border-slate-200/40"
-                  } backdrop-blur-xl`}
-                >
-                  {/* Popular Badge */}
-                  {isPopular && !isCurrentUserPlan && !isOtherProPlan && (
-                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                      <Badge className="bg-gradient-to-r from-purple-500 to-blue-500 text-white px-4 py-1 text-sm font-semibold shadow-lg">
-                        Most Popular
-                      </Badge>
-                    </div>
-                  )}
+                  <CardDescription className="text-slate-300 text-base leading-relaxed">
+                    {userSubscriptionStatus?.isPro
+                      ? `You're currently on the ${
+                          userSubscriptionStatus.subscriptionDuration === "year"
+                            ? "Annual"
+                            : "Monthly"
+                        } Pro plan`
+                      : "Perfect for trying out plAIte"}
+                  </CardDescription>
+                </CardHeader>
 
-                  {/* Already Subscribed Badge */}
-                  {isCurrentUserPlan && (
-                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                      <Badge className="bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-1 text-sm font-semibold shadow-lg">
-                        Current Plan
-                      </Badge>
-                    </div>
-                  )}
-
-                  {/* Other Plan Badge */}
-                  {isOtherProPlan && (
-                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                      <Badge className="bg-gradient-to-r from-slate-500 to-slate-600 text-white px-4 py-1 text-sm font-semibold shadow-lg">
-                        Switch at Billing End
-                      </Badge>
-                    </div>
-                  )}
-
-                  <CardHeader className="text-center pb-4">
-                    <div className="flex justify-center mb-4">{planIcon}</div>
-
-                    <CardTitle className="text-2xl font-bold text-slate-50 mb-2">
-                      {plan.name}
-                    </CardTitle>
-
-                    <div className="flex items-baseline justify-center mb-4">
-                      <span className="text-4xl font-bold text-slate-50">
-                        {(plan.price / 100).toLocaleString("en-GB", {
-                          style: "currency",
-                          currency: "GBP",
-                        })}
-                      </span>
-                      <span className="text-slate-400 ml-1 text-lg">
-                        /{plan.interval}
-                      </span>
-                    </div>
-
-                    <CardDescription className="text-slate-300 text-base leading-relaxed">
-                      {plan.description}
-                    </CardDescription>
-                  </CardHeader>
-
-                  <CardContent className="space-y-6 flex-grow flex flex-col">
-                    {/* Features List */}
-                    <div className="space-y-3 flex-grow">
-                      {features.map((feature, featureIndex) => (
-                        <div
-                          key={featureIndex}
-                          className="flex items-start space-x-3"
-                        >
+                <CardContent className="space-y-6 flex-grow flex flex-col">
+                  {/* Features List */}
+                  <div className="space-y-3 flex-grow">
+                    {userSubscriptionStatus?.isPro ? (
+                      // Show current Pro benefits
+                      <>
+                        <div className="flex items-start space-x-3">
                           <div className="flex-shrink-0 w-5 h-5 bg-green-500/20 rounded-full flex items-center justify-center mt-0.5">
                             <Check className="w-3 h-3 text-green-400" />
                           </div>
                           <span className="text-slate-300 text-sm leading-relaxed">
-                            {feature}
+                            ✨ Currently enjoying Pro features
                           </span>
                         </div>
-                      ))}
-                    </div>
+                        <div className="flex items-start space-x-3">
+                          <div className="flex-shrink-0 w-5 h-5 bg-green-500/20 rounded-full flex items-center justify-center mt-0.5">
+                            <Check className="w-3 h-3 text-green-400" />
+                          </div>
+                          <span className="text-slate-300 text-sm leading-relaxed">
+                            Up to 14-day meal plans
+                          </span>
+                        </div>
+                        <div className="flex items-start space-x-3">
+                          <div className="flex-shrink-0 w-5 h-5 bg-green-500/20 rounded-full flex items-center justify-center mt-0.5">
+                            <Check className="w-3 h-3 text-green-400" />
+                          </div>
+                          <span className="text-slate-300 text-sm leading-relaxed">
+                            Higher daily limits & advanced features
+                          </span>
+                        </div>
+                      </>
+                    ) : (
+                      // Show Free plan features
+                      <>
+                        <div className="flex items-start space-x-3">
+                          <div className="flex-shrink-0 w-5 h-5 bg-green-500/20 rounded-full flex items-center justify-center mt-0.5">
+                            <Check className="w-3 h-3 text-green-400" />
+                          </div>
+                          <span className="text-slate-300 text-sm leading-relaxed">
+                            Up to 5-day meal plans
+                          </span>
+                        </div>
+                        <div className="flex items-start space-x-3">
+                          <div className="flex-shrink-0 w-5 h-5 bg-green-500/20 rounded-full flex items-center justify-center mt-0.5">
+                            <Check className="w-3 h-3 text-green-400" />
+                          </div>
+                          <span className="text-slate-300 text-sm leading-relaxed">
+                            GPT powered AI model
+                          </span>
+                        </div>
+                        <div className="flex items-start space-x-3">
+                          <div className="flex-shrink-0 w-5 h-5 bg-green-500/20 rounded-full flex items-center justify-center mt-0.5">
+                            <Check className="w-3 h-3 text-green-400" />
+                          </div>
+                          <span className="text-slate-300 text-sm leading-relaxed">
+                            Shopping list generation
+                          </span>
+                        </div>
+                      </>
+                    )}
+                  </div>
 
-                    {/* CTA Button and guarantee - keep at bottom */}
-                    <div className="space-y-3 mt-auto">
-                      {/* CTA Button */}
+                  {/* CTA Button and guarantee - keep at bottom */}
+                  <div className="space-y-3 mt-auto">
+                    {/* CTA Button */}
+                    {userSubscriptionStatus?.isPro ? (
                       <Button
-                        onClick={() => handleSubscribe(plan.price_id)}
-                        disabled={!!isLoading || shouldDisableButton}
-                        className={`w-full py-3 text-lg font-semibold transition-all duration-300 ${
-                          isCurrentUserPlan
-                            ? "bg-gradient-to-r from-green-600 to-green-700 text-white cursor-not-allowed opacity-75"
-                            : isOtherProPlan
-                            ? "bg-gradient-to-r from-slate-600 to-slate-700 text-white cursor-not-allowed opacity-75"
-                            : isPopular
-                            ? "bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl"
-                            : "bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500 text-slate-100 hover:shadow-lg"
-                        } ${
-                          isLoading === plan.price_id
-                            ? "opacity-75 cursor-not-allowed"
-                            : ""
-                        }`}
+                        onClick={handleManageSubscription}
+                        disabled={isLoading === "manage-subscription"}
+                        className="w-full py-3 text-lg font-semibold transition-all duration-300 bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white hover:shadow-lg"
                       >
-                        {isCurrentUserPlan ? (
-                          "Current Plan"
-                        ) : isOtherProPlan ? (
-                          "Available After Current Billing"
-                        ) : isLoading === plan.price_id ? (
+                        {isLoading === "manage-subscription" ? (
                           <div className="flex items-center justify-center space-x-2">
                             <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                            <span>Processing...</span>
+                            <span>Loading...</span>
                           </div>
-                        ) : user ? (
-                          "Get Started"
                         ) : (
-                          "Sign In to Get Started"
+                          "Manage Subscription"
                         )}
                       </Button>
+                    ) : (
+                      <Button
+                        asChild
+                        className="w-full py-3 text-lg font-semibold transition-all duration-300 bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500 text-slate-100 hover:shadow-lg"
+                      >
+                        <Link href="/">Continue with Free</Link>
+                      </Button>
+                    )}
 
-                      {/* Money-back guarantee / Plan switch info */}
-                      <p className="text-center text-slate-400 text-xs">
-                        {isOtherProPlan
-                          ? `Switch to this plan when your current ${
-                              userSubscriptionStatus?.subscriptionDuration ===
-                              "year"
-                                ? "annual"
-                                : "monthly"
-                            } billing cycle ends`
-                          : "30-day money-back guarantee"}
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
+                    {/* Money-back guarantee */}
+                    <p className="text-center text-slate-400 text-xs">
+                      {userSubscriptionStatus?.isPro
+                        ? "Manage your subscription or cancel anytime"
+                        : "No credit card required"}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
 
-          {/* Trust Indicators */}
-          <div className="mt-20 text-center">
-            <div className="inline-flex items-center space-x-8 p-6 rounded-2xl bg-slate-900/40 backdrop-blur-xl border border-slate-200/10">
-              <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                <span className="text-slate-300 text-sm">Secure payments</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
-                <span className="text-slate-300 text-sm">Cancel anytime</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
-                <span className="text-slate-300 text-sm">24/7 support</span>
+              {/* Existing Paid Plans */}
+              {plans.map((plan, index) => {
+                const features = getPlanFeatures(plan.name);
+                const planIcon = getPlanIcon(plan.name);
+                const isPopular = isPremiumPlan(plan.name) && index === 0; // First paid plan is popular
+                const isPlanProType = isPremiumPlan(plan.name);
+                const isUserAlreadyPro = userSubscriptionStatus?.isPro || false;
+                const isCurrentUserPlan = isUserSubscribedToThisPlan(plan);
+                const isOtherProPlan =
+                  isPlanProType && isUserAlreadyPro && !isCurrentUserPlan;
+                const shouldDisableButton = isCurrentUserPlan || isOtherProPlan;
+
+                return (
+                  <Card
+                    key={plan.price_id}
+                    className={`relative group transition-all duration-300 flex flex-col ${
+                      shouldDisableButton
+                        ? ""
+                        : "hover:scale-105 hover:-translate-y-2"
+                    } ${
+                      isCurrentUserPlan
+                        ? "bg-gradient-to-br from-green-900/40 via-green-800/40 to-slate-900/60 border-green-400/40 ring-2 ring-green-400/20"
+                        : isOtherProPlan
+                        ? "bg-slate-900/40 border-slate-400/30 opacity-75"
+                        : isPopular
+                        ? "bg-gradient-to-br from-purple-900/60 via-blue-900/60 to-slate-900/60 border-purple-400/40 ring-2 ring-purple-400/20"
+                        : "bg-slate-900/60 border-slate-200/20 hover:border-slate-200/40"
+                    } backdrop-blur-xl`}
+                  >
+                    {/* Popular Badge */}
+                    {isPopular && !isCurrentUserPlan && !isOtherProPlan && (
+                      <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                        <Badge className="bg-gradient-to-r from-purple-500 to-blue-500 text-white px-4 py-1 text-sm font-semibold shadow-lg">
+                          Most Popular
+                        </Badge>
+                      </div>
+                    )}
+
+                    {/* Already Subscribed Badge */}
+                    {isCurrentUserPlan && (
+                      <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                        <Badge className="bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-1 text-sm font-semibold shadow-lg">
+                          Current Plan
+                        </Badge>
+                      </div>
+                    )}
+
+                    {/* Other Plan Badge */}
+                    {isOtherProPlan && (
+                      <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                        <Badge className="bg-gradient-to-r from-slate-500 to-slate-600 text-white px-4 py-1 text-sm font-semibold shadow-lg">
+                          Switch at Billing End
+                        </Badge>
+                      </div>
+                    )}
+
+                    <CardHeader className="text-center pb-4">
+                      <div className="flex justify-center mb-4">{planIcon}</div>
+
+                      <CardTitle className="text-2xl font-bold text-slate-50 mb-2">
+                        {plan.name}
+                      </CardTitle>
+
+                      <div className="flex items-baseline justify-center mb-4">
+                        <span className="text-4xl font-bold text-slate-50">
+                          {(plan.price / 100).toLocaleString("en-GB", {
+                            style: "currency",
+                            currency: "GBP",
+                          })}
+                        </span>
+                        <span className="text-slate-400 ml-1 text-lg">
+                          /{plan.interval}
+                        </span>
+                      </div>
+
+                      <CardDescription className="text-slate-300 text-base leading-relaxed">
+                        {plan.description}
+                      </CardDescription>
+                    </CardHeader>
+
+                    <CardContent className="space-y-6 flex-grow flex flex-col">
+                      {/* Features List */}
+                      <div className="space-y-3 flex-grow">
+                        {features.map((feature, featureIndex) => (
+                          <div
+                            key={featureIndex}
+                            className="flex items-start space-x-3"
+                          >
+                            <div className="flex-shrink-0 w-5 h-5 bg-green-500/20 rounded-full flex items-center justify-center mt-0.5">
+                              <Check className="w-3 h-3 text-green-400" />
+                            </div>
+                            <span className="text-slate-300 text-sm leading-relaxed">
+                              {feature}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* CTA Button and guarantee - keep at bottom */}
+                      <div className="space-y-3 mt-auto">
+                        {/* CTA Button */}
+                        <Button
+                          onClick={() => handleSubscribe(plan.price_id)}
+                          disabled={!!isLoading || shouldDisableButton}
+                          className={`w-full py-3 text-lg font-semibold transition-all duration-300 ${
+                            isCurrentUserPlan
+                              ? "bg-gradient-to-r from-green-600 to-green-700 text-white cursor-not-allowed opacity-75"
+                              : isOtherProPlan
+                              ? "bg-gradient-to-r from-slate-600 to-slate-700 text-white cursor-not-allowed opacity-75"
+                              : isPopular
+                              ? "bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl"
+                              : "bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500 text-slate-100 hover:shadow-lg"
+                          } ${
+                            isLoading === plan.price_id
+                              ? "opacity-75 cursor-not-allowed"
+                              : ""
+                          }`}
+                        >
+                          {isCurrentUserPlan ? (
+                            "Current Plan"
+                          ) : isOtherProPlan ? (
+                            "Available After Current Billing"
+                          ) : isLoading === plan.price_id ? (
+                            <div className="flex items-center justify-center space-x-2">
+                              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                              <span>Processing...</span>
+                            </div>
+                          ) : user ? (
+                            "Get Started"
+                          ) : (
+                            "Sign In to Get Started"
+                          )}
+                        </Button>
+
+                        {/* Money-back guarantee / Plan switch info */}
+                        <p className="text-center text-slate-400 text-xs">
+                          {isOtherProPlan
+                            ? `Switch to this plan when your current ${
+                                userSubscriptionStatus?.subscriptionDuration ===
+                                "year"
+                                  ? "annual"
+                                  : "monthly"
+                              } billing cycle ends`
+                            : "30-day money-back guarantee"}
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+
+            {/* Trust Indicators */}
+            <div className="mt-20 text-center">
+              <div className="inline-flex items-center space-x-8 p-6 rounded-2xl bg-slate-900/40 backdrop-blur-xl border border-slate-200/10">
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                  <span className="text-slate-300 text-sm">
+                    Secure payments
+                  </span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+                  <span className="text-slate-300 text-sm">Cancel anytime</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
+                  <span className="text-slate-300 text-sm">24/7 support</span>
+                </div>
               </div>
             </div>
           </div>

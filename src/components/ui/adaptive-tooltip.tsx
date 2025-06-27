@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Tooltip,
   TooltipContent,
@@ -20,22 +20,20 @@ interface AdaptiveTooltipProps {
   align?: "start" | "center" | "end";
 }
 
-export function AdaptiveTooltip({ 
-  children, 
-  content, 
+export function AdaptiveTooltip({
+  children,
+  content,
   className = "bg-slate-900/90 text-slate-50 border border-slate-200/20",
   side = "top",
-  align = "center"
+  align = "center",
 }: AdaptiveTooltipProps) {
   const isMobile = useIsMobile();
 
   if (isMobile) {
     return (
       <Popover>
-        <PopoverTrigger asChild>
-          {children}
-        </PopoverTrigger>
-        <PopoverContent 
+        <PopoverTrigger asChild>{children}</PopoverTrigger>
+        <PopoverContent
           className={`${className} max-w-[90vw] sm:max-w-xs`}
           side={side}
           align={align}
@@ -50,14 +48,8 @@ export function AdaptiveTooltip({
   return (
     <TooltipProvider>
       <Tooltip>
-        <TooltipTrigger asChild>
-          {children}
-        </TooltipTrigger>
-        <TooltipContent 
-          className={className}
-          side={side}
-          align={align}
-        >
+        <TooltipTrigger asChild>{children}</TooltipTrigger>
+        <TooltipContent className={className} side={side} align={align}>
           {content}
         </TooltipContent>
       </Tooltip>

@@ -183,7 +183,7 @@ export function MealPlannerForm({
 
               <div className="flex items-center gap-2">
                 {user && userRole === "basic" && (
-                  <AdaptiveTooltip 
+                  <AdaptiveTooltip
                     content={
                       <p>
                         Unlock up to 14 day plans with the paid plan due to
@@ -193,9 +193,7 @@ export function MealPlannerForm({
                   >
                     <div className="flex items-center gap-1 px-2 py-1 bg-yellow-500/20 rounded-full">
                       <Info className="w-3 h-3 text-yellow-400" />
-                      <span className="text-xs text-yellow-400">
-                        Limited
-                      </span>
+                      <span className="text-xs text-yellow-400">Limited</span>
                     </div>
                   </AdaptiveTooltip>
                 )}
@@ -483,9 +481,7 @@ export function MealPlannerForm({
                   >
                     <div className="flex items-center gap-1 px-2 py-1 bg-orange-500/20 rounded-full">
                       <Info className="w-3 h-3 text-orange-400" />
-                      <span className="text-xs text-orange-400">
-                        Pro Only
-                      </span>
+                      <span className="text-xs text-orange-400">Pro Only</span>
                     </div>
                   </AdaptiveTooltip>
                 )}
@@ -497,9 +493,9 @@ export function MealPlannerForm({
                           Upgrade to Pro
                         </p>
                         <p>
-                          List ingredients you want to avoid (e.g.,
-                          &quot;nuts, dairy, shellfish&quot;) and we&apos;ll
-                          create meal plans that exclude them completely.
+                          List ingredients you want to avoid (e.g., &quot;nuts,
+                          dairy, shellfish&quot;) and we&apos;ll create meal
+                          plans that exclude them completely.
                         </p>
                       </div>
                     }
@@ -558,9 +554,7 @@ export function MealPlannerForm({
                   >
                     <div className="flex items-center gap-1 px-2 py-1 bg-orange-500/20 rounded-full">
                       <Info className="w-3 h-3 text-orange-400" />
-                      <span className="text-xs text-orange-400">
-                        Pro Only
-                      </span>
+                      <span className="text-xs text-orange-400">Pro Only</span>
                     </div>
                   </AdaptiveTooltip>
                 )}

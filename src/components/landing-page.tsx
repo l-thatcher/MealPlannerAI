@@ -110,124 +110,136 @@ export function LandingPage({ user, onGetStarted }: LandingPageProps) {
     <div className="min-h-screen landing-gradient-bg text-white overflow-hidden">
       {/* Navigation */}
       <nav className="relative z-50 px-4 py-6">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <ChefHat className="w-8 h-8 text-blue-400" />
-              <Sparkles className="w-4 h-4 text-yellow-400 absolute -top-0.5 -right-0.5 animate-pulse" />
-            </div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-              plAIte
-            </span>
-          </div>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-4">
-            {user ? (
-              <div className="flex items-center gap-4">
-                <Button variant="ghost" asChild>
-                  <Link href="/account">Account</Link>
-                </Button>
-                <Button
-                  onClick={onGetStarted}
-                  className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
-                >
-                  Go to App
-                </Button>
+        <div className="max-w-7xl mx-auto bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl px-6 py-4 shadow-2xl shadow-blue-500/10">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="relative p-2 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-xl backdrop-blur-sm border border-white/10">
+                <ChefHat className="w-6 h-6 text-blue-400" />
+                <Sparkles className="w-3 h-3 text-yellow-400 absolute -top-0.5 -right-0.5 animate-pulse" />
               </div>
-            ) : (
-              <div className="flex items-center gap-4">
-                <div className="hidden lg:flex items-center gap-4">
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                plAIte
+              </span>
+            </div>
+
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center gap-4">
+              {user ? (
+                <div className="flex items-center gap-3">
                   <Button
                     variant="ghost"
-                    onClick={() =>
-                      document
-                        .getElementById("features")
-                        ?.scrollIntoView({ behavior: "smooth" })
-                    }
+                    className="text-white/80 hover:text-white hover:bg-white/10 backdrop-blur-sm border border-white/5 rounded-xl transition-all duration-300"
+                    asChild
                   >
-                    Features
+                    <Link href="/account">Account</Link>
                   </Button>
                   <Button
-                    variant="ghost"
-                    onClick={() =>
-                      document
-                        .getElementById("pricing")
-                        ?.scrollIntoView({ behavior: "smooth" })
-                    }
+                    onClick={onGetStarted}
+                    className="bg-gradient-to-r from-blue-500/90 to-purple-600/90 hover:from-blue-600 hover:to-purple-700 backdrop-blur-sm border border-white/10 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-white"
                   >
-                    Pricing
+                    Go to App
                   </Button>
                 </div>
-                <Button variant="ghost" asChild>
-                  <Link href="/login">Sign In</Link>
-                </Button>
-                <Button
-                  asChild
-                  className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
-                >
-                  <Link href="/sign-up">Get Started</Link>
-                </Button>
-              </div>
-            )}
-          </div>
-
-          {/* Mobile Menu Button */}
-          <div className="md:hidden">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="text-white"
-            >
-              {mobileMenuOpen ? (
-                <X className="w-6 h-6" />
               ) : (
-                <Menu className="w-6 h-6" />
-              )}
-            </Button>
-          </div>
-        </div>
-
-        {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden absolute top-full left-0 right-0 bg-slate-900/95 backdrop-blur-md border-t border-slate-700/50 px-4 py-6">
-            <div className="space-y-4">
-              {!user && (
-                <>
+                <div className="flex items-center gap-3">
+                  <div className="hidden lg:flex items-center gap-3">
+                    <Button
+                      variant="ghost"
+                      className="text-white/80 hover:text-white hover:bg-white/10 backdrop-blur-sm border border-white/5 rounded-xl transition-all duration-300"
+                      onClick={() =>
+                        document
+                          .getElementById("features")
+                          ?.scrollIntoView({ behavior: "smooth" })
+                      }
+                    >
+                      Features
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      className="text-white/80 hover:text-white hover:bg-white/10 backdrop-blur-sm border border-white/5 rounded-xl transition-all duration-300"
+                      onClick={() =>
+                        document
+                          .getElementById("pricing")
+                          ?.scrollIntoView({ behavior: "smooth" })
+                      }
+                    >
+                      Pricing
+                    </Button>
+                  </div>
                   <Button
                     variant="ghost"
-                    className="w-full justify-start"
-                    onClick={() => {
-                      document
-                        .getElementById("features")
-                        ?.scrollIntoView({ behavior: "smooth" });
-                      setMobileMenuOpen(false);
-                    }}
-                  >
-                    Features
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start"
-                    onClick={() => {
-                      document
-                        .getElementById("pricing")
-                        ?.scrollIntoView({ behavior: "smooth" });
-                      setMobileMenuOpen(false);
-                    }}
-                  >
-                    Pricing
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start"
+                    className="text-white/80 hover:text-white hover:bg-white/10 backdrop-blur-sm border border-white/5 rounded-xl transition-all duration-300"
                     asChild
                   >
                     <Link href="/login">Sign In</Link>
                   </Button>
                   <Button
-                    className="w-full bg-gradient-to-r from-blue-500 to-purple-600"
+                    asChild
+                    className="bg-gradient-to-r from-blue-500/90 to-purple-600/90 hover:from-blue-600 hover:to-purple-700 backdrop-blur-sm border border-white/10 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-white"
+                  >
+                    <Link href="/sign-up">Get Started</Link>
+                  </Button>
+                </div>
+              )}
+            </div>
+
+            {/* Mobile Menu Button */}
+            <div className="md:hidden">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="text-white hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl transition-all duration-300"
+              >
+                {mobileMenuOpen ? (
+                  <X className="w-5 h-5" />
+                ) : (
+                  <Menu className="w-5 h-5" />
+                )}
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden absolute top-full left-4 right-4 mt-2 bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl px-6 py-6 shadow-2xl shadow-black/20">
+            <div className="space-y-3">
+              {!user && (
+                <>
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start text-white/80 hover:text-white hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl transition-all duration-300"
+                    onClick={() => {
+                      document
+                        .getElementById("features")
+                        ?.scrollIntoView({ behavior: "smooth" });
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    Features
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start text-white/80 hover:text-white hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl transition-all duration-300"
+                    onClick={() => {
+                      document
+                        .getElementById("pricing")
+                        ?.scrollIntoView({ behavior: "smooth" });
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    Pricing
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start text-white/80 hover:text-white hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl transition-all duration-300"
+                    asChild
+                  >
+                    <Link href="/login">Sign In</Link>
+                  </Button>
+                  <Button
+                    className="w-full bg-gradient-to-r from-blue-500/90 to-purple-600/90 hover:from-blue-600 hover:to-purple-700 backdrop-blur-sm border border-white/10 rounded-xl shadow-lg transition-all duration-300 text-white"
                     asChild
                   >
                     <Link href="/sign-up">Get Started</Link>
@@ -238,13 +250,13 @@ export function LandingPage({ user, onGetStarted }: LandingPageProps) {
                 <>
                   <Button
                     variant="ghost"
-                    className="w-full justify-start"
+                    className="w-full justify-start text-white/80 hover:text-white hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl transition-all duration-300"
                     asChild
                   >
                     <Link href="/account">Account</Link>
                   </Button>
                   <Button
-                    className="w-full bg-gradient-to-r from-blue-500 to-purple-600"
+                    className="w-full bg-gradient-to-r from-blue-500/90 to-purple-600/90 hover:from-blue-600 hover:to-purple-700 backdrop-blur-sm border border-white/10 rounded-xl shadow-lg transition-all duration-300 text-white"
                     onClick={() => {
                       onGetStarted();
                       setMobileMenuOpen(false);
@@ -408,105 +420,162 @@ export function LandingPage({ user, onGetStarted }: LandingPageProps) {
 
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {/* Free Plan */}
-            <Card className="bg-slate-800/50 border-slate-700/50 backdrop-blur-md relative">
-              <CardHeader className="text-center pb-8">
-                <CardTitle className="text-2xl text-white mb-2">Free</CardTitle>
-                <div className="text-4xl font-bold text-white mb-2">£0</div>
-                <CardDescription className="text-slate-300">
+            <Card className="relative transition-all duration-300 backdrop-blur-xl flex flex-col bg-slate-900/60 border-slate-200/20 hover:border-slate-200/40 hover:scale-105 hover:-translate-y-2">
+              <CardHeader className="text-center pb-4">
+                <div className="flex justify-center mb-4">
+                  <Star className="w-6 h-6 text-blue-400" />
+                </div>
+
+                <CardTitle className="text-2xl font-bold text-slate-50 mb-2">
+                  Free
+                </CardTitle>
+
+                <div className="flex items-baseline justify-center mb-4">
+                  <span className="text-4xl font-bold text-slate-50">£0</span>
+                </div>
+
+                <CardDescription className="text-slate-300 text-base leading-relaxed">
                   Perfect for trying out plAIte
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4 h-full flex flex-col justify-between">
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <Check className="w-5 h-5 text-green-400" />
-                    <span className="text-slate-300">
+
+              <CardContent className="space-y-6 flex-grow flex flex-col">
+                {/* Features List */}
+                <div className="space-y-3 flex-grow">
+                  <div className="flex items-start space-x-3">
+                    <div className="flex-shrink-0 w-5 h-5 bg-green-500/20 rounded-full flex items-center justify-center mt-0.5">
+                      <Check className="w-3 h-3 text-green-400" />
+                    </div>
+                    <span className="text-slate-300 text-sm leading-relaxed">
                       Up to 5-day meal plans
                     </span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="w-5 h-5 text-green-400" />
-                    <span className="text-slate-300">
-                      GPT 4.0 powered AI model
+                  <div className="flex items-start space-x-3">
+                    <div className="flex-shrink-0 w-5 h-5 bg-green-500/20 rounded-full flex items-center justify-center mt-0.5">
+                      <Check className="w-3 h-3 text-green-400" />
+                    </div>
+                    <span className="text-slate-300 text-sm leading-relaxed">
+                      GPT powered AI model
                     </span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="w-5 h-5 text-green-400" />
-                    <span className="text-slate-300">
+                  <div className="flex items-start space-x-3">
+                    <div className="flex-shrink-0 w-5 h-5 bg-green-500/20 rounded-full flex items-center justify-center mt-0.5">
+                      <Check className="w-3 h-3 text-green-400" />
+                    </div>
+                    <span className="text-slate-300 text-sm leading-relaxed">
                       Shopping list generation
                     </span>
                   </div>
                 </div>
-                <Button
-                  className="w-full mt-6 bg-slate-700 hover:bg-slate-600"
-                  onClick={onGetStarted}
-                >
-                  Get Started Free
-                </Button>
+
+                {/* CTA Button and guarantee - keep at bottom */}
+                <div className="space-y-3 mt-auto">
+                  <Button
+                    onClick={onGetStarted}
+                    className="w-full py-3 text-lg font-semibold transition-all duration-300 bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500 text-slate-100 hover:shadow-lg"
+                  >
+                    Get Started Free
+                  </Button>
+
+                  <p className="text-center text-slate-400 text-xs">
+                    No credit card required
+                  </p>
+                </div>
               </CardContent>
             </Card>
 
             {/* Pro Plan */}
-            <div className="text-center relative">
-              <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-500 to-blue-500 text-white px-4 py-1 text-sm font-semibold shadow-lg z-10">
-                Most Popular
-              </Badge>
-              <Card className="pricing-card-popular bg-gradient-to-br from-blue-900/50 to-purple-900/50 border-blue-500/50 backdrop-blur-md relative text-center overflow-hidden">
-                <CardHeader className="text-center pb-8">
-                  <CardTitle className="text-2xl text-white mb-2">
-                    Pro
-                  </CardTitle>
-                  <div className="text-4xl font-bold text-white mb-2">£5</div>
-                  <div className="text-slate-300 mb-2">per month</div>
-                  <div className="text-sm text-slate-400">
-                    or £50/year (save 17%)
+            <Card className="relative group transition-all duration-300 flex flex-col hover:scale-105 hover:-translate-y-2 bg-gradient-to-br from-purple-900/60 via-blue-900/60 to-slate-900/60 border-purple-400/40 ring-2 ring-purple-400/20 backdrop-blur-xl">
+              {/* Popular Badge */}
+              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                <Badge className="bg-gradient-to-r from-purple-500 to-blue-500 text-white px-4 py-1 text-sm font-semibold shadow-lg">
+                  Most Popular
+                </Badge>
+              </div>
+
+              <CardHeader className="text-center pb-4">
+                <div className="flex justify-center mb-4">
+                  <Sparkles className="w-6 h-6 text-purple-400" />
+                </div>
+
+                <CardTitle className="text-2xl font-bold text-slate-50 mb-2">
+                  Pro
+                </CardTitle>
+
+                <div className="flex items-baseline justify-center mb-4">
+                  <span className="text-4xl font-bold text-slate-50">£5</span>
+                  <span className="text-slate-400 ml-1 text-lg">/month</span>
+                </div>
+
+                <div className="text-sm text-slate-400 mb-4">
+                  or £50/year (save 17%)
+                </div>
+
+                <CardDescription className="text-slate-300 text-base leading-relaxed">
+                  Unlock the full potential of plAIte
+                </CardDescription>
+              </CardHeader>
+
+              <CardContent className="space-y-6 flex-grow flex flex-col">
+                {/* Features List */}
+                <div className="space-y-3 flex-grow">
+                  <div className="flex items-start space-x-3">
+                    <div className="flex-shrink-0 w-5 h-5 bg-green-500/20 rounded-full flex items-center justify-center mt-0.5">
+                      <Check className="w-3 h-3 text-green-400" />
+                    </div>
+                    <span className="text-slate-300 text-sm leading-relaxed">
+                      Up to 14-day meal plans
+                    </span>
                   </div>
-                  <CardDescription className="text-slate-300">
-                    Unlock the full potential of plAIte
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4 h-full flex flex-col justify-between">
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3">
-                      <Check className="w-5 h-5 text-green-400" />
-                      <span className="text-white font-medium">
-                        Up to 14-day meal plans
-                      </span>
+                  <div className="flex items-start space-x-3">
+                    <div className="flex-shrink-0 w-5 h-5 bg-green-500/20 rounded-full flex items-center justify-center mt-0.5">
+                      <Check className="w-3 h-3 text-green-400" />
                     </div>
-                    <div className="flex items-center gap-3">
-                      <Check className="w-5 h-5 text-green-400" />
-                      <span className="text-white">
-                        Advanced AI models (GPT-4.1)
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Check className="w-5 h-5 text-green-400" />
-                      <span className="text-white">
-                        Higher daily meal plan limits
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Check className="w-5 h-5 text-green-400" />
-                      <span className="text-white">
-                        Advanced plan customisation options
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Check className="w-5 h-5 text-green-400" />
-                      <span className="text-white">
-                        Detailed nutrition tracking
-                      </span>
-                    </div>
+                    <span className="text-slate-300 text-sm leading-relaxed">
+                      Advanced AI models (GPT-4.1)
+                    </span>
                   </div>
+                  <div className="flex items-start space-x-3">
+                    <div className="flex-shrink-0 w-5 h-5 bg-green-500/20 rounded-full flex items-center justify-center mt-0.5">
+                      <Check className="w-3 h-3 text-green-400" />
+                    </div>
+                    <span className="text-slate-300 text-sm leading-relaxed">
+                      Higher daily meal plan limits
+                    </span>
+                  </div>
+                  <div className="flex items-start space-x-3">
+                    <div className="flex-shrink-0 w-5 h-5 bg-green-500/20 rounded-full flex items-center justify-center mt-0.5">
+                      <Check className="w-3 h-3 text-green-400" />
+                    </div>
+                    <span className="text-slate-300 text-sm leading-relaxed">
+                      Advanced plan customisation options
+                    </span>
+                  </div>
+                  <div className="flex items-start space-x-3">
+                    <div className="flex-shrink-0 w-5 h-5 bg-green-500/20 rounded-full flex items-center justify-center mt-0.5">
+                      <Check className="w-3 h-3 text-green-400" />
+                    </div>
+                    <span className="text-slate-300 text-sm leading-relaxed">
+                      Detailed nutrition tracking
+                    </span>
+                  </div>
+                </div>
+
+                {/* CTA Button and guarantee - keep at bottom */}
+                <div className="space-y-3 mt-auto">
                   <Button
-                    className="w-full mt-6 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+                    className="w-full py-3 text-lg font-semibold transition-all duration-300 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl"
                     asChild
                   >
                     <Link href="/subscriptions">Upgrade to Pro</Link>
                   </Button>
-                </CardContent>
-              </Card>
-            </div>
+
+                  <p className="text-center text-slate-400 text-xs">
+                    30-day money-back guarantee
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
           <div className="text-center mt-8 text-slate-400">

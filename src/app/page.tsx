@@ -309,52 +309,53 @@ export default function HomePage() {
 
           {/* Modern Navigation */}
           <nav className="relative z-10 w-full px-4 py-6 max-w-screen">
-            <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-center md:justify-between">
-              <div className="flex items-center gap-3">
-                <div className="relative">
-                  <ChefHat className="w-8 h-8 text-blue-400" />
-                  <Sparkles className="w-4 h-4 text-yellow-400 absolute -top-0.5 -right-0.5 animate-pulse" />
+            <div className="max-w-7xl mx-auto bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl px-6 py-4 shadow-2xl shadow-blue-500/10">
+              <div className="flex flex-wrap items-center justify-center md:justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="relative p-2 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-xl backdrop-blur-sm border border-white/10">
+                    <ChefHat className="w-6 h-6 text-blue-400" />
+                    <Sparkles className="w-3 h-3 text-yellow-400 absolute -top-0.5 -right-0.5 animate-pulse" />
+                  </div>
+                  <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                    plAIte
+                  </span>
                 </div>
-                <span className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                  plAIte
-                </span>
-              </div>
 
-              <div className="flex items-center gap-4">
-                {user ? (
-                  <div className="flex items-center gap-4">
-                    <Button
-                      variant="ghost"
-                      className="text-slate-300 hover:text-white hover:bg-slate-800/50"
-                      onClick={backToLandingPage}
-                    >
-                      Landing Page
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="border-slate-600 text-slate-900 hover:bg-slate-800/50 hover:text-white"
-                      asChild
-                    >
-                      <Link href="/account">Account</Link>
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-4">
-                    <Button
-                      variant="ghost"
-                      className="text-slate-300 hover:text-white hover:bg-slate-800/50"
-                      onClick={backToLandingPage}
-                    >
-                      Landing Page
-                    </Button>
-                    <Button
-                      asChild
-                      className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white"
-                    >
-                      <Link href="/login">Sign In</Link>
-                    </Button>
-                  </div>
-                )}
+                <div className="flex items-center gap-3 mt-4 md:mt-0">
+                  {user ? (
+                    <div className="flex items-center gap-3">
+                      <Button
+                        variant="ghost"
+                        className="text-white/80 hover:text-white hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl transition-all duration-300"
+                        onClick={backToLandingPage}
+                      >
+                        Landing Page
+                      </Button>
+                      <Button
+                        className="bg-gradient-to-r from-slate-600/90 to-slate-700/90 hover:from-slate-700 hover:to-slate-800 backdrop-blur-sm border border-white/10 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-white"
+                        asChild
+                      >
+                        <Link href="/account">Account</Link>
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-3">
+                      <Button
+                        variant="ghost"
+                        className="text-white/80 hover:text-white hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl transition-all duration-300"
+                        onClick={backToLandingPage}
+                      >
+                        Landing Page
+                      </Button>
+                      <Button
+                        asChild
+                        className="bg-gradient-to-r from-blue-500/90 to-purple-600/90 hover:from-blue-600 hover:to-purple-700 backdrop-blur-sm border border-white/10 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-white"
+                      >
+                        <Link href="/login">Sign In</Link>
+                      </Button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </nav>
