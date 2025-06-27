@@ -46,7 +46,7 @@ export function LoginForm({ className, action, ...props }: AuthFormProps) {
             Welcome back
           </CardTitle>
           <CardDescription className="text-slate-300">
-            Sign in to access your personalized meal plans
+            Sign in to access your personalised meal plans
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">

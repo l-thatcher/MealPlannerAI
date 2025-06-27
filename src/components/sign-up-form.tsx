@@ -40,7 +40,7 @@ export function SignUpForm({ className, action, ...props }: AuthFormProps) {
             <UserPlus className="h-6 w-6 text-white" />
           </div>
           <CardTitle className="text-2xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
-            Join MealPlan AI
+            Join plAIte
           </CardTitle>
           <CardDescription className="text-slate-300">
             Create your account and start planning amazing meals

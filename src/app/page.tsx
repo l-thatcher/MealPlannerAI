@@ -360,7 +360,7 @@ export default function HomePage() {
                       asChild
                       className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white"
                     >
-                      <Link href="/login">Sign In/Up</Link>
+                      <Link href="/login">Sign In</Link>
                     </Button>
                   </div>
                 )}

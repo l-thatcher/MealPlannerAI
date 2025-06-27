@@ -559,7 +559,7 @@ export function MealPlannerForm({
           </div>
 
           <div className="flex flex-col md:flex-row justify-end gap-2">
-            <div className="flex items-center space-x-2">
+            <div className="flex items-start space-x-2">
               {(!user || userRole === "basic") && (
                 <HoverCard>
                   <HoverCardTrigger asChild>
@@ -612,27 +612,17 @@ export function MealPlannerForm({
             <div className="">
               {!user && (
                 <div className="text-center space-y-3">
-                  <HoverCard>
-                    <HoverCardTrigger>
-                      <Button
-                        type="submit"
-                        size="lg"
-                        className="w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 text-white shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.01] h-10 text-base font-semibold"
-                        asChild
-                      >
-                        <Link href="/sign-up">
-                          <Sparkles className="mr-2 h-5 w-5" />
-                          Sign Up to Generate Your Plan
-                        </Link>
-                      </Button>
-                    </HoverCardTrigger>
-                    <HoverCardContent className="bg-white/10 backdrop-blur-xl border border-white/20 text-white">
-                      <p className="text-sm">
-                        Please sign in to generate your personalized meal plan
-                        with AI.
-                      </p>
-                    </HoverCardContent>
-                  </HoverCard>
+                  <Button
+                    type="submit"
+                    size="lg"
+                    className="w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 text-white shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.01] h-10 text-base font-semibold"
+                    asChild
+                  >
+                    <Link href="/sign-up">
+                      <Sparkles className="mr-2 h-5 w-5" />
+                      Sign Up to Generate Your Plan
+                    </Link>
+                  </Button>
 
                   <p className="text-slate-400 text-sm">
                     Join thousands creating their perfect nutrition plans

@@ -22,9 +22,9 @@ import {
   Target,
   Users,
   ArrowRight,
-  PlayCircle,
   Menu,
   X,
+  CircleArrowDown,
 } from "lucide-react";
 import Link from "next/link";
 import { User } from "@supabase/supabase-js";
@@ -47,13 +47,13 @@ export function LandingPage({ user, onGetStarted }: LandingPageProps) {
       icon: <Sparkles className="w-6 h-6" />,
       title: "AI-Powered Generation",
       description:
-        "Advanced AI creates personalized meal plans tailored to your dietary needs and preferences",
+        "Advanced AI creates personalised meal plans tailored to your dietary needs and preferences",
     },
     {
       icon: <Calendar className="w-6 h-6" />,
       title: "Flexible Planning",
       description:
-        "Generate meal plans from 1-14 days with customizable meals per day",
+        "Generate meal plans from 1-14 days with customisable meals per day",
     },
     {
       icon: <Target className="w-6 h-6" />,
@@ -65,7 +65,7 @@ export function LandingPage({ user, onGetStarted }: LandingPageProps) {
       icon: <ShoppingCart className="w-6 h-6" />,
       title: "Smart Shopping Lists",
       description:
-        "Automatically generated, categorized shopping lists for every meal plan",
+        "Automatically generated, categorised shopping lists for every meal plan",
     },
     {
       icon: <Clock className="w-6 h-6" />,
@@ -298,7 +298,7 @@ export function LandingPage({ user, onGetStarted }: LandingPageProps) {
             </h2>
 
             <p className="text-xl md:text-2xl text-slate-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-              Stop wasting time deciding what to eat. Generate personalized meal
+              Stop wasting time deciding what to eat. Generate personalised meal
               plans in seconds with AI that understands your dietary needs,
               preferences, and nutrition goals.
             </p>
@@ -311,7 +311,7 @@ export function LandingPage({ user, onGetStarted }: LandingPageProps) {
                 className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-4 text-lg font-semibold rounded-xl shadow-2xl hover:shadow-blue-500/25 transition-all duration-300 transform hover:scale-105"
               >
                 <Sparkles className="w-5 h-5 mr-2" />
-                {user ? "Create Your Plan" : "Start Free Trial"}
+                {user ? "Create Your Plan" : "See how it works"}
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
 
@@ -319,15 +319,15 @@ export function LandingPage({ user, onGetStarted }: LandingPageProps) {
                 <Button
                   variant="outline"
                   size="lg"
-                  className="border-slate-600 text-slate-300 hover:bg-slate-800 px-8 py-4 text-lg rounded-xl"
+                  className="border-slate-600 text-slate-800 hover:bg-slate-800 hover:text-slate-50 px-8 py-4 text-lg rounded-xl"
                   onClick={() => {
                     document
                       .getElementById("features")
                       ?.scrollIntoView({ behavior: "smooth" });
                   }}
                 >
-                  <PlayCircle className="w-5 h-5 mr-2" />
-                  See How It Works
+                  <CircleArrowDown className="w-5 h-5 mr-2 " />
+                  Find out more about our features
                 </Button>
               )}
             </div>
@@ -415,7 +415,7 @@ export function LandingPage({ user, onGetStarted }: LandingPageProps) {
                   Perfect for trying out plAIte
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-4 h-full flex flex-col justify-between">
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
                     <Check className="w-5 h-5 text-green-400" />
@@ -426,19 +426,13 @@ export function LandingPage({ user, onGetStarted }: LandingPageProps) {
                   <div className="flex items-center gap-3">
                     <Check className="w-5 h-5 text-green-400" />
                     <span className="text-slate-300">
-                      Basic dietary restrictions
+                      GPT 4.0 powered AI model
                     </span>
                   </div>
                   <div className="flex items-center gap-3">
                     <Check className="w-5 h-5 text-green-400" />
                     <span className="text-slate-300">
                       Shopping list generation
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="w-5 h-5 text-green-400" />
-                    <span className="text-slate-300">
-                      Save up to 3 meal plans
                     </span>
                   </div>
                 </div>
@@ -452,66 +446,66 @@ export function LandingPage({ user, onGetStarted }: LandingPageProps) {
             </Card>
 
             {/* Pro Plan */}
-            <Card className="pricing-card-popular bg-gradient-to-br from-blue-900/50 to-purple-900/50 border-blue-500/50 backdrop-blur-md relative">
-              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                <Badge className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-1">
-                  MOST POPULAR
-                </Badge>
-              </div>
-              <CardHeader className="text-center pb-8">
-                <CardTitle className="text-2xl text-white mb-2">Pro</CardTitle>
-                <div className="text-4xl font-bold text-white mb-2">£5</div>
-                <div className="text-slate-300 mb-2">per month</div>
-                <div className="text-sm text-slate-400">
-                  or £50/year (save 17%)
-                </div>
-                <CardDescription className="text-slate-300">
-                  For serious meal planners
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <Check className="w-5 h-5 text-green-400" />
-                    <span className="text-white font-medium">
-                      Up to 14-day meal plans
-                    </span>
+            <div className="text-center relative">
+              <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-500 to-blue-500 text-white px-4 py-1 text-sm font-semibold shadow-lg z-10">
+                Most Popular
+              </Badge>
+              <Card className="pricing-card-popular bg-gradient-to-br from-blue-900/50 to-purple-900/50 border-blue-500/50 backdrop-blur-md relative text-center overflow-hidden">
+                <CardHeader className="text-center pb-8">
+                  <CardTitle className="text-2xl text-white mb-2">
+                    Pro
+                  </CardTitle>
+                  <div className="text-4xl font-bold text-white mb-2">£5</div>
+                  <div className="text-slate-300 mb-2">per month</div>
+                  <div className="text-sm text-slate-400">
+                    or £50/year (save 17%)
                   </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="w-5 h-5 text-green-400" />
-                    <span className="text-white">
-                      Advanced AI models (GPT-4)
-                    </span>
+                  <CardDescription className="text-slate-300">
+                    Unlock the full potential of plAIte
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4 h-full flex flex-col justify-between">
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <Check className="w-5 h-5 text-green-400" />
+                      <span className="text-white font-medium">
+                        Up to 14-day meal plans
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Check className="w-5 h-5 text-green-400" />
+                      <span className="text-white">
+                        Advanced AI models (GPT-4.1)
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Check className="w-5 h-5 text-green-400" />
+                      <span className="text-white">
+                        Higher daily meal plan limits
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Check className="w-5 h-5 text-green-400" />
+                      <span className="text-white">
+                        Advanced plan customisation options
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Check className="w-5 h-5 text-green-400" />
+                      <span className="text-white">
+                        Detailed nutrition tracking
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="w-5 h-5 text-green-400" />
-                    <span className="text-white">Unlimited meal plans</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="w-5 h-5 text-green-400" />
-                    <span className="text-white">
-                      Advanced dietary customization
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="w-5 h-5 text-green-400" />
-                    <span className="text-white">
-                      Detailed nutrition tracking
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="w-5 h-5 text-green-400" />
-                    <span className="text-white">Priority support</span>
-                  </div>
-                </div>
-                <Button
-                  className="w-full mt-6 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
-                  asChild
-                >
-                  <Link href="/subscriptions">Upgrade to Pro</Link>
-                </Button>
-              </CardContent>
-            </Card>
+                  <Button
+                    className="w-full mt-6 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+                    asChild
+                  >
+                    <Link href="/subscriptions">Upgrade to Pro</Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
           </div>
 
           <div className="text-center mt-8 text-slate-400">
@@ -570,7 +564,7 @@ export function LandingPage({ user, onGetStarted }: LandingPageProps) {
             Ready to Transform Your Meal Planning?
           </h3>
           <p className="text-xl text-slate-300 mb-8">
-            Join thousands of users who have already revolutionized their meal
+            Join thousands of users who have already revolutionised their meal
             planning with AI
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -580,13 +574,13 @@ export function LandingPage({ user, onGetStarted }: LandingPageProps) {
               className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-4 text-lg font-semibold rounded-xl"
             >
               <Sparkles className="w-5 h-5 mr-2" />
-              {user ? "Create Your First Plan" : "Start Free Today"}
+              {user ? "Create Your First Plan" : "See how it works"}
             </Button>
             {!user && (
               <Button
                 variant="outline"
                 size="lg"
-                className="border-slate-600 text-slate-300 hover:bg-slate-800 px-8 py-4 text-lg rounded-xl"
+                className="border-slate-600 text-slate-800 hover:bg-slate-800 hover:text-slate-50 px-8 py-4 text-lg rounded-xl"
                 asChild
               >
                 <Link href="/login">Already have an account? Sign In</Link>
@@ -597,133 +591,6 @@ export function LandingPage({ user, onGetStarted }: LandingPageProps) {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-slate-700/50 py-12 px-4 bg-slate-900/50">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div className="md:col-span-2">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="relative">
-                  <ChefHat className="w-8 h-8 text-blue-400" />
-                  <Sparkles className="w-4 h-4 text-yellow-400 absolute -top-0.5 -right-0.5" />
-                </div>
-                <span className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                  plAIte
-                </span>
-              </div>
-              <p className="text-slate-400 max-w-md mb-4">
-                Transform your meal planning with AI-powered personalization.
-                Create perfect meal plans tailored to your lifestyle and dietary
-                needs.
-              </p>
-              <div className="flex items-center gap-2 text-slate-400">
-                <span>Made with</span>
-                <span className="text-red-400">❤️</span>
-                <span>for healthier eating</span>
-              </div>
-            </div>
-
-            <div>
-              <h4 className="font-semibold text-white mb-4">Quick Links</h4>
-              <div className="space-y-2">
-                <div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-slate-400 hover:text-white p-0 h-auto"
-                    onClick={() =>
-                      document
-                        .getElementById("features")
-                        ?.scrollIntoView({ behavior: "smooth" })
-                    }
-                  >
-                    Features
-                  </Button>
-                </div>
-                <div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-slate-400 hover:text-white p-0 h-auto"
-                    onClick={() =>
-                      document
-                        .getElementById("pricing")
-                        ?.scrollIntoView({ behavior: "smooth" })
-                    }
-                  >
-                    Pricing
-                  </Button>
-                </div>
-                {user ? (
-                  <div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-slate-400 hover:text-white p-0 h-auto"
-                      asChild
-                    >
-                      <Link href="/account">Account</Link>
-                    </Button>
-                  </div>
-                ) : (
-                  <>
-                    <div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-slate-400 hover:text-white p-0 h-auto"
-                        asChild
-                      >
-                        <Link href="/login">Sign In</Link>
-                      </Button>
-                    </div>
-                    <div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-slate-400 hover:text-white p-0 h-auto"
-                        asChild
-                      >
-                        <Link href="/sign-up">Sign Up</Link>
-                      </Button>
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
-
-            <div>
-              <h4 className="font-semibold text-white mb-4">Support</h4>
-              <div className="space-y-2">
-                <div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-slate-400 hover:text-white p-0 h-auto"
-                    asChild
-                  >
-                    <Link href="/subscriptions">Subscriptions</Link>
-                  </Button>
-                </div>
-                <div>
-                  <span className="text-slate-400">Help Center</span>
-                </div>
-                <div>
-                  <span className="text-slate-400">Contact Us</span>
-                </div>
-                <div>
-                  <span className="text-slate-400">Privacy Policy</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="border-t border-slate-700/50 mt-8 pt-8 text-center text-slate-400">
-            <p>
-              &copy; {new Date().getFullYear()} plAIte. All rights reserved.
-            </p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
