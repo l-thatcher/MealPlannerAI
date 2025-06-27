@@ -38,6 +38,7 @@ export default function Subscriptions() {
   const [userSubscriptionStatus, setUserSubscriptionStatus] = useState<{
     role: string;
     subscriptionStatus: string | null;
+    subscriptionDuration: string | null;
     isPro: boolean;
   } | null>(null);
   const [subscriptionLoading, setSubscriptionLoading] = useState(false);
@@ -130,8 +131,8 @@ export default function Subscriptions() {
 
     // Check if user is already subscribed to this plan type
     const plan = plans.find((p) => p.price_id === priceId);
-    if (plan && isPremiumPlan(plan.name) && userSubscriptionStatus?.isPro) {
-      // User is already subscribed to a pro plan
+    if (plan && isUserSubscribedToThisPlan(plan)) {
+      // User is already subscribed to this specific plan
       return;
     }
 
@@ -180,29 +181,13 @@ export default function Subscriptions() {
 
   const getPlanFeatures = (planName: string) => {
     const name = planName.toLowerCase();
-    if (name.includes("basic") || name.includes("starter")) {
-      return [
-        "Up to 5-day meal plans",
-        "GPT 4.0 powered AI model",
-        "Shopping list generation",
-      ];
-    } else if (name.includes("pro") || name.includes("premium")) {
+    if (name.includes("pro")) {
       return [
         "Up to 14-day meal plans",
         "Advanced AI models (GPT-4.1)",
         "Higher daily meal plan limits",
         "Advanced plan customisation options",
         "Detailed nutrition tracking",
-      ];
-    } else if (name.includes("family") || name.includes("enterprise")) {
-      return [
-        "Everything in Pro",
-        "Multiple family member profiles",
-        "Bulk meal planning",
-        "Advanced nutrition goals",
-        "Custom recipe imports",
-        "White-label options",
-        "Dedicated account manager",
       ];
     } else {
       return [
@@ -229,6 +214,22 @@ export default function Subscriptions() {
   const isPremiumPlan = (planName: string) => {
     const name = planName.toLowerCase();
     return name.includes("pro") || name.includes("premium");
+  };
+
+  const isUserSubscribedToThisPlan = (plan: Plan) => {
+    if (
+      !userSubscriptionStatus?.isPro ||
+      !userSubscriptionStatus?.subscriptionDuration
+    ) {
+      return false;
+    }
+
+    // Check if the user's subscription duration matches this plan's interval
+    const planInterval = plan.interval; // 'month' or 'year'
+    const userInterval = userSubscriptionStatus.subscriptionDuration; // 'month' or 'year'
+
+    // Check if it's the same type of plan (pro) and same interval
+    return isPremiumPlan(plan.name) && planInterval === userInterval;
   };
 
   if (loadingPlans || userLoading || subscriptionLoading) {
@@ -321,16 +322,16 @@ export default function Subscriptions() {
           <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-8">
             {/* Free Plan */}
             <Card
-              className={`relative transition-all duration-300 backdrop-blur-xl ${
+              className={`relative transition-all duration-300 backdrop-blur-xl flex flex-col ${
                 userSubscriptionStatus?.isPro
-                  ? "bg-slate-900/60 border-red-400/40 hover:border-red-400/60 ring-2 ring-red-400/20 hover:scale-105 hover:-translate-y-2"
+                  ? "bg-slate-900/60 border-orange-400/40 hover:border-orange-400/60 ring-2 ring-orange-400/20 hover:scale-105 hover:-translate-y-2"
                   : "bg-slate-900/60 border-slate-200/20 hover:border-slate-200/40 hover:scale-105 hover:-translate-y-2"
               }`}
             >
               {/* Pro user badge */}
               {userSubscriptionStatus?.isPro && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                  <Badge className="bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-1 text-sm font-semibold shadow-lg">
+                  <Badge className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-1 text-sm font-semibold shadow-lg">
                     Subscription Management
                   </Badge>
                 </div>
@@ -341,7 +342,7 @@ export default function Subscriptions() {
                   <Star
                     className={`w-6 h-6 ${
                       userSubscriptionStatus?.isPro
-                        ? "text-red-400"
+                        ? "text-orange-400"
                         : "text-blue-400"
                     }`}
                   />
@@ -355,20 +356,32 @@ export default function Subscriptions() {
 
                 <div className="flex items-baseline justify-center mb-4">
                   <span className="text-4xl font-bold text-slate-50">
-                    {userSubscriptionStatus?.isPro ? "Pro Plan" : "£0"}
+                    {userSubscriptionStatus?.isPro ? (
+                      <span className="text-2xl">
+                        {userSubscriptionStatus.subscriptionDuration === "year"
+                          ? "Pro Annual"
+                          : "Pro Monthly"}
+                      </span>
+                    ) : (
+                      "£0"
+                    )}
                   </span>
                 </div>
 
                 <CardDescription className="text-slate-300 text-base leading-relaxed">
                   {userSubscriptionStatus?.isPro
-                    ? "You're currently on the Pro plan"
+                    ? `You're currently on the ${
+                        userSubscriptionStatus.subscriptionDuration === "year"
+                          ? "Annual"
+                          : "Monthly"
+                      } Pro plan`
                     : "Perfect for trying out plAIte"}
                 </CardDescription>
               </CardHeader>
 
-              <CardContent className="space-y-6">
+              <CardContent className="space-y-6 flex-grow flex flex-col">
                 {/* Features List */}
-                <div className="space-y-3">
+                <div className="space-y-3 flex-grow">
                   {userSubscriptionStatus?.isPro ? (
                     // Show current Pro benefits
                     <>
@@ -428,37 +441,40 @@ export default function Subscriptions() {
                   )}
                 </div>
 
-                {/* CTA Button */}
-                {userSubscriptionStatus?.isPro ? (
-                  <Button
-                    onClick={handleManageSubscription}
-                    disabled={isLoading === "manage-subscription"}
-                    className="w-full py-3 text-lg font-semibold transition-all duration-300 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white hover:shadow-lg"
-                  >
-                    {isLoading === "manage-subscription" ? (
-                      <div className="flex items-center justify-center space-x-2">
-                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                        <span>Loading...</span>
-                      </div>
-                    ) : (
-                      "Cancel Subscription"
-                    )}
-                  </Button>
-                ) : (
-                  <Button
-                    asChild
-                    className="w-full py-3 text-lg font-semibold transition-all duration-300 bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500 text-slate-100 hover:shadow-lg"
-                  >
-                    <Link href="/">Continue with Free</Link>
-                  </Button>
-                )}
+                {/* CTA Button and guarantee - keep at bottom */}
+                <div className="space-y-3 mt-auto">
+                  {/* CTA Button */}
+                  {userSubscriptionStatus?.isPro ? (
+                    <Button
+                      onClick={handleManageSubscription}
+                      disabled={isLoading === "manage-subscription"}
+                      className="w-full py-3 text-lg font-semibold transition-all duration-300 bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white hover:shadow-lg"
+                    >
+                      {isLoading === "manage-subscription" ? (
+                        <div className="flex items-center justify-center space-x-2">
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                          <span>Loading...</span>
+                        </div>
+                      ) : (
+                        "Manage Subscription"
+                      )}
+                    </Button>
+                  ) : (
+                    <Button
+                      asChild
+                      className="w-full py-3 text-lg font-semibold transition-all duration-300 bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500 text-slate-100 hover:shadow-lg"
+                    >
+                      <Link href="/">Continue with Free</Link>
+                    </Button>
+                  )}
 
-                {/* Money-back guarantee */}
-                <p className="text-center text-slate-400 text-xs">
-                  {userSubscriptionStatus?.isPro
-                    ? "Manage your subscription"
-                    : "No credit card required"}
-                </p>
+                  {/* Money-back guarantee */}
+                  <p className="text-center text-slate-400 text-xs">
+                    {userSubscriptionStatus?.isPro
+                      ? "Manage your subscription or cancel anytime"
+                      : "No credit card required"}
+                  </p>
+                </div>
               </CardContent>
             </Card>
 
@@ -469,25 +485,30 @@ export default function Subscriptions() {
               const isPopular = isPremiumPlan(plan.name) && index === 0; // First paid plan is popular
               const isPlanProType = isPremiumPlan(plan.name);
               const isUserAlreadyPro = userSubscriptionStatus?.isPro || false;
-              const shouldDisableButton = isPlanProType && isUserAlreadyPro;
+              const isCurrentUserPlan = isUserSubscribedToThisPlan(plan);
+              const isOtherProPlan =
+                isPlanProType && isUserAlreadyPro && !isCurrentUserPlan;
+              const shouldDisableButton = isCurrentUserPlan || isOtherProPlan;
 
               return (
                 <Card
                   key={plan.price_id}
-                  className={`relative group transition-all duration-300 ${
+                  className={`relative group transition-all duration-300 flex flex-col ${
                     shouldDisableButton
                       ? ""
                       : "hover:scale-105 hover:-translate-y-2"
                   } ${
-                    shouldDisableButton
+                    isCurrentUserPlan
                       ? "bg-gradient-to-br from-green-900/40 via-green-800/40 to-slate-900/60 border-green-400/40 ring-2 ring-green-400/20"
+                      : isOtherProPlan
+                      ? "bg-slate-900/40 border-slate-400/30 opacity-75"
                       : isPopular
                       ? "bg-gradient-to-br from-purple-900/60 via-blue-900/60 to-slate-900/60 border-purple-400/40 ring-2 ring-purple-400/20"
                       : "bg-slate-900/60 border-slate-200/20 hover:border-slate-200/40"
                   } backdrop-blur-xl`}
                 >
                   {/* Popular Badge */}
-                  {isPopular && !shouldDisableButton && (
+                  {isPopular && !isCurrentUserPlan && !isOtherProPlan && (
                     <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                       <Badge className="bg-gradient-to-r from-purple-500 to-blue-500 text-white px-4 py-1 text-sm font-semibold shadow-lg">
                         Most Popular
@@ -496,10 +517,19 @@ export default function Subscriptions() {
                   )}
 
                   {/* Already Subscribed Badge */}
-                  {shouldDisableButton && (
+                  {isCurrentUserPlan && (
                     <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                       <Badge className="bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-1 text-sm font-semibold shadow-lg">
                         Current Plan
+                      </Badge>
+                    </div>
+                  )}
+
+                  {/* Other Plan Badge */}
+                  {isOtherProPlan && (
+                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                      <Badge className="bg-gradient-to-r from-slate-500 to-slate-600 text-white px-4 py-1 text-sm font-semibold shadow-lg">
+                        Switch at Billing End
                       </Badge>
                     </div>
                   )}
@@ -528,9 +558,9 @@ export default function Subscriptions() {
                     </CardDescription>
                   </CardHeader>
 
-                  <CardContent className="space-y-6">
+                  <CardContent className="space-y-6 flex-grow flex flex-col">
                     {/* Features List */}
-                    <div className="space-y-3">
+                    <div className="space-y-3 flex-grow">
                       {features.map((feature, featureIndex) => (
                         <div
                           key={featureIndex}
@@ -546,40 +576,54 @@ export default function Subscriptions() {
                       ))}
                     </div>
 
-                    {/* CTA Button */}
-                    <Button
-                      onClick={() => handleSubscribe(plan.price_id)}
-                      disabled={!!isLoading || shouldDisableButton}
-                      className={`w-full py-3 text-lg font-semibold transition-all duration-300 ${
-                        shouldDisableButton
-                          ? "bg-gradient-to-r from-green-600 to-green-700 text-white cursor-not-allowed opacity-75"
-                          : isPopular
-                          ? "bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl"
-                          : "bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500 text-slate-100 hover:shadow-lg"
-                      } ${
-                        isLoading === plan.price_id
-                          ? "opacity-75 cursor-not-allowed"
-                          : ""
-                      }`}
-                    >
-                      {shouldDisableButton ? (
-                        "You are already subscribed to Pro"
-                      ) : isLoading === plan.price_id ? (
-                        <div className="flex items-center justify-center space-x-2">
-                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                          <span>Processing...</span>
-                        </div>
-                      ) : user ? (
-                        "Get Started"
-                      ) : (
-                        "Sign In to Get Started"
-                      )}
-                    </Button>
+                    {/* CTA Button and guarantee - keep at bottom */}
+                    <div className="space-y-3 mt-auto">
+                      {/* CTA Button */}
+                      <Button
+                        onClick={() => handleSubscribe(plan.price_id)}
+                        disabled={!!isLoading || shouldDisableButton}
+                        className={`w-full py-3 text-lg font-semibold transition-all duration-300 ${
+                          isCurrentUserPlan
+                            ? "bg-gradient-to-r from-green-600 to-green-700 text-white cursor-not-allowed opacity-75"
+                            : isOtherProPlan
+                            ? "bg-gradient-to-r from-slate-600 to-slate-700 text-white cursor-not-allowed opacity-75"
+                            : isPopular
+                            ? "bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl"
+                            : "bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500 text-slate-100 hover:shadow-lg"
+                        } ${
+                          isLoading === plan.price_id
+                            ? "opacity-75 cursor-not-allowed"
+                            : ""
+                        }`}
+                      >
+                        {isCurrentUserPlan ? (
+                          "Current Plan"
+                        ) : isOtherProPlan ? (
+                          "Available After Current Billing"
+                        ) : isLoading === plan.price_id ? (
+                          <div className="flex items-center justify-center space-x-2">
+                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                            <span>Processing...</span>
+                          </div>
+                        ) : user ? (
+                          "Get Started"
+                        ) : (
+                          "Sign In to Get Started"
+                        )}
+                      </Button>
 
-                    {/* Money-back guarantee */}
-                    <p className="text-center text-slate-400 text-xs">
-                      30-day money-back guarantee
-                    </p>
+                      {/* Money-back guarantee / Plan switch info */}
+                      <p className="text-center text-slate-400 text-xs">
+                        {isOtherProPlan
+                          ? `Switch to this plan when your current ${
+                              userSubscriptionStatus?.subscriptionDuration ===
+                              "year"
+                                ? "annual"
+                                : "monthly"
+                            } billing cycle ends`
+                          : "30-day money-back guarantee"}
+                      </p>
+                    </div>
                   </CardContent>
                 </Card>
               );

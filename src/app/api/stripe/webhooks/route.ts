@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
 import { createClient } from '@supabase/supabase-js';
 import { headers } from 'next/headers';
-import { StripeSubscription } from "@/types/interfaces";
+import type Stripe from 'stripe';
 
 export async function POST(req: NextRequest) {
   const body = await req.text();
@@ -37,10 +37,25 @@ export async function POST(req: NextRequest) {
   
   try {
     if (event.type === 'customer.subscription.created') {
-      const subscription = event.data.object as StripeSubscription;
+      const subscription = event.data.object as Stripe.Subscription;
       const userId = subscription.metadata.userId;
-      const customerId = subscription.customer;
+      const customerId = subscription.customer as string;
       const subscriptionId = subscription.id;
+      
+      // Get the subscription interval (monthly/yearly) from the first item
+      // We need to expand the subscription to get items, or fetch it separately
+      let subscriptionInterval = 'month'; // default
+      
+      try {
+        // Fetch the full subscription with items expanded
+        const fullSubscription = await stripe.subscriptions.retrieve(subscriptionId, {
+          expand: ['items.data.price']
+        });
+        subscriptionInterval = fullSubscription.items.data[0]?.price?.recurring?.interval || 'month';
+      } catch (error) {
+        console.error('Error fetching subscription details:', error);
+        // Continue with default interval
+      }
       
       // Check if user already exists
       const { data: existingUser, error: fetchError } = await supabase
@@ -63,6 +78,7 @@ export async function POST(req: NextRequest) {
             stripe_customer_id: customerId,
             stripe_subscription_id: subscriptionId,
             subscription_status: subscription.status,
+            subscription_duration: subscriptionInterval,
             updated_at: new Date().toISOString(),
           })
           .eq('user_id', userId);
@@ -81,6 +97,7 @@ export async function POST(req: NextRequest) {
             stripe_customer_id: customerId,
             stripe_subscription_id: subscriptionId,
             subscription_status: subscription.status,
+            subscription_duration: subscriptionInterval,
             updated_at: new Date().toISOString(),
           });
 
@@ -92,9 +109,9 @@ export async function POST(req: NextRequest) {
     }
     
     if (event.type === 'customer.subscription.updated' || event.type === 'customer.subscription.deleted') {
-      const subscription = event.data.object as StripeSubscription;
+      const subscription = event.data.object as Stripe.Subscription;
       const status = subscription.status;
-      const customerId = subscription.customer;
+      const customerId = subscription.customer as string;
       
       // Find user by customer ID
       const { data: userData, error: findError } = await supabase
@@ -108,12 +125,26 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'User not found' }, { status: 404 });
       }
       
+      // Get subscription interval if the subscription is updated (not deleted)
+      let subscriptionInterval = null;
+      if (event.type === 'customer.subscription.updated') {
+        try {
+          const fullSubscription = await stripe.subscriptions.retrieve(subscription.id, {
+            expand: ['items.data.price']
+          });
+          subscriptionInterval = fullSubscription.items.data[0]?.price?.recurring?.interval || 'month';
+        } catch (error) {
+          console.error('Error fetching subscription details:', error);
+        }
+      }
+      
       // Prepare update data
       const updateData: {
         subscription_status: string;
         role: 'pro' | 'basic';
         updated_at: string;
         stripe_subscription_id?: string | null;
+        subscription_duration?: string | null;
       } = {
         subscription_status: status,
         role: status === 'active' ? 'pro' : 'basic',
@@ -123,8 +154,12 @@ export async function POST(req: NextRequest) {
       // Only clear subscription ID if subscription is actually deleted, not just canceled
       if (event.type === 'customer.subscription.deleted') {
         updateData.stripe_subscription_id = null;
+        updateData.subscription_duration = null;
       } else if (event.type === 'customer.subscription.updated') {
         updateData.stripe_subscription_id = subscription.id;
+        if (subscriptionInterval) {
+          updateData.subscription_duration = subscriptionInterval;
+        }
       }
       
       // Update subscription status (preserving stripe_customer_id)
@@ -166,6 +201,7 @@ export async function POST(req: NextRequest) {
             stripe_customer_id: null,
             stripe_subscription_id: null,
             subscription_status: 'canceled',
+            subscription_duration: null,
             role: 'basic',
             updated_at: new Date().toISOString()
           })

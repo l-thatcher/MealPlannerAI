@@ -13,7 +13,7 @@ export async function GET() {
     // Get user role and subscription status
     const { data: userRole, error: roleError } = await supabase
       .from('user_roles')
-      .select('role, subscription_status, updated_at')
+      .select('role, subscription_status, subscription_duration, updated_at')
       .eq('user_id', user.id)
       .single();
 
@@ -25,11 +25,13 @@ export async function GET() {
     // Default to basic if no record exists
     const role = userRole?.role || 'basic';
     const subscriptionStatus = userRole?.subscription_status || null;
+    const subscriptionDuration = userRole?.subscription_duration || null;
     const updatedAt = userRole?.updated_at || null;
 
     return NextResponse.json({
       role,
       subscriptionStatus,
+      subscriptionDuration,
       isPro: role === 'pro' && subscriptionStatus === 'active',
       updatedAt
     });
