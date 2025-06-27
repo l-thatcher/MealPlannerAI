@@ -166,7 +166,7 @@ export function MealPlannerForm({
               Create Your Perfect Meal Plan
             </CardTitle>
             <CardDescription className="text-slate-300 text-lg leading-relaxed">
-              Customize every detail to create a personalised nutrition plan
+              Customise every detail to create a personalised nutrition plan
               that fits your lifestyle
             </CardDescription>
           </div>
@@ -493,9 +493,9 @@ export function MealPlannerForm({
                           </p>
                           <p>
                             Premium users can exclude specific ingredients they
-                            dislike or are allergic to. For example: "mushrooms,
-                            cilantro, seafood" - and we'll ensure no recipes
-                            include them.
+                            dislike or are allergic to. For example:
+                            &quot;mushrooms, cilantro, seafood&quot; - and
+                            we&apos;ll ensure no recipes include them.
                           </p>
                         </div>
                       </TooltipContent>
@@ -519,9 +519,9 @@ export function MealPlannerForm({
                             Upgrade to Pro
                           </p>
                           <p>
-                            List ingredients you want to avoid (e.g., "nuts,
-                            dairy, shellfish") and we'll create meal plans that
-                            exclude them completely.
+                            List ingredients you want to avoid (e.g.,
+                            &quot;nuts, dairy, shellfish&quot;) and we&apos;ll
+                            create meal plans that exclude them completely.
                           </p>
                         </div>
                       </TooltipContent>
@@ -570,10 +570,11 @@ export function MealPlannerForm({
                             Premium Feature
                           </p>
                           <p>
-                            Premium users can add custom instructions like "high
-                            protein meals", "30-minute recipes only",
-                            "family-friendly portions", or "low sodium options"
-                            to personalize their meal plans even further.
+                            Premium users can add custom instructions like
+                            &quot;high protein meals&quot;, &quot;30-minute
+                            recipes only&quot;, &quot;family-friendly
+                            portions&quot;, or &quot;low sodium options&quot; to
+                            personalise their meal plans even further.
                           </p>
                         </div>
                       </TooltipContent>
@@ -597,10 +598,10 @@ export function MealPlannerForm({
                             Upgrade to Pro
                           </p>
                           <p>
-                            Add special requirements like "quick prep meals",
-                            "budget-friendly", "meal prep friendly", or any
-                            other preferences to get highly customized meal
-                            plans.
+                            Add special requirements like &quot;quick prep
+                            meals&quot;, &quot;budget-friendly&quot;, &quot;meal
+                            prep friendly&quot;, or any other preferences to get
+                            highly customised meal plans.
                           </p>
                         </div>
                       </TooltipContent>
