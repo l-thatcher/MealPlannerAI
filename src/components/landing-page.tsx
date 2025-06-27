@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { User } from "@supabase/supabase-js";
+import { Footer } from "./footer";
 
 interface LandingPageProps {
   user: User | null;
@@ -589,8 +590,7 @@ export function LandingPage({ user, onGetStarted }: LandingPageProps) {
           </div>
         </div>
       </section>
-
-      {/* Footer */}
+      <Footer />
     </div>
   );
 }

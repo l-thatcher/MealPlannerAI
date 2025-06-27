@@ -13,7 +13,6 @@ import { experimental_useObject as useObject } from "@ai-sdk/react";
 import { mealPlanSchema } from "./api/generateMealPlan/use-object/mealPlanSchema";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { logout } from "@/lib/actions";
 import { createClient } from "@/utils/supabase/client";
 import Link from "next/link";
 import { User } from "@supabase/supabase-js";
@@ -21,6 +20,7 @@ import { BookmarkCheck, ChefHat, Sparkles } from "lucide-react";
 import PlanGeneratingWindow from "@/components/plan-generating-window";
 import { PlanGenerationError } from "@/components/plan-generation-error";
 import { SavedPlans } from "@/components/saved-plans";
+import { Footer } from "@/components/footer";
 
 export default function HomePage() {
   const [user, setUser] = useState<User | null>(null);
@@ -331,21 +331,12 @@ export default function HomePage() {
                       Landing Page
                     </Button>
                     <Button
-                      variant="ghost"
-                      className="text-slate-300 hover:text-white hover:bg-slate-800/50"
+                      variant="outline"
+                      className="border-slate-600 text-slate-900 hover:bg-slate-800/50 hover:text-white"
                       asChild
                     >
                       <Link href="/account">Account</Link>
                     </Button>
-                    <form action={logout}>
-                      <Button
-                        type="submit"
-                        variant="outline"
-                        className="border-slate-600 text-slate-900 hover:bg-slate-800/50 hover:text-white"
-                      >
-                        Log out
-                      </Button>
-                    </form>
                   </div>
                 ) : (
                   <div className="flex items-center gap-4">
@@ -486,133 +477,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <footer className="border-t border-slate-700/50 py-12 px-4 bg-slate-900/50 w-full">
-            <div className="max-w-7xl mx-auto">
-              <div className="grid md:grid-cols-4 gap-8">
-                <div className="md:col-span-2">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="relative">
-                      <ChefHat className="w-8 h-8 text-blue-400" />
-                      <Sparkles className="w-4 h-4 text-yellow-400 absolute -top-0.5 -right-0.5" />
-                    </div>
-                    <span className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                      plAIte
-                    </span>
-                  </div>
-                  <p className="text-slate-400 max-w-md mb-4">
-                    Transform your meal planning with AI-powered
-                    personalization. Create perfect meal plans tailored to your
-                    lifestyle and dietary needs.
-                  </p>
-                  <div className="flex items-center gap-2 text-slate-400">
-                    <span>Made with</span>
-                    <span className="text-red-400">❤️</span>
-                    <span>for healthier eating</span>
-                  </div>
-                </div>
-
-                <div>
-                  <h4 className="font-semibold text-white mb-4">Quick Links</h4>
-                  <div className="space-y-2">
-                    <div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-slate-400 hover:text-white p-0 h-auto"
-                        onClick={() =>
-                          document
-                            .getElementById("features")
-                            ?.scrollIntoView({ behavior: "smooth" })
-                        }
-                      >
-                        Features
-                      </Button>
-                    </div>
-                    <div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-slate-400 hover:text-white p-0 h-auto"
-                        onClick={() =>
-                          document
-                            .getElementById("pricing")
-                            ?.scrollIntoView({ behavior: "smooth" })
-                        }
-                      >
-                        Pricing
-                      </Button>
-                    </div>
-                    {user ? (
-                      <div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-slate-400 hover:text-white p-0 h-auto"
-                          asChild
-                        >
-                          <Link href="/account">Account</Link>
-                        </Button>
-                      </div>
-                    ) : (
-                      <>
-                        <div>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-slate-400 hover:text-white p-0 h-auto"
-                            asChild
-                          >
-                            <Link href="/login">Sign In</Link>
-                          </Button>
-                        </div>
-                        <div>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-slate-400 hover:text-white p-0 h-auto"
-                            asChild
-                          >
-                            <Link href="/sign-up">Sign Up</Link>
-                          </Button>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </div>
-
-                <div>
-                  <h4 className="font-semibold text-white mb-4">Support</h4>
-                  <div className="space-y-2">
-                    <div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-slate-400 hover:text-white p-0 h-auto"
-                        asChild
-                      >
-                        <Link href="/subscriptions">Subscriptions</Link>
-                      </Button>
-                    </div>
-                    <div>
-                      <span className="text-slate-400">Help Center</span>
-                    </div>
-                    <div>
-                      <span className="text-slate-400">Contact Us</span>
-                    </div>
-                    <div>
-                      <span className="text-slate-400">Privacy Policy</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="border-t border-slate-700/50 mt-8 pt-8 text-center text-slate-400">
-                <p>
-                  &copy; {new Date().getFullYear()} plAIte. All rights reserved.
-                </p>
-              </div>
-            </div>
-          </footer>
+          <Footer user={user} />
         </main>
       )}
     </>

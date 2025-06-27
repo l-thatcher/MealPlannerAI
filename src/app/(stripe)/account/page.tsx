@@ -18,10 +18,13 @@ import {
   ChefHat,
   Sparkles,
   ArrowLeft,
+  LogOut,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { createClient } from "@/utils/supabase/client";
 import Link from "next/link";
+import { Footer } from "@/components/footer";
+import { logout } from "@/lib/actions";
 
 interface UserData {
   email: string;
@@ -34,6 +37,7 @@ interface UserData {
 export default function AccountPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingUser, setIsLoadingUser] = useState(true);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null);
 
   useEffect(() => {
@@ -116,6 +120,16 @@ export default function AccountPage() {
       console.error("Error creating portal session:", error);
       alert("Failed to open billing portal. Please try again.");
       setIsLoading(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      setIsLoggingOut(true);
+      await logout();
+    } catch (error) {
+      console.error("Error logging out:", error);
+      setIsLoggingOut(false);
     }
   };
 
@@ -406,7 +420,7 @@ export default function AccountPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <Button
                   variant="outline"
                   className="h-12 text-white border-white/30 bg-white/10 backdrop-blur-md hover:bg-white/20 hover:border-white/50 transition-all duration-300 group"
@@ -432,11 +446,28 @@ export default function AccountPage() {
                     Change Password
                   </div>
                 </Button>
+
+                <Button
+                  variant="outline"
+                  className="h-12 text-white border-white/30 bg-white/10 backdrop-blur-md hover:bg-red-500/20 hover:border-red-400/50 transition-all duration-300 group sm:col-span-2 lg:col-span-1"
+                  onClick={handleLogout}
+                  disabled={isLoggingOut}
+                >
+                  <div className="flex items-center gap-2">
+                    {isLoggingOut ? (
+                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    ) : (
+                      <LogOut className="h-4 w-4 group-hover:text-red-400 transition-colors" />
+                    )}
+                    {isLoggingOut ? "Logging out..." : "Log Out"}
+                  </div>
+                </Button>
               </div>
             </CardContent>
           </Card>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
