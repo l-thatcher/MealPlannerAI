@@ -56,7 +56,7 @@ export function SignUpForm({ className, action, ...props }: AuthFormProps) {
         <CardContent className="space-y-6">
           <form onSubmit={handleSubmit}>
             <div className="space-y-6">
-              <div className="flex flex-col gap-3">
+              {/* <div className="flex flex-col gap-3">
                 <Button
                   variant="outline"
                   className="w-full h-12 border-white/10 bg-slate-800/50 hover:bg-slate-700/50 text-slate-200 backdrop-blur-sm transition-all duration-200 hover:border-white/20"
@@ -88,7 +88,7 @@ export function SignUpForm({ className, action, ...props }: AuthFormProps) {
                     Or create account with email
                   </span>
                 </div>
-              </div>
+              </div> */}
 
               <div className="space-y-4">
                 <div className="space-y-2">
