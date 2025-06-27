@@ -10,7 +10,6 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
-  CardFooter,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -220,48 +219,52 @@ export function MealPlanResults({
             <AccordionContent className="px-6 pb-6">
               <div className="overflow-hidden relative">
                 <div
-                  className="flex overflow-x-auto gap-6 snap-x snap-mandatory w-full scrollbar-thin pb-4"
+                  className="flex overflow-x-auto gap-6 snap-x snap-mandatory w-full scrollbar-thin pb-4 px-[10px]"
                   style={{
                     maskImage:
-                      "linear-gradient(to right, transparent 0px, black 32px, black calc(100% - 32px), transparent 100%)",
+                      "linear-gradient(to right, transparent 0px, black 16px, black calc(100% - 8px), transparent 100%)",
                     WebkitMaskImage:
-                      "linear-gradient(to right, transparent 0px, black 32px, black calc(100% - 32px), transparent 100%)",
+                      "linear-gradient(to right, transparent 0px, black 16px, black calc(100% - 8px), transparent 100%)",
                   }}
                 >
                   {dayData.meals.map((meal) => (
-                    <Card
+                    <div
                       key={meal.name}
-                      className="flex-shrink-0 w-[320px] snap-center bg-white/10 backdrop-blur-md border border-white/20 shadow-lg hover:shadow-xl transition-all duration-300 group hover:scale-[1.02]"
+                      className="flex-shrink-0 w-[320px] h-[400px] snap-center bg-white/10 backdrop-blur-md border border-white/20 shadow-lg hover:shadow-xl transition-all duration-300 group rounded-lg flex flex-col"
                     >
-                      <CardHeader className="pb-3">
+                      {/* Header */}
+                      <div className="p-6 pb-3">
                         <div className="flex items-center gap-3 mb-2">
                           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-blue-500 flex items-center justify-center">
                             <Clock className="h-4 w-4 text-white" />
                           </div>
-                          <CardDescription className="text-slate-300 font-medium">
+                          <span className="text-slate-300 font-medium">
                             {meal.name}
-                          </CardDescription>
+                          </span>
                         </div>
-                        <CardTitle className="text-white text-xl group-hover:text-blue-300 transition-colors">
+                        <h3 className="text-white text-xl group-hover:text-blue-300 transition-colors font-semibold h-14 flex items-center overflow-hidden text-ellipsis line-clamp-2">
                           {meal.title}
-                        </CardTitle>
-                      </CardHeader>
+                        </h3>
+                      </div>
 
-                      <CardContent className="space-y-4">
-                        <p className="text-slate-300 text-sm leading-relaxed">
+                      {/* Content - grows to fill space */}
+                      <div className="px-6 flex-1 flex flex-col">
+                        <p className="text-slate-300 text-sm leading-relaxed mb-4">
                           {meal.recipe}
                         </p>
 
-                        <div className="flex items-center gap-2">
+                        {/* Calories - pushed to bottom of content */}
+                        <div className="flex items-center gap-2 mt-auto mb-6">
                           <Star className="h-4 w-4 text-yellow-400" />
                           <span className="text-white font-semibold">
                             {meal.cals} calories
                           </span>
                         </div>
-                      </CardContent>
+                      </div>
 
-                      <CardFooter className="bg-white/5 rounded-b-lg border-t border-white/10">
-                        <div className="flex justify-between w-full text-sm">
+                      {/* Footer - always at bottom */}
+                      <div className="bg-white/5 rounded-b-lg border-t border-white/10 p-4">
+                        <div className="flex justify-around w-full text-sm">
                           <div className="text-center">
                             <p className="text-green-400 font-semibold">
                               {meal.macros.p}g
@@ -281,8 +284,8 @@ export function MealPlanResults({
                             <p className="text-slate-400 text-xs">Fats</p>
                           </div>
                         </div>
-                      </CardFooter>
-                    </Card>
+                      </div>
+                    </div>
                   ))}
                 </div>
               </div>
