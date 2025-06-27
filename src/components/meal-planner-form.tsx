@@ -655,7 +655,7 @@ export function MealPlannerForm({
                       type="button"
                       size="default"
                       variant="outline"
-                      className="w-full border-red-400/50 text-red-300 hover:bg-red-500/10 hover:text-red-200 hover:border-red-400 transition-all duration-300 h-10"
+                      className="w-full border-red-400/50 text-white bg-red-500 hover:bg-red-500/10 hover:text-red-200 hover:border-red-400 transition-all duration-300 h-10"
                       onClick={stopGeneration}
                     >
                       <StopCircle className="mr-2 h-4 w-4" />
