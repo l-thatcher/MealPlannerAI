@@ -24,7 +24,7 @@ export function PlanGenerationError({
 
   return (
     <div
-      className="relative mx-auto mt-8 w-full max-w-2xl animate-fade-in"
+      className="relative mx-auto mt-8 w-full animate-fade-in"
       data-testid="error-container"
     >
       <Card className="bg-white/10 backdrop-blur-xl border border-red-400/30 shadow-2xl hover:shadow-3xl transition-all duration-300">

@@ -23,7 +23,6 @@ const openai = createOpenAI({
 
 export async function POST(req: Request) {
   let user: User | null = null;
-  let requiresAuth = false;
   
   try {
     console.log('Received request to generate meal plan');
@@ -42,10 +41,8 @@ export async function POST(req: Request) {
     
     console.log("Auth response:", { user: !!user, error: authError });
     
-    // If authentication is required for this endpoint
-    requiresAuth = !formData.guestMode;
     
-    if (requiresAuth && (!user || authError)) {
+    if (!user || authError) {
       console.error("Authentication error:", authError);
       return NextResponse.json({ error: "Authentication required" }, { status: 401 });
     }
@@ -92,42 +89,52 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: "Error checking user tokens" }, { status: 500 });
       }
       
+      const now = new Date();
+      
       // If no token record exists, create one
       if (!userTokens) {
         const { error: insertError } = await supabase
           .from('token_usage')
-          .insert([{ user_id: user.id, used_tokens: 0, cap_reached_at: null }]);
+          .insert([{ 
+            user_id: user.id, 
+            used_tokens: 0, 
+            cap_reached_at: null,
+            daily_period_start: now.toISOString()
+          }]);
           
         if (insertError) {
           console.error("Error creating token record:", insertError);
           return NextResponse.json({ error: "Error updating tokens" }, { status: 500 });
         }
       } else {
-        // Check if user has reached token cap
-        const now = new Date();
+        const dailyPeriodStart = userTokens.daily_period_start ? new Date(userTokens.daily_period_start) : null;
         const capReachedAt = userTokens.cap_reached_at ? new Date(userTokens.cap_reached_at) : null;
-        const resetTime = capReachedAt ? new Date(capReachedAt.getTime() + 24 * 60 * 60 * 1000) : null;
-
-        if (capReachedAt && resetTime && now < resetTime && userRole !== 'admin') {
-          return NextResponse.json({
-            allowed: false,
-            reason: `Token limit reached. Try again after ${resetTime.toLocaleString()}.`
-          }, { status: 429 });
-        }
-
-        // Reset if cap has been reached and reset time has passed
-        if (capReachedAt && resetTime && now >= resetTime) {
+        
+        // Check if 24 hours have passed since the daily period started
+        const shouldResetPeriod = !dailyPeriodStart || (now.getTime() - dailyPeriodStart.getTime()) >= (24 * 60 * 60 * 1000);
+        
+        if (shouldResetPeriod) {
+          // Reset the daily period
           const { error: updateError } = await supabase
-          .from('token_usage')
-          .update({ 
-            used_tokens: 0,
-            cap_reached_at: null
-          })
-          .eq('user_id', user.id);
+            .from('token_usage')
+            .update({ 
+              used_tokens: 0,
+              cap_reached_at: null,
+              daily_period_start: now.toISOString()
+            })
+            .eq('user_id', user.id);
+            
           if (updateError) {
-            console.error("Error resetting tokens:", updateError);
+            console.error("Error resetting daily period:", updateError);
             return NextResponse.json({ error: "Error resetting tokens" }, { status: 500 });
           }
+        } else if (capReachedAt && userRole !== 'admin') {
+          // User hit cap and period hasn't reset yet
+          const periodEndTime = new Date(dailyPeriodStart!.getTime() + 24 * 60 * 60 * 1000);
+          return NextResponse.json({
+            allowed: false,
+            reason: `Token limit reached. Your daily limit resets at ${periodEndTime.toLocaleString()}.`
+          }, { status: 429 });
         }
       }
     }
@@ -156,7 +163,7 @@ export async function POST(req: Request) {
         console.log('Total tokens:', totalTokens);
         
         // Only update tokens for authenticated users
-        if (user && !formData.guestMode) {
+        if (user) {
           const supabase = await createClient();
           
           // Get current token usage
@@ -172,13 +179,24 @@ export async function POST(req: Request) {
           }
           
           if (userTokens) {
-            console.log("user role:", userRole);
             const newTotal = userTokens.used_tokens + totalTokens;
+            const updateData: {
+              used_tokens: number;
+              last_generation: string;
+              cap_reached_at?: string;
+            } = {
+              used_tokens: newTotal,
+              last_generation: new Date().toISOString()
+            };
+            
+            // Only set cap_reached_at if they hit the limit and aren't admin
+            if (newTotal >= dailyLimit && userRole !== "admin") {
+              updateData.cap_reached_at = new Date().toISOString();
+            }
+            
             const { error: updateError } = await supabase
               .from('token_usage')
-              .update({ 
-                used_tokens: newTotal,
-                cap_reached_at: (newTotal >= dailyLimit && userRole !== "admin") ? new Date().toISOString() : null              })
+              .update(updateData)
               .eq('user_id', user.id);
               
             if (updateError) {

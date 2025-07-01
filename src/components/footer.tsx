@@ -31,6 +31,8 @@ export function Footer({ user }: FooterProps) {
               <span>Made with</span>
               <span className="text-red-400">❤️</span>
               <span>for healthier eating.</span>
+            </div>
+            <div className="mt-4 text-slate-400">
               <Link href={"https://shed61.co.uk"}>By Shed61</Link>
             </div>
           </div>
