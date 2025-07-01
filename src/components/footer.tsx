@@ -5,9 +5,15 @@ import { User } from "@supabase/supabase-js";
 
 interface FooterProps {
   user?: User | null;
+  showLandingCallback?: () => void;
 }
 
-export function Footer({ user }: FooterProps) {
+export function Footer({ user, showLandingCallback }: FooterProps) {
+  const goToApp = () => {
+    localStorage.setItem("plaite-has-used-app", "true");
+    window.location.reload(); // This will reload the page, and the app will show instead of landing
+  };
+
   return (
     <footer className="border-t border-slate-700/50 py-12 px-4 bg-slate-900/50 w-full">
       <div className="max-w-7xl mx-auto">
@@ -103,6 +109,29 @@ export function Footer({ user }: FooterProps) {
                   </div>
                 </>
               )}
+              <div>
+                {showLandingCallback ? (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-slate-400 hover:text-slate-800 py-0.5 px-1 h-auto hover:bg-slate-50"
+                    onClick={showLandingCallback}
+                  >
+                    Landing Page
+                  </Button>
+                ) : (
+                  // Only show "Go to App" if the user has used the app before
+
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-slate-400 hover:text-slate-800 py-0.5 px-1 h-auto hover:bg-slate-50"
+                    onClick={goToApp}
+                  >
+                    Go to App
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
 

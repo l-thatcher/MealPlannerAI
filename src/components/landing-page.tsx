@@ -659,7 +659,8 @@ export function LandingPage({ user, onGetStarted }: LandingPageProps) {
           </div>
         </div>
       </section>
-      <Footer />
+      {/* Update Footer to pass user prop */}
+      <Footer user={user} />
     </div>
   );
 }
