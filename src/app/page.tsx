@@ -5,7 +5,6 @@ import { LandingPage } from "@/components/landing-page";
 import { MainAppPage } from "@/components/main-app-page";
 import { createClient } from "@/utils/supabase/client";
 import { User } from "@supabase/supabase-js";
-import { Footer } from "@/components/footer";
 
 export default function HomePage() {
   const [user, setUser] = useState<User | null>(null);
