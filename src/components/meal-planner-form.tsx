@@ -39,9 +39,9 @@ const dietaryOptions = [
 
 const modelOptions = [
   // { id: "gpt-4.1-nano", label: "GPT 4.1 nano" },
-  { id: "gpt-4.1-mini", label: "GPT 4.1 mini" },
+  { id: "gpt-5-nano", label: "GPT 5 nano" },
   { id: "gpt-4.1", label: "GPT 4.1" },
-  { id: "gpt-o3-mini", label: "GPT 3o mini" },
+  { id: "gpt-5", label: "GPT 5" },
 ];
 
 export function MealPlannerForm({
@@ -74,7 +74,9 @@ export function MealPlannerForm({
     initialFormData.extraInstructions
   );
   const [selectedModel, setSelectedModel] = useState(
-    initialFormData.selectedModel
+    modelOptions.some((opt) => opt.id === initialFormData.selectedModel)
+      ? initialFormData.selectedModel
+      : modelOptions[0].id
   );
   const [currentFormData, setCurrentFormData] =
     useState<MealPlannerFormData>(initialFormData);
@@ -133,7 +135,7 @@ export function MealPlannerForm({
   useEffect(() => {
     if (
       (user && userRole === "basic" && days > 5) ||
-      (user && selectedModel === "gpt-4.1-mini")
+      (user && selectedModel === "GPT 5 nano")
     ) {
       if (days !== 5 && days > 5) {
         setDays(5);
@@ -198,12 +200,12 @@ export function MealPlannerForm({
                   </AdaptiveTooltip>
                 )}
                 {user &&
-                  selectedModel === "gpt-4.1-mini" &&
+                  selectedModel === "gpt-5-nano" &&
                   (userRole === "admin" || userRole === "pro") && (
                     <AdaptiveTooltip
                       content={
                         <p>
-                          GPT 4 mini can only generate plans for up to 5 days,
+                          GPT 5 nano can only generate plans for up to 5 days,
                           change the model to generate more days
                         </p>
                       }
@@ -615,7 +617,7 @@ export function MealPlannerForm({
                           id="model"
                           className="w-full bg-slate-800/60 text-slate-50 border-slate-200/20"
                         >
-                          <SelectValue placeholder={"GPT 4.1 mini"} />
+                          <SelectValue placeholder={"GPT 5 nano"} />
                         </SelectTrigger>
                       </Select>
                     </span>
@@ -638,7 +640,12 @@ export function MealPlannerForm({
                     id="model"
                     className="w-full bg-slate-800/60 text-slate-50 border-slate-200/20 mr-0 min-h-10 py-5"
                   >
-                    <SelectValue placeholder={selectedModel} />
+                    <SelectValue
+                      placeholder={
+                        modelOptions.find((opt) => opt.id === selectedModel)
+                          ?.label || "Select a model"
+                      }
+                    />
                   </SelectTrigger>
                   <SelectContent className="bg-slate-900/90 text-slate-50 border border-slate-200/20">
                     {modelOptions.map((option) => (
