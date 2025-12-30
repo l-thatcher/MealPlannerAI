@@ -18,7 +18,6 @@ if (!apiKey) {
 
 const openai = createOpenAI({
   apiKey,
-  compatibility: 'strict',
 });
 
 export async function POST(req: Request) {

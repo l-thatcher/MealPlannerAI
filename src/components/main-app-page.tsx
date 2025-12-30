@@ -58,7 +58,7 @@ export function MainAppPage({
   >(null);
 
   const {
-    object,
+    object: rawObject,
     submit,
     stop,
     error: generationError,
@@ -103,6 +103,9 @@ export function MainAppPage({
       setGenerationErrorMessage(errorMessage);
     },
   });
+
+  // Type the object properly for use throughout the component
+  const object = rawObject as Partial<MealPlan> | undefined;
 
   const handleSubmitWithLog = async (newFormData: MealPlannerFormData) => {
     try {
